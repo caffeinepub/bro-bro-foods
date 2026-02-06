@@ -1,0 +1,105 @@
+{
+  "kind": "build_request",
+  "title": "Add order quantity, computed total amount, and minimum delivery order validation",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-21",
+      "text": "Update the Order Now form to let customers choose the number of plates (quantity) in addition to selecting exactly one plate type (Half Plate or Full Plate), and compute/display the total amount as (unit price × quantity) in the form UI using English-only labels.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Aap ager koi order karta hai to usme total amount bhi show kro kitne plate lena hai minimum order for delivery"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Order form includes a quantity control (numeric input/stepper) with a minimum of 1.",
+        "The form shows a clear price breakdown in English that includes unit price, quantity, and total amount.",
+        "Total amount updates immediately when the plate type or quantity changes.",
+        "The user cannot submit the form unless a plate type is selected and quantity is valid."
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "text": "Add and enforce a minimum delivery order rule in the Order Now form, with clear English-only messaging. The rule must be implemented as a single easy-to-change constant (e.g., MIN_PLATES_FOR_DELIVERY or MIN_TOTAL_FOR_DELIVERY) and the form must prevent order submission when the rule is not met.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "minimum order for delivery"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A minimum-order requirement is displayed in the Order Now section in English (e.g., \"Minimum order for delivery: ...\").",
+        "If the customer’s selection does not meet the minimum order rule, the \"Place Order\" action is blocked and an English validation message is shown explaining what is required.",
+        "The minimum order threshold is defined in code as a constant in one place so it can be changed without refactoring multiple files."
+      ]
+    },
+    {
+      "id": "REQ-23",
+      "text": "Extend the backend order model and order creation API to persist order quantity and total amount. Update `createOrder` in `backend/main.mo` to accept a `quantity` parameter, compute `totalAmount` (unit price × quantity), store both on the `Order`, and return them to the frontend.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "total amount bhi show kro kitne plate lena hai"
+        ]
+      },
+      "acceptanceCriteria": [
+        "`Order` includes `quantity` and `totalAmount` fields.",
+        "`createOrder` accepts quantity and returns an `Order` that includes quantity and totalAmount computed from the unit price and quantity.",
+        "Orders stored in the backend include the new fields and `getOrder` / `getAllOrders` return them."
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "text": "Wire the updated Order Now form quantity + total amount flow end-to-end: update the frontend mutation (`useCreateOrder`), types, and submission payload to pass quantity to the backend, and update the WhatsApp message to include quantity and total amount in English.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "total amount bhi show kro kitne plate lena hai"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Submitting an order sends plate type, unit price, and quantity to the backend and receives quantity and totalAmount back.",
+        "The WhatsApp deep-link message includes: Order ID, item name, quantity, and total amount (in ₹).",
+        "The post-order success UI (modal content and/or fallback link flow) remains functional and continues to reference the correct order ID and updated pricing details."
+      ]
+    }
+  ],
+  "constraints": [
+    "Use English-only for any user-facing text added/changed.",
+    "Backend must remain a single Motoko actor in `backend/main.mo` (no additional backend services).",
+    "Do not modify any frontend files under `frontend/src/components/ui` or other `frontend.immutablePaths`.",
+    "Do not serve images from the backend; keep static assets as-is."
+  ],
+  "nonGoals": [
+    "Adding online payments or checkout.",
+    "Adding delivery tracking or order status updates beyond the existing flow.",
+    "Changing menu pricing or adding new menu items beyond what is required to compute totals."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

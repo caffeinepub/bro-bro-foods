@@ -1,0 +1,11 @@
+{
+  "frontend/src/App.tsx": "Main single-page landing application with sticky header navigation, hero section, all content sections including updated contact phone number (7973782618), footer, and integration of PromoPopup, SimpleModal with WhatsApp fallback support, and OrderForm component that automatically opens WhatsApp after successful order placement with quantity and total amount details.",
+  "frontend/src/components/SimpleModal.tsx": "Reusable modal component with overlay and centered content card that displays messages, optionally shows a WhatsApp link button with copy functionality for popup-blocked scenarios, and includes a close button.",
+  "frontend/src/components/PromoPopup.tsx": "Session-based promotional popup that appears once after 2 seconds, displays the momo offer, and includes an \"Order Now\" button that scrolls to the CTA section.",
+  "frontend/src/index.css": "Global styles with warm orange-red OKLCH color palette for street food brand aesthetic, smooth scroll behavior, and custom fade-in/zoom-in animations.",
+  "frontend/tailwind.config.js": "Tailwind configuration extended with warm color tokens matching the street food theme and custom animation utilities.",
+  "frontend/src/components/OrderForm.tsx": "Order form component with plate selection, quantity stepper (min 1), live price breakdown (unit price, quantity, total), minimum order validation, and backend integration that passes quantity to createOrder.",
+  "frontend/src/hooks/useCreateOrder.ts": "React Query mutation hook for creating orders that accepts plateTypeId, plateTypeName, price, and quantity, and returns the complete Order object with computed totalAmount.",
+  "frontend/src/lib/whatsapp.ts": "WhatsApp deep-link utility that builds pre-filled messages including order ID, item name, quantity, and total amount, with helper to attempt opening WhatsApp in new window.",
+  "frontend/src/lib/orderRules.ts": "Centralized order rules module defining minimum delivery requirement (2 plates) with validation helpers and user-facing message generators."
+}

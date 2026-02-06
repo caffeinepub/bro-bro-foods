@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 1rem;
+        /* Warm orange/red palette for street food brand */
+        --background: 0.98 0.01 40;
+        --foreground: 0.2 0.02 30;
+        --card: 1 0 0;
+        --card-foreground: 0.2 0.02 30;
+        --popover: 1 0 0;
+        --popover-foreground: 0.2 0.02 30;
+        /* Vibrant orange-red primary */
+        --primary: 0.58 0.22 25;
+        --primary-foreground: 0.99 0 0;
+        /* Warm cream secondary */
+        --secondary: 0.95 0.03 60;
+        --secondary-foreground: 0.25 0.02 30;
+        /* Light peach muted */
+        --muted: 0.93 0.02 50;
+        --muted-foreground: 0.5 0.02 30;
+        /* Warm yellow accent */
+        --accent: 0.92 0.08 80;
+        --accent-foreground: 0.25 0.02 30;
+        --destructive: 0.577 0.245 27.325;
+        --destructive-foreground: 0.985 0 0;
+        --border: 0.88 0.02 40;
+        --input: 0.88 0.02 40;
+        --ring: 0.58 0.22 25;
+        --chart-1: 0.58 0.22 25;
+        --chart-2: 0.65 0.18 45;
+        --chart-3: 0.75 0.15 60;
+        --chart-4: 0.85 0.12 75;
+        --chart-5: 0.70 0.20 35;
+    }
+
+    .dark {
+        /* Dark mode with warm tones */
+        --background: 0.18 0.02 30;
+        --foreground: 0.95 0.01 40;
+        --card: 0.22 0.02 30;
+        --card-foreground: 0.95 0.01 40;
+        --popover: 0.25 0.02 30;
+        --popover-foreground: 0.95 0.01 40;
+        /* Brighter orange for dark mode */
+        --primary: 0.65 0.24 30;
+        --primary-foreground: 0.15 0.02 30;
+        --secondary: 0.30 0.02 35;
+        --secondary-foreground: 0.95 0.01 40;
+        --muted: 0.28 0.02 35;
+        --muted-foreground: 0.65 0.02 40;
+        --accent: 0.35 0.03 40;
+        --accent-foreground: 0.95 0.01 40;
+        --destructive: 0.60 0.24 25;
+        --destructive-foreground: 0.95 0 0;
+        --border: 0.30 0.02 35;
+        --input: 0.30 0.02 35;
+        --ring: 0.65 0.24 30;
+        --chart-1: 0.65 0.24 30;
+        --chart-2: 0.70 0.20 45;
+        --chart-3: 0.75 0.15 60;
+        --chart-4: 0.80 0.12 75;
+        --chart-5: 0.68 0.22 35;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@layer utilities {
+    .animate-in {
+        animation-fill-mode: both;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .zoom-in {
+        animation: zoomIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes zoomIn {
+        from {
+            transform: scale(0.95);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+}

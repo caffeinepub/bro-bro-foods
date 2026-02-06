@@ -1,0 +1,76 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Order form quantity + total amount + minimum delivery validation",
+  "requirements": [
+    {
+      "id": "REQ-21",
+      "summary": "Add quantity selection to the Order Now form and compute/display total amount (unit price × quantity) with English-only labels and live updates.",
+      "acceptanceCriteria": [
+        "Order form includes a quantity control (numeric input/stepper) with a minimum of 1.",
+        "The form shows a clear price breakdown in English that includes unit price, quantity, and total amount.",
+        "Total amount updates immediately when the plate type or quantity changes.",
+        "The user cannot submit the form unless a plate type is selected and quantity is valid."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/OrderForm.tsx",
+          "operation": "modify",
+          "description": "Add a quantity state/control (min 1) alongside the existing single plate-type selection; compute total amount as unit price × quantity and render an English-only price breakdown (unit price, quantity, total) that updates immediately on changes; ensure submit is blocked when plate type is not selected or quantity is invalid."
+        }
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "summary": "Implement and enforce a minimum delivery order rule in the Order Now form using a single easy-to-change constant and clear English-only validation messaging.",
+      "acceptanceCriteria": [
+        "A minimum-order requirement is displayed in the Order Now section in English (e.g., \"Minimum order for delivery: ...\").",
+        "If the customer’s selection does not meet the minimum order rule, the \"Place Order\" action is blocked and an English validation message is shown explaining what is required.",
+        "The minimum order threshold is defined in code as a constant in one place so it can be changed without refactoring multiple files."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/orderRules.ts",
+          "operation": "create",
+          "description": "Create a single source-of-truth minimum delivery rule constant (e.g., MIN_PLATES_FOR_DELIVERY) and small helper(s) to evaluate whether the current order meets the rule, keeping it easy to change in one place."
+        },
+        {
+          "path": "frontend/src/components/OrderForm.tsx",
+          "operation": "modify",
+          "description": "Import and display the minimum delivery rule in the Order Now UI using English-only messaging; block submission when the rule is not met and show a clear English validation message indicating what is required."
+        }
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "summary": "Wire quantity + total amount end-to-end on the frontend: include quantity in the create order mutation payload and update WhatsApp messaging and success UI to include quantity and total amount in English.",
+      "acceptanceCriteria": [
+        "Submitting an order sends plate type, unit price, and quantity to the backend and receives quantity and totalAmount back.",
+        "The WhatsApp deep-link message includes: Order ID, item name, quantity, and total amount (in ₹).",
+        "The post-order success UI (modal content and/or fallback link flow) remains functional and continues to reference the correct order ID and updated pricing details."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useCreateOrder.ts",
+          "operation": "modify",
+          "description": "Extend the create order mutation params to include quantity and pass it through to the backend actor call; keep React Query behavior unchanged otherwise."
+        },
+        {
+          "path": "frontend/src/components/OrderForm.tsx",
+          "operation": "modify",
+          "description": "Include quantity in the submission payload when calling useCreateOrder; keep the existing plate-type selection requirement and ensure quantity is sent as part of the order creation flow."
+        },
+        {
+          "path": "frontend/src/lib/whatsapp.ts",
+          "operation": "modify",
+          "description": "Update WhatsApp deep-link message generation to include (in English): Order ID, item name, quantity, and total amount in ₹; update parameters/types accordingly."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Update the order success handler to pass quantity and totalAmount into the WhatsApp link builder/opener; keep the success modal and fallback link flow functional while updating the modal message content to reference the correct order ID and updated pricing details (quantity and total amount) in English."
+        }
+      ]
+    }
+  ]
+}

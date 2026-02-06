@@ -1,0 +1,21 @@
+{
+  "backend/main.mo": "Motoko actor that creates orders with quantity and totalAmount, stores them in a Map, and exposes APIs to create and retrieve orders.",
+  "backend/migration.mo": "Migration module converting old orders to new format by adding quantity and totalAmount fields and returning an updated actor state.",
+  "feature_evidence.json": "Feature evidence report listing recent frontend features, affected files, components, and test IDs.",
+  "frontend-file-summaries.txt": "Prewritten summaries describing the purpose of each frontend file including UI, hooks, utilities, and styling.",
+  "frontend/index.css": "Tailwind base and theme variable definitions for light/dark modes with custom color tokens and global styles.",
+  "frontend/index.html": "HTML entry point that mounts the React app and loads main.tsx.",
+  "frontend/src/App.tsx": "Main React app handling navigation, modals, promo popup, order form, and WhatsApp handoff after successful orders.",
+  "frontend/src/components/OrderForm.tsx": "Order form supporting plate selection, quantity input, minimum order validation, and backend order creation.",
+  "frontend/src/components/PromoPopup.tsx": "Session-based promotional popup that displays an offer and routes users to the order section.",
+  "frontend/src/components/SimpleModal.tsx": "Modal component displaying messages and WhatsApp fallback link with copy support.",
+  "frontend/src/hooks/useActor.ts": "Creates and caches a backend actor based on current Internet Identity and invalidates dependent queries when the actor changes.",
+  "frontend/src/hooks/useCreateOrder.ts": "Provides a mutation hook to create an order through the backend actor and invalidates order queries on success.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Implements Internet Identity context, handling login, identity loading, and state management via AuthClient.",
+  "frontend/src/index.css": "Defines Tailwind base styles and a warm color theme with custom utilities and animations.",
+  "frontend/src/lib/orderRules.ts": "Contains minimum order validation logic and helper messages for delivery requirements.",
+  "frontend/src/lib/whatsapp.ts": "Generates WhatsApp deep links with prefilled order messages and provides a helper to open them.",
+  "frontend/src/main.tsx": "Bootstraps the React app with React Query and Internet Identity providers.",
+  "frontend/tailwind.config.js": "Configures Tailwind with custom colors, animations, plugins, and theme extensions.",
+  "project_state.json": "Tracks project metadata, requirements, issues, and the current state of the Bro Bro Foods app."
+}
