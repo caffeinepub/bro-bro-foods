@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Enhance the Order Now flow to support selecting a plate quantity, display a live computed total amount, and enforce a configurable minimum delivery order rule.
+**Goal:** After an order is successfully placed, show a single post-order confirmation UI that includes a Paytm QR code for payment and a clear bill breakdown in English.
 
 **Planned changes:**
-- Update the Order Now form UI to include a quantity control (min 1) alongside selecting exactly one plate type, and show an English-only price breakdown (unit price, quantity, total).
-- Add a minimum delivery order validation (defined as a single easy-to-change constant) that blocks order submission and shows an English validation message when not met.
-- Extend the backend order model and `createOrder` API to accept `quantity`, compute `totalAmount` (unit price × quantity), persist both, and return them via order APIs.
-- Wire the end-to-end flow: update frontend types and `useCreateOrder` payload/response handling, and include quantity + total amount (₹) in the WhatsApp deep-link message while keeping the success UI functional.
+- Add a post-order confirmation modal/screen that is shown only after backend order creation succeeds, and include the Paytm QR code image in it.
+- In the confirmation UI, display a bill breakdown showing Items Total (from the created order’s returned total amount), Delivery Charge (₹20), and Grand Total (Items Total + ₹20).
+- Ensure the same confirmation UI (with Paytm QR + bill breakdown) is shown regardless of whether WhatsApp auto-open succeeds or a popup-block fallback link is presented, without showing duplicate modals.
 
-**User-visible outcome:** Customers can choose Half/Full plate and a quantity, immediately see the total amount, and can only place an order when the minimum delivery order requirement is satisfied; the confirmation/WhatsApp message includes quantity and total amount.
+**User-visible outcome:** After placing an order, the user sees a single confirmation screen/modal in English with a Paytm QR code to pay and a bill breakdown (items total, ₹20 delivery charge, and grand total), even if WhatsApp opens or a fallback link is shown.

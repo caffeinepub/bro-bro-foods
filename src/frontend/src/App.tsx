@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import PromoPopup from './components/PromoPopup';
 import SimpleModal from './components/SimpleModal';
+import PostOrderConfirmationModal from './components/PostOrderConfirmationModal';
 import OrderForm from './components/OrderForm';
 import { openWhatsApp, buildWhatsAppLink } from './lib/whatsapp';
 import type { Order } from './backend';
@@ -9,7 +10,7 @@ import type { Order } from './backend';
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalContent, setModalContent] = useState<string | null>(null);
-  const [whatsappLink, setWhatsappLink] = useState<string | undefined>(undefined);
+  const [orderConfirmation, setOrderConfirmation] = useState<{ order: Order; whatsappLink?: string } | null>(null);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -25,7 +26,6 @@ function App() {
 
   const handleDownloadAppClick = () => {
     setModalContent('App coming soon');
-    setWhatsappLink(undefined);
   };
 
   const handleOrderSuccess = (order: Order) => {
@@ -40,20 +40,21 @@ function App() {
     const opened = openWhatsApp(whatsappParams);
 
     if (!opened) {
-      // If popup was blocked, show fallback modal with WhatsApp link
+      // If popup was blocked, show confirmation modal with WhatsApp fallback link
       const link = buildWhatsAppLink(whatsappParams);
-      setWhatsappLink(link);
-      setModalContent(`Order placed successfully! Your order ID is #${order.id}. Please continue on WhatsApp to confirm your order.`);
+      setOrderConfirmation({ order, whatsappLink: link });
     } else {
-      // Show success message without WhatsApp link (already opened)
-      setWhatsappLink(undefined);
-      setModalContent(`Order placed successfully! Your order ID is #${order.id}. We'll prepare your fresh momos right away!`);
+      // Show confirmation modal without WhatsApp link (already opened)
+      setOrderConfirmation({ order });
     }
   };
 
   const handleModalClose = () => {
     setModalContent(null);
-    setWhatsappLink(undefined);
+  };
+
+  const handleOrderConfirmationClose = () => {
+    setOrderConfirmation(null);
   };
 
   return (
@@ -379,12 +380,20 @@ function App() {
       {/* Promo Popup */}
       <PromoPopup onOrderClick={handleOrderClick} />
 
-      {/* Modal */}
+      {/* Simple Modal (for non-order messages) */}
       {modalContent && (
         <SimpleModal 
           content={modalContent} 
-          whatsappLink={whatsappLink}
           onClose={handleModalClose} 
+        />
+      )}
+
+      {/* Post-Order Confirmation Modal */}
+      {orderConfirmation && (
+        <PostOrderConfirmationModal
+          order={orderConfirmation.order}
+          whatsappLink={orderConfirmation.whatsappLink}
+          onClose={handleOrderConfirmationClose}
         />
       )}
     </div>

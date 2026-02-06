@@ -1,38 +1,47 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T20:04:11.156Z",
-  "summary": "Most requested functionality appears implemented: frontend quantity selection, live total calculation, minimum delivery rule with centralized constant, backend persistence of quantity/totalAmount, end-to-end wiring including WhatsApp message updates. One acceptance criterion (showing a minimum-order validation message in the form UI) is not clearly evidenced due to truncation. The diff also introduces an unrequested backend migration module and migration wiring.",
+  "generatedAt": "2026-02-06T20:08:57.748Z",
+  "summary": "Diff adds a new PostOrderConfirmationModal and wires it into App.tsx to show a single post-order confirmation experience after successful backend order creation, including a Paytm QR image and a bill breakdown with a fixed ₹20 delivery charge and computed grand total. WhatsApp auto-open vs popup-blocked fallback appears to be handled via an optional whatsappLink prop in the same modal.",
   "missing_requirements": [
     {
-      "id": "REQ-22",
-      "requirement": "If the customer’s selection does not meet the minimum order rule, the \"Place Order\" action is blocked and an English validation message is shown explaining what is required.",
-      "reason": "Blocking is evidenced via guard clauses and submit gating, but the diff snippet does not show any UI rendering of the English validation message when the minimum is not met (the helper is imported but its output is not shown in the truncated component).",
+      "id": "REQ-25",
+      "requirement": "Include the required Paytm QR code image asset (paytm-qr.dim_900x900.png) so the QR is visibly displayed in the confirmation UI.",
+      "reason": "The modal references an image path (/assets/generated/paytm-qr.dim_900x900.png), but the diff does not show the required image being added to the repository; without the asset, the QR may not actually render.",
       "evidence": [
-        "frontend/src/components/OrderForm.tsx"
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "requirement": "All user-facing text in the confirmation UI is in English.",
+      "reason": "The confirmation UI includes a large \"✅\" in the success message area; while not a language, it is non-English user-facing content and may violate the strict \"English only\" constraint.",
+      "evidence": [
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Added a backend data migration module and wired migration behavior into the backend actor.",
-      "reason": "The BuildRequest did not request a migration system or additional backend modules; only extending the order model/API in backend/main.mo was required.",
+      "description": "Copy-to-clipboard functionality and copied-state UI for the WhatsApp fallback link in the post-order confirmation modal.",
+      "reason": "REQ-27 requires showing a fallback link if WhatsApp is blocked, but does not request copy-to-clipboard behavior or copied indicators.",
       "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
+      ]
+    },
+    {
+      "description": "Body scroll locking while the modal is open.",
+      "reason": "Not requested by REQ-25/26/27; it is additional UX behavior beyond the specified confirmation content.",
+      "evidence": [
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.74,
   "changed_files": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
     "frontend/src/App.tsx",
-    "frontend/src/components/OrderForm.tsx",
-    "frontend/src/hooks/useCreateOrder.ts",
-    "frontend/src/lib/orderRules.ts",
-    "frontend/src/lib/whatsapp.ts",
+    "frontend/src/components/PostOrderConfirmationModal.tsx",
     "project_state.json"
   ]
 }

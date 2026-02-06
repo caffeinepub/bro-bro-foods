@@ -1,81 +1,67 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T20:04:11.159Z",
+  "generatedAt": "2026-02-06T20:08:57.751Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
+    "total": 3,
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-21",
-        "summary": "Update the Order Now form to let customers choose the number of plates (quantity) in addition to selecting exactly one plate type (Half Plate or Full Plate), and compute/display the total amount as (unit price × quantity) in the form UI using English-only labels.",
+        "id": "REQ-25",
+        "summary": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/OrderForm.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/OrderForm.tsx"
-        ]
-      },
-      {
-        "id": "REQ-22",
-        "summary": "Add and enforce a minimum delivery order rule in the Order Now form, with clear English-only messaging. The rule must be implemented as a single easy-to-change constant (e.g., MIN_PLATES_FOR_DELIVERY or MIN_TOTAL_FOR_DELIVERY) and the form must prevent order submission when the rule is not met.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/lib/orderRules.ts",
-          "frontend/src/components/OrderForm.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/lib/orderRules.ts",
-          "frontend/src/components/OrderForm.tsx"
-        ]
-      },
-      {
-        "id": "REQ-23",
-        "summary": "Extend the backend order model and order creation API to persist order quantity and total amount. Update `createOrder` in `backend/main.mo` to accept a `quantity` parameter, compute `totalAmount` (unit price × quantity), store both on the `Order`, and return them to the frontend.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-24",
-        "summary": "Wire the updated Order Now form quantity + total amount flow end-to-end: update the frontend mutation (`useCreateOrder`), types, and submission payload to pass quantity to the backend, and update the WhatsApp message to include quantity and total amount in English.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useCreateOrder.ts",
-          "frontend/src/components/OrderForm.tsx",
-          "frontend/src/lib/whatsapp.ts",
+          "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
+          "frontend/src/components/PostOrderConfirmationModal.tsx",
           "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useCreateOrder.ts",
-          "frontend/src/components/OrderForm.tsx",
-          "frontend/src/lib/whatsapp.ts",
+          "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
+          "frontend/src/components/PostOrderConfirmationModal.tsx",
           "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-26",
+        "summary": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/PostOrderConfirmationModal.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/PostOrderConfirmationModal.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-27",
+        "summary": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/PostOrderConfirmationModal.tsx",
+          "frontend/src/components/SimpleModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/PostOrderConfirmationModal.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
     "frontend/src/App.tsx",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/OrderForm.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useCreateOrder.ts",
-    "frontend/src/lib/orderRules.ts",
-    "frontend/src/lib/whatsapp.ts",
+    "frontend/src/components/PostOrderConfirmationModal.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

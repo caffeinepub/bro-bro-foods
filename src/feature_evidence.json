@@ -2,50 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-order-now-form-to-let-customers-choose-the-number-of-plates-quantity-in-addition-to-selecting-exactly-one-plate-type-half-plate-or-full-plate-and-compute-display-the-total-amount-as-unit-price-quantity-in-the-form-ui-using-english-only-labels",
-      "featureTitle": "Update the Order Now form to let customers choose the number of plates (quantity) in addition to selecting exactly one plate type (Half Plate or Full Plate), and compute/display the total amount as (unit price × quantity) in the form UI using English-only labels.",
-      "files": [
-        "frontend/src/components/OrderForm.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-21"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-and-enforce-a-minimum-delivery-order-rule-in-the-order-now-form-with-clear-english-only-messaging-the-rule-must-be-implemented-as-a-single-easy-to-change-constant-e-g-min-plates-for-delivery-or-min-total-for-delivery-and-the-form-must-prevent-order-submission-when-the-rule-is-not-met",
-      "featureTitle": "Add and enforce a minimum delivery order rule in the Order Now form, with clear English-only messaging. The rule must be implemented as a single easy-to-change constant (e.g., MIN_PLATES_FOR_DELIVERY or MIN_TOTAL_FOR_DELIVERY) and the form must prevent order submission when the rule is not met.",
-      "files": [
-        "frontend/src/components/OrderForm.tsx",
-        "frontend/src/lib/orderRules.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-22"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-wire-the-updated-order-now-form-quantity-total-amount-flow-end-to-end-update-the-frontend-mutation-usecreateorder-types-and-submission-payload-to-pass-quantity-to-the-backend-and-update-the-whatsapp-message-to-include-quantity-and-total-amount-in-english",
-      "featureTitle": "Wire the updated Order Now form quantity + total amount flow end-to-end: update the frontend mutation (`useCreateOrder`), types, and submission payload to pass quantity to the backend, and update the WhatsApp message to include quantity and total amount in English.",
+      "featureId": "feature-after-an-order-is-successfully-placed-show-a-post-order-confirmation-ui-modal-confirmation-screen-that-includes-a-paytm-qr-code-for-payment-option-a-show-qr-code-after-order-is-placed",
+      "featureTitle": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/components/OrderForm.tsx",
-        "frontend/src/hooks/useCreateOrder.ts",
-        "frontend/src/lib/whatsapp.ts"
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -55,7 +16,45 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-24"
+        "REQ-25"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-in-the-post-order-confirmation-ui-display-a-clear-bill-breakdown-that-includes-1-items-total-from-the-created-order-total-amount-2-delivery-charge-20-and-3-grand-total-items-total-delivery-charge",
+      "featureTitle": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-26"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-paytm-qr-bill-breakdown-appears-in-the-same-post-order-confirmation-modal-screen-regardless-of-whether-whatsapp-auto-open-succeeds-or-a-whatsapp-fallback-link-is-shown-due-to-popup-blocking",
+      "featureTitle": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/PostOrderConfirmationModal.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-27"
       ],
       "confidence": "high"
     }

@@ -1,95 +1,78 @@
 {
   "kind": "build_request",
-  "title": "Add order quantity, computed total amount, and minimum delivery order validation",
+  "title": "Show Paytm QR code on post-order confirmation (Option A)",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-21",
-      "text": "Update the Order Now form to let customers choose the number of plates (quantity) in addition to selecting exactly one plate type (Half Plate or Full Plate), and compute/display the total amount as (unit price × quantity) in the form UI using English-only labels.",
+      "id": "REQ-25",
+      "text": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "recent-messages:user"
         ],
         "quotes": [
-          "Aap ager koi order karta hai to usme total amount bhi show kro kitne plate lena hai minimum order for delivery"
+          "Option A"
         ]
       },
       "acceptanceCriteria": [
-        "Order form includes a quantity control (numeric input/stepper) with a minimum of 1.",
-        "The form shows a clear price breakdown in English that includes unit price, quantity, and total amount.",
-        "Total amount updates immediately when the plate type or quantity changes.",
-        "The user cannot submit the form unless a plate type is selected and quantity is valid."
+        "When the backend order creation returns success, the app displays a confirmation modal/screen that contains a visible QR code image for Paytm payment.",
+        "The QR code is not displayed before the user places an order.",
+        "All user-facing text in the confirmation UI is in English."
       ]
     },
     {
-      "id": "REQ-22",
-      "text": "Add and enforce a minimum delivery order rule in the Order Now form, with clear English-only messaging. The rule must be implemented as a single easy-to-change constant (e.g., MIN_PLATES_FOR_DELIVERY or MIN_TOTAL_FOR_DELIVERY) and the form must prevent order submission when the rule is not met.",
+      "id": "REQ-26",
+      "text": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "recent-messages:user"
         ],
         "quotes": [
-          "minimum order for delivery"
+          "Option A"
         ]
       },
       "acceptanceCriteria": [
-        "A minimum-order requirement is displayed in the Order Now section in English (e.g., \"Minimum order for delivery: ...\").",
-        "If the customer’s selection does not meet the minimum order rule, the \"Place Order\" action is blocked and an English validation message is shown explaining what is required.",
-        "The minimum order threshold is defined in code as a constant in one place so it can be changed without refactoring multiple files."
+        "The confirmation UI shows: Items Total, Delivery Charge (₹20), and Grand Total.",
+        "Grand Total equals Items Total + 20 for the displayed values.",
+        "The displayed totals use the successfully created order’s returned total amount (not a separate recomputation that could drift)."
       ]
     },
     {
-      "id": "REQ-23",
-      "text": "Extend the backend order model and order creation API to persist order quantity and total amount. Update `createOrder` in `backend/main.mo` to accept a `quantity` parameter, compute `totalAmount` (unit price × quantity), store both on the `Order`, and return them to the frontend.",
-      "target": "backend",
+      "id": "REQ-27",
+      "text": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "recent-messages:user"
         ],
         "quotes": [
-          "total amount bhi show kro kitne plate lena hai"
+          "Option A"
         ]
       },
       "acceptanceCriteria": [
-        "`Order` includes `quantity` and `totalAmount` fields.",
-        "`createOrder` accepts quantity and returns an `Order` that includes quantity and totalAmount computed from the unit price and quantity.",
-        "Orders stored in the backend include the new fields and `getOrder` / `getAllOrders` return them."
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "text": "Wire the updated Order Now form quantity + total amount flow end-to-end: update the frontend mutation (`useCreateOrder`), types, and submission payload to pass quantity to the backend, and update the WhatsApp message to include quantity and total amount in English.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "total amount bhi show kro kitne plate lena hai"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Submitting an order sends plate type, unit price, and quantity to the backend and receives quantity and totalAmount back.",
-        "The WhatsApp deep-link message includes: Order ID, item name, quantity, and total amount (in ₹).",
-        "The post-order success UI (modal content and/or fallback link flow) remains functional and continues to reference the correct order ID and updated pricing details."
+        "If WhatsApp opens successfully, the confirmation UI still shows the Paytm QR and bill breakdown.",
+        "If WhatsApp is blocked and a fallback link is shown, the confirmation UI shows the Paytm QR and bill breakdown together with the fallback link.",
+        "No duplicate modals are shown; the user sees a single coherent confirmation experience."
       ]
     }
   ],
   "constraints": [
-    "Use English-only for any user-facing text added/changed.",
-    "Backend must remain a single Motoko actor in `backend/main.mo` (no additional backend services).",
-    "Do not modify any frontend files under `frontend/src/components/ui` or other `frontend.immutablePaths`.",
-    "Do not serve images from the backend; keep static assets as-is."
+    "Do not modify files under frontend/src/components/ui (read-only).",
+    "Do not modify frontend immutable hook paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
+    "Keep the backend as a single Motoko actor; no additional backend services.",
+    "Use English for all user-facing text."
   ],
   "nonGoals": [
-    "Adding online payments or checkout.",
-    "Adding delivery tracking or order status updates beyond the existing flow.",
-    "Changing menu pricing or adding new menu items beyond what is required to compute totals."
+    "Do not implement payment verification, payment status tracking, or order state transitions based on payment.",
+    "Do not integrate any external payment APIs or gateways.",
+    "Do not change the existing WhatsApp deep-link ordering mechanism beyond ensuring the confirmation UI includes the QR/bill breakdown."
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Paytm QR code image (paytm-qr.dim_900x900.png)"
+    ],
     "edits": []
   },
   "userProfileUpdate": {

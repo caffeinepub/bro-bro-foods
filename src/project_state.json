@@ -1,16 +1,18 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 11,
+  "projectStateVersion": 13,
   "summary": "Create a marketing/landing homepage for Bro Bro Foods with defined sections and cohesive theme, plus a working Order Now flow that collects plate selection and customer delivery details and initiates ordering via WhatsApp to the business number with an auto-filled message.",
   "architectural_notes": [
     "Ordering will be initiated via WhatsApp deep link to +91 97973 82618 with a prefilled message containing order selections and captured customer details.",
-    "WhatsApp ordering deep link should target the business number provided by user: 7973782618 (normalize to E.164 +91 79737 82618 if required by the WhatsApp URL scheme)."
+    "WhatsApp ordering deep link should target the business number provided by user: 7973782618 (normalize to E.164 +91 79737 82618 if required by the WhatsApp URL scheme).",
+    "Payment UX decision: show Paytm QR code after order is placed (on confirmation screen), not before or always-visible."
   ],
   "known_issues": [
     "Ordering is not working: user cannot select Half/Full plate and cannot place orders.",
     "Deployment unsuccessful (deployment error encountered; details not provided in chat)."
   ],
   "isFixRequest": true,
+  "imageRequirements": "## Required Images\n- Paytm QR code image (paytm-qr.dim_900x900.png)",
   "existing_features": [
     {
       "id": "feature-create-a-single-page-marketing-homepage-for-the-brand-bro-bro-foods-with-the-following-sections-in-this-order-hero-about-menu-how-to-order-why-choose-us-pricing-highlight-order-now-cta-contact-us-footer-each-section-must-be-navigable-via-in-page-anchors-e-g-header-nav-links-that-scroll-to-sections",
@@ -187,6 +189,30 @@
         "REQ-24"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-after-an-order-is-successfully-placed-show-a-post-order-confirmation-ui-modal-confirmation-screen-that-includes-a-paytm-qr-code-for-payment-option-a-show-qr-code-after-order-is-placed",
+      "title": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-post-order-confirmation-ui-display-a-clear-bill-breakdown-that-includes-1-items-total-from-the-created-order-total-amount-2-delivery-charge-20-and-3-grand-total-items-total-delivery-charge",
+      "title": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-paytm-qr-bill-breakdown-appears-in-the-same-post-order-confirmation-modal-screen-regardless-of-whether-whatsapp-auto-open-succeeds-or-a-whatsapp-fallback-link-is-shown-due-to-popup-blocking",
+      "title": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -252,6 +278,12 @@
       "reqIds": [
         "REQ-23"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Add Paytm QR code payment step: display the provided Paytm QR code on the post-order confirmation screen (after the order is placed) and include total bill (items + delivery charge).",
+      "reqIds": [],
       "status": "pending"
     }
   ],
