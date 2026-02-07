@@ -2,15 +2,14 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-an-admin-only-dashboard-ui-that-can-be-opened-from-the-web-app-using-the-url-hash-token-format-and-shows-all-orders-with-time-date-and-payment-tracking-the-admin-view-must-be-accessible-only-when-the-url-contains-a-valid-admin-token-in-the-hash-continue-supporting-the-existing-pattern-caffeineadmintoken-91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15-display-a-table-list-of-orders-fetched-from-the-backend-including-at-minimum-order-id-item-name-quantity-total-amount-created-date-time-payment-status-utr-if-available-and-paid-date-time-if-available-provide-order-detail-view-modal-or-separate-section-to-inspect-all-stored-fields-for-a-selected-order-use-english-only-user-facing-text-in-the-admin-panel",
-      "featureTitle": "Add an admin-only dashboard UI that can be opened from the web app using the URL hash token format and shows all orders with time/date and payment tracking.\n\nThe admin view must:\n- Be accessible only when the URL contains a valid admin token in the hash (continue supporting the existing pattern `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`).\n- Display a table/list of orders fetched from the backend, including at minimum: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (if available), and paid date/time (if available).\n- Provide order detail view (modal or separate section) to inspect all stored fields for a selected order.\n- Use English-only user-facing text in the admin panel.",
+      "featureId": "feature-add-a-simple-safe-google-adsense-integration-using-the-existing-ad-system-by-wiring-frontend-src-config-ads-ts-with-real-adsense-snippets-provider-head-script-at-least-one-ad-slot-so-ads-can-be-displayed-on-the-customer-facing-landing-page-and-the-site-can-be-monetized",
+      "featureTitle": "Add a simple, safe Google AdSense integration using the existing ad system by wiring `frontend/src/config/ads.ts` with real AdSense snippets (provider head script + at least one ad slot), so ads can be displayed on the customer-facing landing page and the site can be monetized.",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/components/admin/OrderDetailView.tsx",
-        "frontend/src/components/admin/OrdersTable.tsx",
-        "frontend/src/hooks/useAdminOrders.ts",
-        "frontend/src/lib/adminAccess.ts"
+        "frontend/src/components/ads/AdSlot.tsx",
+        "frontend/src/components/ads/AdsHeadInjector.tsx",
+        "frontend/src/config/ads.ts",
+        "frontend/src/hooks/useAdsConfig.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -25,14 +24,34 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-admin-panel-actions-to-manage-order-tracking-allow-the-admin-to-change-an-order-s-status-using-a-dropdown-pending-accepted-preparing-out-for-delivery-delivered-cancelled-show-a-chronological-timeline-in-the-order-detail-view-that-includes-created-time-each-status-change-time-and-payment-confirmation-time-when-available-provide-quick-filters-sorting-in-the-admin-list-newest-first-default-filter-by-payment-status-paid-unpaid-and-filter-by-order-status",
-      "featureTitle": "Add admin panel actions to manage order tracking:\n- Allow the admin to change an order’s status using a dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled).\n- Show a chronological timeline in the order detail view that includes: created time, each status change time, and payment confirmation time (when available).\n- Provide quick filters/sorting in the admin list: newest first (default), filter by payment status (Paid/Unpaid), and filter by order status.",
+      "featureId": "feature-add-a-small-in-app-configuration-ui-english-text-to-let-the-site-owner-paste-their-google-adsense-ca-pub-client-id-and-ad-slot-ids-and-persist-these-settings-in-the-browser-e-g-localstorage-without-requiring-backend-changes-when-configured-the-ui-should-populate-providerheadsnippet-and-the-configured-adsconfig-slots-at-runtime",
+      "featureTitle": "Add a small in-app configuration UI (English text) to let the site owner paste their Google AdSense `ca-pub-...` client ID and ad slot IDs, and persist these settings in the browser (e.g., localStorage) without requiring backend changes; when configured, the UI should populate `providerHeadSnippet` and the configured `adsConfig.slots` at runtime.",
       "files": [
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/components/admin/OrderDetailView.tsx",
-        "frontend/src/components/admin/OrdersFilters.tsx",
-        "frontend/src/components/admin/OrdersTable.tsx",
-        "frontend/src/hooks/useUpdateOrderStatus.ts"
+        "frontend/src/App.tsx",
+        "frontend/src/components/ads/AdsSettingsPanel.tsx",
+        "frontend/src/hooks/useAdsConfig.ts",
+        "frontend/src/lib/adsOwnerSettings.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-adsense-is-not-mounted-in-admin-experiences-and-is-disabled-by-default-when-running-inside-the-capacitor-mobile-wrapper-to-avoid-policy-ux-issues-while-remaining-enabled-on-the-standard-web-deployment-when-configured",
+      "featureTitle": "Ensure AdSense is not mounted in admin experiences and is disabled by default when running inside the Capacitor mobile wrapper (to avoid policy/UX issues), while remaining enabled on the standard web deployment when configured.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/ads/AdsSettingsPanel.tsx",
+        "frontend/src/hooks/useAdsConfig.ts",
+        "frontend/src/lib/runtimeEnvironment.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -43,28 +62,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-support-a-separate-admin-panel-apk-build-and-a-working-download-link-config-for-it-update-the-frontend-apk-configuration-so-that-there-is-a-distinct-configuration-entry-for-the-customer-apk-and-the-admin-apk-separate-urls-and-labels-the-download-availability-check-logic-can-check-and-download-the-admin-apk-artifact-independently-from-the-customer-apk-add-an-admin-only-download-button-in-the-admin-dashboard-that-checks-admin-apk-availability-and-initiates-download-when-available-shows-a-clear-english-only-message-when-the-admin-apk-is-not-available-yet",
-      "featureTitle": "Support a separate Admin Panel APK build and a working download link/config for it.\n\nUpdate the frontend APK configuration so that:\n- There is a distinct configuration entry for the customer APK and the admin APK (separate URLs and labels).\n- The download/availability-check logic can check and download the admin APK artifact independently from the customer APK.\n\nAdd an admin-only download button in the admin dashboard that:\n- Checks admin APK availability and initiates download when available.\n- Shows a clear English-only message when the admin APK is not available yet.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/admin/AdminApkDownloadButton.tsx",
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/config/apk.ts",
-        "frontend/src/lib/apkAvailability.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

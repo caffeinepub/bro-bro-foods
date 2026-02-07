@@ -1,90 +1,72 @@
 {
   "kind": "build_request",
-  "title": "Add an Admin Panel (and Admin APK) to track orders, time/date, and payments",
+  "title": "Integrate Google AdSense monetization on customer-facing pages",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add an admin-only dashboard UI that can be opened from the web app using the URL hash token format and shows all orders with time/date and payment tracking.\n\nThe admin view must:\n- Be accessible only when the URL contains a valid admin token in the hash (continue supporting the existing pattern `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`).\n- Display a table/list of orders fetched from the backend, including at minimum: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (if available), and paid date/time (if available).\n- Provide order detail view (modal or separate section) to inspect all stored fields for a selected order.\n- Use English-only user-facing text in the admin panel.",
+      "text": "Add a simple, safe Google AdSense integration using the existing ad system by wiring `frontend/src/config/ads.ts` with real AdSense snippets (provider head script + at least one ad slot), so ads can be displayed on the customer-facing landing page and the site can be monetized.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
+          "Adsens lgao ta ki me pese earn kar saku"
         ]
       },
       "acceptanceCriteria": [
-        "When opening the app with `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`, an Admin Dashboard entry point is available and the order list renders.",
-        "When opening the app without an admin token, admin screens/actions are not accessible and do not leak order data.",
-        "Orders are shown with created date/time and payment fields (status + UTR/paid time when present) using English labels."
+        "`AdsHeadInjector` injects the AdSense provider script when `adsConfig.enabled === true` and `adsConfig.providerHeadSnippet` is non-empty.",
+        "At least one `AdSlot` renders a non-empty ad snippet from `adsConfig.slots` on the customer landing page (not on the admin dashboard path).",
+        "The AdSense provider script is injected only once per page load (no duplicate script tags)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Extend the backend order model to support an order timeline beyond creation and payment confirmation (the user requested tracking of “other time”).\n\nBackend must store, for each order:\n- Current order status (e.g., Pending, Accepted, Preparing, Out for Delivery, Delivered, Cancelled).\n- Timestamps for status changes (a timeline/history), including who/what changed it (admin action).\n\nExpose backend APIs to:\n- Update an order’s status and append a status-change event with the current server time.\n- Query timeline/status information together with orders (either via `getAllOrders` returning the enriched Order type, or via an additional query endpoint).\n\nAll user-facing/admin-facing text on the frontend that reflects these statuses must be in English.",
-      "target": "backend",
+      "text": "Add a small in-app configuration UI (English text) to let the site owner paste their Google AdSense `ca-pub-...` client ID and ad slot IDs, and persist these settings in the browser (e.g., localStorage) without requiring backend changes; when configured, the UI should populate `providerHeadSnippet` and the configured `adsConfig.slots` at runtime.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
+          "Adsens lgao ta ki me pese earn kar saku"
         ]
       },
       "acceptanceCriteria": [
-        "A new backend method exists to update order status and records a server-side timestamp for each status change.",
-        "Fetching orders returns the current status and timeline information required for the admin dashboard.",
-        "Status updates persist in canister state across calls and are reflected when re-fetching the same order."
+        "There is a visible, owner-accessible settings panel/page in the app (English labels) that collects: AdSense client ID and at minimum a Top Banner ad slot ID (Bottom Banner optional).",
+        "Saving settings persists them locally and they are restored after refresh.",
+        "After saving valid settings, ads begin rendering without a redeploy (runtime config takes effect).",
+        "If no settings are provided, ads do not render and no provider script is injected."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Add admin panel actions to manage order tracking:\n- Allow the admin to change an order’s status using a dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled).\n- Show a chronological timeline in the order detail view that includes: created time, each status change time, and payment confirmation time (when available).\n- Provide quick filters/sorting in the admin list: newest first (default), filter by payment status (Paid/Unpaid), and filter by order status.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Changing an order status in the admin UI updates the backend and the UI reflects the new status after refresh/reload.",
-        "Order detail view shows a readable English timeline including created time, status-change events, and paid time when applicable.",
-        "Admin can filter the list by payment status and order status, and default sorting is newest-first."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Support a separate Admin Panel APK build and a working download link/config for it.\n\nUpdate the frontend APK configuration so that:\n- There is a distinct configuration entry for the customer APK and the admin APK (separate URLs and labels).\n- The download/availability-check logic can check and download the admin APK artifact independently from the customer APK.\n\nAdd an admin-only download button in the admin dashboard that:\n- Checks admin APK availability and initiates download when available.\n- Shows a clear English-only message when the admin APK is not available yet.",
+      "text": "Ensure AdSense is not mounted in admin experiences and is disabled by default when running inside the Capacitor mobile wrapper (to avoid policy/UX issues), while remaining enabled on the standard web deployment when configured.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
+          "Adsens lgao ta ki me pese earn kar saku"
         ]
       },
       "acceptanceCriteria": [
-        "Admin dashboard includes an “Download Admin App” button that performs an availability check and downloads the admin APK when available.",
-        "Customer-facing “Download App” continues to work independently of the admin APK setting.",
-        "If the admin APK is missing/unavailable, the admin UI shows a clear English message rather than failing silently."
+        "No ad provider script is injected and no ad slots are mounted when the admin dashboard is shown.",
+        "When running in a Capacitor environment, ads are not injected/mounted unless explicitly overridden by configuration.",
+        "On normal web runs, ads can render when configuration is present."
       ]
     }
   ],
   "constraints": [
-    "Use English for any user-facing text.",
-    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything under frontend/src/components/ui; compose these instead."
+    "Do not edit any files under `frontend/src/hooks/useInternetIdentity.ts` / `.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`, or any files in `frontend/src/components/ui` (compose them instead).",
+    "Keep the backend as a single Motoko actor; do not introduce additional canisters/services for ad configuration storage."
   ],
   "nonGoals": [
-    "Implementing third-party authentication providers (only Internet Identity is allowed).",
-    "Adding real-time updates (e.g., WebSockets) for live order tracking.",
-    "Integrating external databases or external admin analytics services."
+    "Implementing third-party authentication providers for ad management (only existing auth patterns apply).",
+    "Adding backend persistence for AdSense configuration (store locally in the frontend only unless explicitly requested later).",
+    "Guaranteeing AdSense account approval or earnings (depends on Google policies and traffic)."
   ],
   "imageRequirements": {
     "required": [],

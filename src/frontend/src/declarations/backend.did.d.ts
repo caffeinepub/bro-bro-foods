@@ -27,6 +27,7 @@ export type OrderStatus = { 'preparing' : null } |
   { 'cancelled' : null } |
   { 'pending' : null } |
   { 'outForDelivery' : null } |
+  { 'readyToDeliver' : null } |
   { 'delivered' : null } |
   { 'accepted' : null };
 export interface PaymentConfirmation {

@@ -1,58 +1,45 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T05:12:48.103Z",
-  "summary": "The diff implements an admin-only dashboard gated by a URL-hash token, adds backend support for order status + status-event timeline with an update API, adds admin UI hooks/actions for status updates plus list filters/sorting, and introduces separate customer/admin APK configuration with an admin-only download button. However, the admin order list does not clearly include UTR and paid date/time as required, and the order detail timeline display cannot be confirmed from the truncated diff.",
+  "generatedAt": "2026-02-07T06:50:28.714Z",
+  "summary": "Most of the requested AdSense integration appears implemented: runtime-configurable AdSense snippets are generated in `frontend/src/config/ads.ts`, injected via `AdsHeadInjector`, rendered via `AdSlot`, configured via an owner settings panel persisted to localStorage, disabled in admin flow, and disabled by default on Capacitor unless enabled via settings. One acceptance criterion (provider script injected only once) cannot be verified from the provided diff summary because the idempotency mechanism is expected inside `injectProviderScript` which is not shown.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Admin order list must include (at minimum) UTR (if available) and paid date/time (if available) along with payment status.",
-      "reason": "The implemented OrdersTable shows a payment badge and `paidVia` text but does not display `paymentConfirmation.utr` or `paymentConfirmation.paidAt` (paid date/time) in the list view.",
+      "requirement": "The AdSense provider script is injected only once per page load (no duplicate script tags).",
+      "reason": "The diff shows `AdsHeadInjector` calling `injectProviderScript(...)`, but does not include the implementation of `injectProviderScript` (likely in `frontend/src/lib/ads`), so there is no evidence that duplicate script tags are prevented.",
       "evidence": [
-        "frontend/src/components/admin/OrdersTable.tsx"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "requirement": "Order detail view must show a chronological timeline including created time, each status change time, and payment confirmation time (when available).",
-      "reason": "OrderDetailView is truncated before showing whether `statusEvents` and payment confirmation time are rendered as a readable chronological timeline; this cannot be verified from the provided diff.",
-      "evidence": [
-        "frontend/src/components/admin/OrderDetailView.tsx (truncated)"
+        "frontend/src/components/ads/AdsHeadInjector.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Automatic periodic refresh (polling) of admin orders every 30 seconds.",
-      "reason": "The BuildRequest does not ask for polling/auto-refresh; it only requires orders to render and reflect status after refresh/reload.",
+      "description": "Large set of non-ad-related UI/feature changes (promo popup behavior, order form logic, payment/UPI flows, WhatsApp utilities, VPA validation, theme/styling changes).",
+      "reason": "These changes are not requested in REQ-1/2/3 (which are scoped to AdSense integration, UI settings for ads, and disabling ads in admin/Capacitor).",
       "evidence": [
-        "frontend/src/hooks/useAdminOrders.ts"
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Additional backend query endpoint `getOrderStatusTimeline` for status events.",
-      "reason": "REQ-2 allows either enriching `getAllOrders` or adding an additional endpoint; since `getAllOrders` is already enriched, this extra endpoint is not explicitly requested.",
+      "description": "Capacitor configuration / APK-related configuration changes.",
+      "reason": "REQ-3 asks to disable ads by default in Capacitor, but does not request adding/updating Capacitor project configuration or APK configuration modules.",
       "evidence": [
-        "backend/main.mo"
+        "frontend-file-summaries.txt"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.66,
   "changed_files": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
     "frontend/src/App.tsx",
-    "frontend/src/components/admin/AdminApkDownloadButton.tsx",
-    "frontend/src/components/admin/AdminDashboard.tsx",
-    "frontend/src/components/admin/OrderDetailView.tsx",
-    "frontend/src/components/admin/OrdersFilters.tsx",
-    "frontend/src/components/admin/OrdersTable.tsx",
-    "frontend/src/config/apk.ts",
-    "frontend/src/hooks/useAdminOrders.ts",
-    "frontend/src/hooks/useUpdateOrderStatus.ts",
-    "frontend/src/lib/adminAccess.ts",
-    "frontend/src/lib/apkAvailability.ts",
+    "frontend/src/components/ads/AdSlot.tsx",
+    "frontend/src/components/ads/AdsHeadInjector.tsx",
+    "frontend/src/components/ads/AdsSettingsPanel.tsx",
+    "frontend/src/config/ads.ts",
+    "frontend/src/hooks/useAdsConfig.ts",
+    "frontend/src/lib/adsOwnerSettings.ts",
+    "frontend/src/lib/runtimeEnvironment.ts",
     "project_state.json"
   ]
 }

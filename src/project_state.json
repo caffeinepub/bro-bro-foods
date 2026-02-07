@@ -1,34 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Build and deploy a mobile app (Bro Bro Foods) with working APK download, and add an admin-panel APK for tracking orders (time/date/payment and related details).",
-  "architectural_notes": [
-    "Admin functionality should be delivered as a separate Admin Panel Android APK focused on order tracking (time/date/payment and other timeline fields)."
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-an-admin-only-dashboard-ui-that-can-be-opened-from-the-web-app-using-the-url-hash-token-format-and-shows-all-orders-with-time-date-and-payment-tracking-the-admin-view-must-be-accessible-only-when-the-url-contains-a-valid-admin-token-in-the-hash-continue-supporting-the-existing-pattern-caffeineadmintoken-91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15-display-a-table-list-of-orders-fetched-from-the-backend-including-at-minimum-order-id-item-name-quantity-total-amount-created-date-time-payment-status-utr-if-available-and-paid-date-time-if-available-provide-order-detail-view-modal-or-separate-section-to-inspect-all-stored-fields-for-a-selected-order-use-english-only-user-facing-text-in-the-admin-panel",
-      "title": "Add an admin-only dashboard UI that can be opened from the web app using the URL hash token format and shows all orders with time/date and payment tracking.\n\nThe admin view must:\n- Be accessible only when the URL contains a valid admin token in the hash (continue supporting the existing pattern `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`).\n- Display a table/list of orders fetched from the backend, including at minimum: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (if available), and paid date/time (if available).\n- Provide order detail view (modal or separate section) to inspect all stored fields for a selected order.\n- Use English-only user-facing text in the admin panel.",
+      "id": "feature-add-a-simple-safe-google-adsense-integration-using-the-existing-ad-system-by-wiring-frontend-src-config-ads-ts-with-real-adsense-snippets-provider-head-script-at-least-one-ad-slot-so-ads-can-be-displayed-on-the-customer-facing-landing-page-and-the-site-can-be-monetized",
+      "title": "Add a simple, safe Google AdSense integration using the existing ad system by wiring `frontend/src/config/ads.ts` with real AdSense snippets (provider head script + at least one ad slot), so ads can be displayed on the customer-facing landing page and the site can be monetized.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-admin-panel-actions-to-manage-order-tracking-allow-the-admin-to-change-an-order-s-status-using-a-dropdown-pending-accepted-preparing-out-for-delivery-delivered-cancelled-show-a-chronological-timeline-in-the-order-detail-view-that-includes-created-time-each-status-change-time-and-payment-confirmation-time-when-available-provide-quick-filters-sorting-in-the-admin-list-newest-first-default-filter-by-payment-status-paid-unpaid-and-filter-by-order-status",
-      "title": "Add admin panel actions to manage order tracking:\n- Allow the admin to change an order’s status using a dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled).\n- Show a chronological timeline in the order detail view that includes: created time, each status change time, and payment confirmation time (when available).\n- Provide quick filters/sorting in the admin list: newest first (default), filter by payment status (Paid/Unpaid), and filter by order status.",
+      "id": "feature-add-a-small-in-app-configuration-ui-english-text-to-let-the-site-owner-paste-their-google-adsense-ca-pub-client-id-and-ad-slot-ids-and-persist-these-settings-in-the-browser-e-g-localstorage-without-requiring-backend-changes-when-configured-the-ui-should-populate-providerheadsnippet-and-the-configured-adsconfig-slots-at-runtime",
+      "title": "Add a small in-app configuration UI (English text) to let the site owner paste their Google AdSense `ca-pub-...` client ID and ad slot IDs, and persist these settings in the browser (e.g., localStorage) without requiring backend changes; when configured, the UI should populate `providerHeadSnippet` and the configured `adsConfig.slots` at runtime.",
       "reqIds": [
-        "REQ-3"
+        "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-support-a-separate-admin-panel-apk-build-and-a-working-download-link-config-for-it-update-the-frontend-apk-configuration-so-that-there-is-a-distinct-configuration-entry-for-the-customer-apk-and-the-admin-apk-separate-urls-and-labels-the-download-availability-check-logic-can-check-and-download-the-admin-apk-artifact-independently-from-the-customer-apk-add-an-admin-only-download-button-in-the-admin-dashboard-that-checks-admin-apk-availability-and-initiates-download-when-available-shows-a-clear-english-only-message-when-the-admin-apk-is-not-available-yet",
-      "title": "Support a separate Admin Panel APK build and a working download link/config for it.\n\nUpdate the frontend APK configuration so that:\n- There is a distinct configuration entry for the customer APK and the admin APK (separate URLs and labels).\n- The download/availability-check logic can check and download the admin APK artifact independently from the customer APK.\n\nAdd an admin-only download button in the admin dashboard that:\n- Checks admin APK availability and initiates download when available.\n- Shows a clear English-only message when the admin APK is not available yet.",
+      "id": "feature-ensure-adsense-is-not-mounted-in-admin-experiences-and-is-disabled-by-default-when-running-inside-the-capacitor-mobile-wrapper-to-avoid-policy-ux-issues-while-remaining-enabled-on-the-standard-web-deployment-when-configured",
+      "title": "Ensure AdSense is not mounted in admin experiences and is disabled by default when running inside the Capacitor mobile wrapper (to avoid policy/UX issues), while remaining enabled on the standard web deployment when configured.",
       "reqIds": [
-        "REQ-4"
+        "REQ-3"
       ],
       "version": 1
     }
@@ -36,20 +34,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Create an Admin Panel APK to track orders including time/date, payment status/details, and other order timeline fields",
+      "summary": "Integrate Google AdSense ads so the user can monetize/earn money from the site/app",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Extend the backend order model to support an order timeline beyond creation and payment confirmation (the user requested tracking of “other time”).\n\nBackend must store, for each order:\n- Current order status (e.g., Pending, Accepted, Preparing, Out for Delivery, Delivered, Cancelled).\n- Timestamps for status changes (a timeline/history), including who/what changed it (admin action).\n\nExpose backend APIs to:\n- Update an order’s status and append a status-change event with the current server time.\n- Query timeline/status information together with orders (either via `getAllOrders` returning the enriched Order type, or via an additional query endpoint).\n\nAll user-facing/admin-facing text on the frontend that reflects these statuses must be in English.",
-      "reqIds": [
-        "REQ-2"
-      ],
       "status": "pending"
     }
   ],
-  "projectName": "Bro Bro Foods",
+  "projectName": "Integrate Google AdSense monetization on customer-facing pages",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

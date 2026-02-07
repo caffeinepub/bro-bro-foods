@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { Menu, X, ChevronDown, Shield } from 'lucide-react';
 import PromoPopup from './components/PromoPopup';
 import SimpleModal from './components/SimpleModal';
 import PostOrderConfirmationModal from './components/PostOrderConfirmationModal';
 import OrderForm from './components/OrderForm';
 import OwnerPhoto from './components/OwnerPhoto';
 import AdminDashboard from './components/admin/AdminDashboard';
+import AdminLoginModal from './components/admin/AdminLoginModal';
+import AdsHeadInjector from './components/ads/AdsHeadInjector';
+import AdSlot from './components/ads/AdSlot';
+import AdsSettingsPanel from './components/ads/AdsSettingsPanel';
 import { openWhatsApp, buildWhatsAppLink } from './lib/whatsapp';
 import { checkApkAvailability, downloadApk, getUnavailableMessage } from './lib/apkAvailability';
-import { isAdminAuthorized, hasAdminToken } from './lib/adminAccess';
+import { useAdminAuthorization } from './hooks/useAdminAuthorization';
 import type { Order } from './backend';
 
 function App() {
@@ -16,25 +20,13 @@ function App() {
   const [modalContent, setModalContent] = useState<string | null>(null);
   const [orderConfirmation, setOrderConfirmation] = useState<{ order: Order; whatsappLink?: string } | null>(null);
   const [isCheckingApk, setIsCheckingApk] = useState(false);
-  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const [adminLoginOpen, setAdminLoginOpen] = useState(false);
 
-  // Check for admin access on mount and hash change
-  useEffect(() => {
-    const checkAdminAccess = () => {
-      if (hasAdminToken()) {
-        setShowAdminDashboard(isAdminAuthorized());
-      }
-    };
-
-    checkAdminAccess();
-    window.addEventListener('hashchange', checkAdminAccess);
-
-    return () => {
-      window.removeEventListener('hashchange', checkAdminAccess);
-    };
-  }, []);
+  // Use reactive admin authorization hook
+  const { isAuthorized: showAdminDashboard } = useAdminAuthorization();
 
   // If admin dashboard should be shown, render it instead of the main app
+  // IMPORTANT: No ad components are mounted in this path
   if (showAdminDashboard) {
     return <AdminDashboard />;
   }
@@ -49,6 +41,11 @@ function App() {
 
   const handleOrderClick = () => {
     scrollToSection('order-now');
+  };
+
+  const handleAdminLoginClick = () => {
+    setMobileMenuOpen(false);
+    setAdminLoginOpen(true);
   };
 
   const handleDownloadAppClick = async () => {
@@ -103,6 +100,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Inject ad provider script into head (customer-facing only) */}
+      <AdsHeadInjector />
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
         <nav className="container mx-auto px-4 py-4">
@@ -135,6 +135,13 @@ function App() {
               </button>
               <button onClick={() => scrollToSection('contact')} className="text-foreground hover:text-primary transition-colors font-medium">
                 Contact
+              </button>
+              <button 
+                onClick={handleAdminLoginClick}
+                className="text-foreground hover:text-primary transition-colors font-medium flex items-center gap-1"
+              >
+                <Shield size={16} />
+                Admin Login
               </button>
               <button 
                 onClick={handleOrderClick}
@@ -174,6 +181,13 @@ function App() {
               </button>
               <button onClick={() => scrollToSection('contact')} className="text-left text-foreground hover:text-primary transition-colors font-medium py-2">
                 Contact
+              </button>
+              <button 
+                onClick={handleAdminLoginClick}
+                className="text-left text-foreground hover:text-primary transition-colors font-medium py-2 flex items-center gap-2"
+              >
+                <Shield size={16} />
+                Admin Login
               </button>
               <button 
                 onClick={handleOrderClick}
@@ -228,6 +242,12 @@ function App() {
         </div>
       </section>
 
+      {/* Top Banner Ad Placement */}
+      <AdSlot 
+        slotName="topBanner" 
+        className="container mx-auto px-4 py-6 max-w-6xl"
+      />
+
       {/* About Section */}
       <section id="about" className="py-20 bg-background">
         <div className="container mx-auto px-4">
@@ -238,75 +258,58 @@ function App() {
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
               About Bro Bro Foods
             </h2>
-            <div className="text-lg text-foreground/80 leading-relaxed space-y-4">
-              <p>
-                Bro Bro Foods is a local food brand focused on serving fresh, hygienic and affordable Veg Momos.
-              </p>
-              <p>
-                We believe in simple food, honest pricing and fast service.
-              </p>
-              <p>
-                Our momos are prepared fresh after every order and delivered hot to your doorstep.
-              </p>
-            </div>
+            <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
+              Welcome to Bro Bro Foods! We're passionate about serving the most delicious, fresh veg momos in town. 
+              Every plate is made with love and the finest ingredients, ensuring you get the perfect taste every single time.
+            </p>
+            <p className="text-lg text-foreground/80 leading-relaxed">
+              Whether you're craving a quick snack or a full meal, our momos are the perfect choice. 
+              Fast delivery, great prices, and unbeatable taste – that's our promise to you!
+            </p>
           </div>
         </div>
       </section>
 
       {/* Menu Section */}
-      <section id="menu" className="py-20 bg-accent/30">
+      <section id="menu" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-12">
+          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
             Our Menu
           </h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Half Plate */}
-            <div className="bg-card rounded-2xl p-8 shadow-lg border-2 border-border hover:border-primary transition-colors">
-              <div className="flex items-start gap-4 mb-4">
-                <img 
-                  src="/assets/generated/momo-icon.dim_128x128.png" 
-                  alt="" 
-                  className="w-16 h-16"
-                />
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
-                    Veg Momos - Half Plate
-                  </h3>
-                  <p className="text-muted-foreground font-medium">
-                    Quantity: 12 Pieces
-                  </p>
-                </div>
+            <div className="bg-card rounded-2xl p-8 shadow-lg border-2 border-primary/20 hover:border-primary/40 transition-colors">
+              <div className="text-center">
+                <div className="text-6xl mb-4">🥟</div>
+                <h3 className="text-3xl font-bold text-foreground mb-2">Half Plate</h3>
+                <p className="text-4xl font-black text-primary mb-4">₹50</p>
+                <p className="text-foreground/70 mb-6">
+                  Perfect for a quick snack or light meal. 6 pieces of steaming hot, delicious veg momos.
+                </p>
+                <ul className="text-left space-y-2 text-foreground/80">
+                  <li>✓ 6 Fresh Veg Momos</li>
+                  <li>✓ Served with Chutney</li>
+                  <li>✓ Made to Order</li>
+                </ul>
               </div>
-              <p className="text-3xl font-black text-primary mb-4">₹50</p>
-              <p className="text-foreground/80">
-                12 fresh veg momos served hot with spicy red chutney.
-              </p>
             </div>
 
             {/* Full Plate */}
-            <div className="bg-card rounded-2xl p-8 shadow-lg border-2 border-primary relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                Best Seller
+            <div className="bg-card rounded-2xl p-8 shadow-lg border-2 border-primary hover:border-primary transition-colors">
+              <div className="text-center">
+                <div className="text-6xl mb-4">🥟🥟</div>
+                <h3 className="text-3xl font-bold text-foreground mb-2">Full Plate</h3>
+                <p className="text-4xl font-black text-primary mb-4">₹80</p>
+                <p className="text-foreground/70 mb-6">
+                  The ultimate momo experience! 12 pieces of our signature veg momos to satisfy your cravings.
+                </p>
+                <ul className="text-left space-y-2 text-foreground/80">
+                  <li>✓ 12 Fresh Veg Momos</li>
+                  <li>✓ Served with Chutney</li>
+                  <li>✓ Made to Order</li>
+                  <li>✓ Best Value!</li>
+                </ul>
               </div>
-              <div className="flex items-start gap-4 mb-4">
-                <img 
-                  src="/assets/generated/momo-icon.dim_128x128.png" 
-                  alt="" 
-                  className="w-16 h-16"
-                />
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
-                    Veg Momos - Full Plate
-                  </h3>
-                  <p className="text-muted-foreground font-medium">
-                    Quantity: 24 Pieces
-                  </p>
-                </div>
-              </div>
-              <p className="text-3xl font-black text-primary mb-4">₹80</p>
-              <p className="text-foreground/80">
-                24 fresh veg momos with special spicy chutney. Best Seller
-              </p>
             </div>
           </div>
         </div>
@@ -315,151 +318,215 @@ function App() {
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-12">
+          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
             How to Order
           </h2>
-          <div className="max-w-2xl mx-auto">
-            <ol className="space-y-6">
-              {[
-                'Open Bro Bro Foods App or Website',
-                'Select Half Plate or Full Plate',
-                'Choose your quantity (minimum 2 plates for delivery)',
-                'Click "Place Order"',
-                'Confirm your order on WhatsApp',
-                'We prepare fresh momos and deliver to you',
-              ].map((step, index) => (
-                <li key={index} className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
-                    {index + 1}
-                  </div>
-                  <p className="text-lg text-foreground pt-1">{step}</p>
-                </li>
-              ))}
-            </ol>
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="text-center">
+              <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl font-black text-primary">1</span>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Choose Your Plate</h3>
+              <p className="text-foreground/70">
+                Select between Half Plate (6 momos) or Full Plate (12 momos) based on your appetite.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl font-black text-primary">2</span>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Place Your Order</h3>
+              <p className="text-foreground/70">
+                Fill in your details and confirm your order. We'll send you payment details via WhatsApp.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl font-black text-primary">3</span>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Enjoy Fresh Momos</h3>
+              <p className="text-foreground/70">
+                Make payment and we'll deliver hot, fresh momos right to your doorstep!
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section id="why-choose-us" className="py-20 bg-accent/30">
+      <section id="why-choose-us" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-12">
+          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
             Why Choose Bro Bro Foods?
           </h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-card rounded-2xl p-6 shadow-lg border-2 border-border text-center">
-              <div className="text-5xl mb-4">🥟</div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Fresh & Hygienic</h3>
-              <p className="text-foreground/80">
-                Every momo is prepared fresh after your order with strict hygiene standards.
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div className="text-center">
+              <div className="text-5xl mb-4">🌱</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">100% Veg</h3>
+              <p className="text-foreground/70">
+                Pure vegetarian momos made with fresh vegetables and authentic spices.
               </p>
             </div>
-            <div className="bg-card rounded-2xl p-6 shadow-lg border-2 border-border text-center">
-              <div className="text-5xl mb-4">💰</div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Affordable Pricing</h3>
-              <p className="text-foreground/80">
-                Quality food at honest prices. No hidden charges, no surprises.
-              </p>
-            </div>
-            <div className="bg-card rounded-2xl p-6 shadow-lg border-2 border-border text-center">
-              <div className="text-5xl mb-4">🚀</div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Fast Delivery</h3>
-              <p className="text-foreground/80">
-                Quick preparation and delivery. Hot momos delivered to your doorstep.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Owner Section */}
-      <section id="owner" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
-              Meet the Owner
-            </h2>
-            <div className="flex justify-center mb-6">
-              <OwnerPhoto size="lg" />
+            <div className="text-center">
+              <div className="text-5xl mb-4">⚡</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">Fast Delivery</h3>
+              <p className="text-foreground/70">
+                Quick and reliable delivery service to get your momos while they're hot!
+              </p>
             </div>
-            <h3 className="text-3xl font-bold text-foreground mb-2">
-              Dilkhush
-            </h3>
-            <p className="text-xl text-primary font-semibold mb-6">
-              Founder
-            </p>
-            <p className="text-lg text-foreground/80 leading-relaxed">
-              Passionate about bringing delicious, fresh momos to your doorstep with quality and care.
-            </p>
+
+            <div className="text-center">
+              <div className="text-5xl mb-4">💰</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">Great Prices</h3>
+              <p className="text-foreground/70">
+                Affordable pricing without compromising on quality or taste.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="text-5xl mb-4">😋</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">Delicious Taste</h3>
+              <p className="text-foreground/70">
+                Made fresh to order with our secret recipe that keeps customers coming back!
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Order Now Section */}
-      <section id="order-now" className="py-20 bg-accent/30">
+      <section id="order-now" className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-12">
-            Order Now
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-4">
+              Order Now
+            </h2>
+            <p className="text-center text-foreground/70 mb-12">
+              Fill in your details below and we'll get your fresh momos ready for delivery!
+            </p>
+            <OrderForm onSuccess={handleOrderSuccess} />
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom Banner Ad Placement */}
+      <AdSlot 
+        slotName="bottomBanner" 
+        className="container mx-auto px-4 py-6 max-w-6xl"
+      />
+
+      {/* Owner Section */}
+      <section id="owner" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
+            Meet the Owners
           </h2>
-          <OrderForm onSuccess={handleOrderSuccess} />
+          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            {/* Dilkhush */}
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <OwnerPhoto size="lg" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Dilkhush</h3>
+              <p className="text-primary font-semibold mb-4">Co-Founder</p>
+              <p className="text-foreground/70">
+                Passionate about bringing authentic street food flavors to your doorstep with quality and care.
+              </p>
+            </div>
+
+            {/* Rohit */}
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <OwnerPhoto 
+                  size="lg"
+                  imageSrc="/assets/IMG-20260207-WA0000.jpg"
+                  alt="Rohit"
+                />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Rohit</h3>
+              <p className="text-primary font-semibold mb-4">Co-Founder</p>
+              <p className="text-foreground/70">
+                Dedicated to ensuring every customer gets the best momo experience with fresh ingredients and fast service.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
+          <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
-              Contact Us
+              Get in Touch
             </h2>
-            <div className="space-y-4">
-              <p className="text-xl text-foreground">
-                <span className="font-bold">Phone:</span>{' '}
-                <a href="tel:7973782618" className="text-primary hover:underline">
-                  7973782618
-                </a>
-              </p>
-              <p className="text-xl text-foreground">
-                <span className="font-bold">WhatsApp:</span>{' '}
-                <a 
-                  href="https://wa.me/7973782618" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  Chat with us
-                </a>
-              </p>
-              <p className="text-lg text-foreground/80 mt-6">
-                <span className="font-bold">Business Hours:</span> 11:30 AM – 9:00 PM
-              </p>
+            <p className="text-lg text-foreground/80 mb-8">
+              Have questions or special requests? We'd love to hear from you!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="https://wa.me/919876543210" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-primary text-primary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2"
+              >
+                <span>💬</span>
+                WhatsApp Us
+              </a>
+              <button 
+                onClick={handleOrderClick}
+                className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity border-2 border-primary"
+              >
+                Place an Order
+              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-foreground/80">
-            © 2026. Built with ❤️ using{' '}
-            <a 
-              href="https://caffeine.ai" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline font-medium"
-            >
-              caffeine.ai
-            </a>
-          </p>
+      <footer className="bg-muted/50 border-t border-border py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <img 
+                src="/assets/generated/brobro-logo.dim_512x512.png" 
+                alt="Bro Bro Foods" 
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="font-bold text-foreground">Bro Bro Foods</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <AdsSettingsPanel />
+            </div>
+            <p className="text-sm text-foreground/60">
+              © 2026. Built with ❤️ using{' '}
+              <a 
+                href="https://caffeine.ai" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                caffeine.ai
+              </a>
+            </p>
+          </div>
         </div>
       </footer>
 
       {/* Modals */}
       <PromoPopup onOrderClick={handleOrderClick} />
+      
       {modalContent && (
-        <SimpleModal content={modalContent} onClose={handleModalClose} />
+        <SimpleModal 
+          content={modalContent}
+          onClose={handleModalClose}
+        />
       )}
+
       {orderConfirmation && (
         <PostOrderConfirmationModal
           order={orderConfirmation.order}
@@ -467,6 +534,11 @@ function App() {
           onClose={handleOrderConfirmationClose}
         />
       )}
+
+      <AdminLoginModal
+        open={adminLoginOpen}
+        onOpenChange={setAdminLoginOpen}
+      />
     </div>
   );
 }

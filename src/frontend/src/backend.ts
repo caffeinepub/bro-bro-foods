@@ -119,6 +119,7 @@ export enum OrderStatus {
     cancelled = "cancelled",
     pending = "pending",
     outForDelivery = "outForDelivery",
+    readyToDeliver = "readyToDeliver",
     delivered = "delivered",
     accepted = "accepted"
 }
@@ -317,11 +318,13 @@ function from_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uin
 } | {
     outForDelivery: null;
 } | {
+    readyToDeliver: null;
+} | {
     delivered: null;
 } | {
     accepted: null;
 }): OrderStatus {
-    return "preparing" in value ? OrderStatus.preparing : "cancelled" in value ? OrderStatus.cancelled : "pending" in value ? OrderStatus.pending : "outForDelivery" in value ? OrderStatus.outForDelivery : "delivered" in value ? OrderStatus.delivered : "accepted" in value ? OrderStatus.accepted : value;
+    return "preparing" in value ? OrderStatus.preparing : "cancelled" in value ? OrderStatus.cancelled : "pending" in value ? OrderStatus.pending : "outForDelivery" in value ? OrderStatus.outForDelivery : "readyToDeliver" in value ? OrderStatus.readyToDeliver : "delivered" in value ? OrderStatus.delivered : "accepted" in value ? OrderStatus.accepted : value;
 }
 function from_candid_vec_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Order>): Array<Order> {
     return value.map((x)=>from_candid_Order_n1(_uploadFile, _downloadFile, x));
@@ -341,6 +344,8 @@ function to_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint
 } | {
     outForDelivery: null;
 } | {
+    readyToDeliver: null;
+} | {
     delivered: null;
 } | {
     accepted: null;
@@ -353,6 +358,8 @@ function to_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint
         pending: null
     } : value == OrderStatus.outForDelivery ? {
         outForDelivery: null
+    } : value == OrderStatus.readyToDeliver ? {
+        readyToDeliver: null
     } : value == OrderStatus.delivered ? {
         delivered: null
     } : value == OrderStatus.accepted ? {

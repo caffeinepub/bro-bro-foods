@@ -33,6 +33,7 @@ function getStatusVariant(status: string): 'default' | 'secondary' | 'destructiv
     case 'cancelled':
       return 'destructive';
     case 'outForDelivery':
+    case 'readyToDeliver':
       return 'secondary';
     default:
       return 'outline';
@@ -50,6 +51,8 @@ function formatStatus(status: string): string {
       return 'Accepted';
     case 'preparing':
       return 'Preparing';
+    case 'readyToDeliver':
+      return 'Ready to Deliver';
     case 'outForDelivery':
       return 'Out for Delivery';
     case 'delivered':
@@ -62,40 +65,34 @@ function formatStatus(status: string): string {
 }
 
 /**
- * Admin orders table with payment and status information
+ * Admin orders table displaying order details with view action
  */
 export default function OrdersTable({ orders, onViewDetails }: OrdersTableProps) {
-  if (orders.length === 0) {
-    return (
-      <div className="text-center py-12 text-muted-foreground">
-        No orders found matching the selected filters.
-      </div>
-    );
-  }
-
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Order ID</TableHead>
             <TableHead>Item</TableHead>
-            <TableHead>Qty</TableHead>
+            <TableHead>Quantity</TableHead>
             <TableHead>Amount</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Payment</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {orders.map((order) => (
             <TableRow key={order.id.toString()}>
-              <TableCell className="font-mono">#{order.id.toString()}</TableCell>
+              <TableCell className="font-mono text-sm">#{order.id.toString()}</TableCell>
               <TableCell>{order.plateTypeName}</TableCell>
               <TableCell>{order.quantity.toString()}</TableCell>
               <TableCell className="font-semibold">₹{order.totalAmount.toString()}</TableCell>
-              <TableCell className="text-sm">{formatDateTime(order.createdAt)}</TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {formatDateTime(order.createdAt)}
+              </TableCell>
               <TableCell>
                 <Badge variant={getStatusVariant(order.status)}>
                   {formatStatus(order.status)}
@@ -103,23 +100,18 @@ export default function OrdersTable({ orders, onViewDetails }: OrdersTableProps)
               </TableCell>
               <TableCell>
                 {order.paymentConfirmation ? (
-                  <div className="text-sm">
-                    <Badge variant="default" className="mb-1">Paid</Badge>
-                    <div className="text-xs text-muted-foreground">
-                      {order.paymentConfirmation.paidVia}
-                    </div>
-                  </div>
+                  <Badge variant="default">Paid</Badge>
                 ) : (
                   <Badge variant="outline">Unpaid</Badge>
                 )}
               </TableCell>
-              <TableCell>
+              <TableCell className="text-right">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => onViewDetails(order)}
                 >
-                  <Eye className="h-4 w-4 mr-1" />
+                  <Eye className="h-4 w-4 mr-2" />
                   View
                 </Button>
               </TableCell>

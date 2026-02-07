@@ -1,118 +1,104 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Admin Dashboard UI + Admin APK download support (hash-token gated)",
+  "title": "Google AdSense runtime configuration and safe customer-only ad rendering",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a hash-token gated admin dashboard that lists all orders with payment + time/date fields and provides an order detail view (English-only).",
+      "summary": "Wire the existing ad system to render real Google AdSense head script and at least one ad slot on the customer landing page.",
       "acceptanceCriteria": [
-        "When opening the app with `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`, an Admin Dashboard entry point is available and the order list renders.",
-        "When opening the app without an admin token, admin screens/actions are not accessible and do not leak order data.",
-        "Orders are shown with created date/time and payment fields (status + UTR/paid time when present) using English labels."
+        "`AdsHeadInjector` injects the AdSense provider script when `adsConfig.enabled === true` and `adsConfig.providerHeadSnippet` is non-empty.",
+        "At least one `AdSlot` renders a non-empty ad snippet from `adsConfig.slots` on the customer landing page (not on the admin dashboard path).",
+        "The AdSense provider script is injected only once per page load (no duplicate script tags)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/adminAccess.ts",
-          "operation": "create",
-          "description": "Implement admin access helpers to parse/validate the admin hash token (supporting the existing `#caffeineAdminToken=...` pattern) and provide a single boolean gate used by the UI to prevent any order fetching when not authorized."
+          "path": "frontend/src/config/ads.ts",
+          "operation": "modify",
+          "description": "Update the default ad configuration to be safe-by-default (disabled with empty snippets), and add typed helpers/constants for Google AdSense snippet templates (provider head script + slot snippet builders) so runtime configuration can generate real AdSense snippets."
         },
         {
-          "path": "frontend/src/hooks/useAdminOrders.ts",
+          "path": "frontend/src/hooks/useAdsConfig.ts",
           "operation": "create",
-          "description": "Create a React Query hook that, when admin access is valid, fetches all orders from the backend actor and returns loading/error states; ensure it never fetches when admin access is invalid."
+          "description": "Add a hook that produces the effective runtime `adsConfig` (including AdSense snippet generation from saved settings), exposes whether ads should be enabled, and supports reactive updates after settings are saved (e.g., via a custom window event and/or storage event)."
         },
         {
-          "path": "frontend/src/components/admin/AdminDashboard.tsx",
-          "operation": "create",
-          "description": "Build the Admin Dashboard shell (English-only text) including an orders list area and an order detail area; use shadcn-ui components (e.g., Button, Input, Select, Dialog/Sheet, Table) for consistent UI. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/components/ads/AdsHeadInjector.tsx",
+          "operation": "modify",
+          "description": "Refactor to use the runtime ads config (via `useAdsConfig`) instead of the static import, and inject the provider script only when enabled and the head snippet is non-empty; keep relying on `injectProviderScript` one-time marker behavior to prevent duplicates."
         },
         {
-          "path": "frontend/src/components/admin/OrdersTable.tsx",
-          "operation": "create",
-          "description": "Render an orders table/list showing: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (when present), paid date/time (when present); include a row action to open details. Use shadcn-ui Table (and related primitives) for layout. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/admin/OrderDetailView.tsx",
-          "operation": "create",
-          "description": "Add an order detail view (modal/drawer or dedicated section) that displays all stored fields for the selected order with readable English labels; use shadcn-ui Dialog/Sheet components to present the detail UI. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/components/ads/AdSlot.tsx",
+          "operation": "modify",
+          "description": "Refactor to use the runtime ads config (via `useAdsConfig`) so slot snippets can change at runtime; mount/unmount snippets only when enabled and the selected slot has non-empty HTML."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire the admin experience into the app: detect valid admin hash token, expose an Admin Dashboard entry point only when authorized, and conditionally render the AdminDashboard without affecting the customer experience; ensure no admin data fetch occurs unless authorized."
+          "description": "Ensure at least one customer-facing placement renders an `AdSlot` (top banner already exists) and that ad components remain unmounted when the app is in the admin dashboard branch (keep early-return behavior intact)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add an in-app owner settings UI to enter AdSense client and slot IDs, persist locally, and apply ads configuration at runtime without redeploy.",
+      "acceptanceCriteria": [
+        "There is a visible, owner-accessible settings panel/page in the app (English labels) that collects: AdSense client ID and at minimum a Top Banner ad slot ID (Bottom Banner optional).",
+        "Saving settings persists them locally and they are restored after refresh.",
+        "After saving valid settings, ads begin rendering without a redeploy (runtime config takes effect).",
+        "If no settings are provided, ads do not render and no provider script is injected."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/adsOwnerSettings.ts",
+          "operation": "create",
+          "description": "Create a small local-only persistence utility for ad owner settings (load/save/clear from localStorage), including validation for required AdSense fields (client ID, top banner slot ID) and a notification mechanism (e.g., dispatch a custom event) so the app can react immediately after saving."
+        },
+        {
+          "path": "frontend/src/components/ads/AdsSettingsPanel.tsx",
+          "operation": "create",
+          "description": "Implement an owner-accessible AdSense settings panel with English labels for AdSense client ID and ad slot IDs; persist to localStorage via `adsOwnerSettings` and trigger runtime refresh. Use shadcn-ui components (e.g., Dialog, Button, Input, Label) to present a small, consistent UI; Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useAdsConfig.ts",
+          "operation": "modify",
+          "description": "Integrate `adsOwnerSettings` into the runtime config hook: on load, restore saved settings; when valid, generate `providerHeadSnippet` and `slots` at runtime; when missing/invalid, return ads disabled with empty snippets."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the settings UI into the customer experience (e.g., a small 'Ad Settings' link/button in an existing section such as the footer or header) and ensure it opens/closes cleanly without adding new top-level routes."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Add admin actions for order tracking: status updates, a chronological timeline in order details, and filtering/sorting controls.",
+      "summary": "Prevent ads in admin experiences and default-disable ads in Capacitor unless explicitly overridden by configuration.",
       "acceptanceCriteria": [
-        "Changing an order status in the admin UI updates the backend and the UI reflects the new status after refresh/reload.",
-        "Order detail view shows a readable English timeline including created time, status-change events, and paid time when applicable.",
-        "Admin can filter the list by payment status and order status, and default sorting is newest-first."
+        "No ad provider script is injected and no ad slots are mounted when the admin dashboard is shown.",
+        "When running in a Capacitor environment, ads are not injected/mounted unless explicitly overridden by configuration.",
+        "On normal web runs, ads can render when configuration is present."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useUpdateOrderStatus.ts",
+          "path": "frontend/src/lib/runtimeEnvironment.ts",
           "operation": "create",
-          "description": "Create a mutation hook that calls the backend actor to update an order’s status (including a `changedBy` string from the admin UI) and refreshes cached admin order queries on success."
+          "description": "Add a small environment detection helper to determine whether the app is running inside a Capacitor native wrapper (using safe feature detection) for gating ads."
         },
         {
-          "path": "frontend/src/components/admin/OrdersFilters.tsx",
-          "operation": "create",
-          "description": "Implement admin list controls for newest-first (default) sorting, filter by payment status (Paid/Unpaid), and filter by order status; use shadcn-ui Select/Input/Button components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/admin/OrdersTable.tsx",
+          "path": "frontend/src/hooks/useAdsConfig.ts",
           "operation": "modify",
-          "description": "Integrate filtering/sorting output (newest-first by default) into the displayed list and add an Order Status column that shows the current status with English labels."
-        },
-        {
-          "path": "frontend/src/components/admin/OrderDetailView.tsx",
-          "operation": "modify",
-          "description": "Add an Order Status dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled) that triggers the update-status mutation; render a chronological English timeline including created time, each status-change event time/by, and paid time when available; use shadcn-ui Select and timeline-style layout with existing primitives. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/admin/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Wire together filters, the orders list, selection state, and the order detail view; ensure status changes refresh the selected order and the list."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Support separate Admin APK configuration and add an admin-only download button with independent availability checks and clear English messaging.",
-      "acceptanceCriteria": [
-        "Admin dashboard includes an “Download Admin App” button that performs an availability check and downloads the admin APK when available.",
-        "Customer-facing “Download App” continues to work independently of the admin APK setting.",
-        "If the admin APK is missing/unavailable, the admin UI shows a clear English message rather than failing silently."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/config/apk.ts",
-          "operation": "modify",
-          "description": "Extend APK configuration to include distinct entries for the customer APK and the admin APK (separate URLs and labels), while preserving the existing customer APK defaults."
-        },
-        {
-          "path": "frontend/src/lib/apkAvailability.ts",
-          "operation": "modify",
-          "description": "Update APK availability-check and download utilities to support checking/downloading a specific APK config (customer vs admin) independently, including returning the correct English unavailable message for each."
-        },
-        {
-          "path": "frontend/src/components/admin/AdminApkDownloadButton.tsx",
-          "operation": "create",
-          "description": "Create an admin-only “Download Admin App” button component that uses the shared APK availability utilities to check and download the admin APK and shows a clear English message when unavailable; use shadcn-ui Button and Dialog/Alert styling as needed. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/admin/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Place the admin-only download button within the Admin Dashboard and ensure it is only rendered when admin access is valid."
+          "description": "Apply environment gating logic: if Capacitor is detected, default-disable ads unless the saved owner settings explicitly opt in (override flag); also ensure the hook can return ads disabled when the app is operating in an admin context."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure the existing customer “Download App” behavior continues to use the customer APK config and remains independent from the admin APK settings."
+          "description": "Preserve/strengthen the existing admin guard (early return of `AdminDashboard`) so ad components never mount in admin mode; additionally ensure the owner settings entry point is not shown within the admin dashboard branch."
+        },
+        {
+          "path": "frontend/src/components/ads/AdsSettingsPanel.tsx",
+          "operation": "modify",
+          "description": "Add an explicit 'Enable ads on Capacitor' override control (default off) and persist it in localStorage so the Capacitor opt-in behavior is user-controlled. Use shadcn-ui form controls where available; Verify the component's usage instructions before implementing."
         }
       ]
     }

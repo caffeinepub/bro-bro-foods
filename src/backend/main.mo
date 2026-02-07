@@ -3,10 +3,10 @@ import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Iter "mo:core/Iter";
 
-import Migration "migration";
 import Array "mo:core/Array";
 
-(with migration = Migration.run)
+
+
 actor {
   type PlateType = {
     id : Nat;
@@ -38,10 +38,12 @@ actor {
     paidAt : Time.Time;
   };
 
+  // Updated OrderStatus type to include readyToDeliver
   type OrderStatus = {
     #pending;
     #accepted;
     #preparing;
+    #readyToDeliver;
     #outForDelivery;
     #delivered;
     #cancelled;

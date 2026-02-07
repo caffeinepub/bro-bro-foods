@@ -13,6 +13,7 @@ export const OrderStatus = IDL.Variant({
   'cancelled' : IDL.Null,
   'pending' : IDL.Null,
   'outForDelivery' : IDL.Null,
+  'readyToDeliver' : IDL.Null,
   'delivered' : IDL.Null,
   'accepted' : IDL.Null,
 });
@@ -76,6 +77,7 @@ export const idlFactory = ({ IDL }) => {
     'cancelled' : IDL.Null,
     'pending' : IDL.Null,
     'outForDelivery' : IDL.Null,
+    'readyToDeliver' : IDL.Null,
     'delivered' : IDL.Null,
     'accepted' : IDL.Null,
   });

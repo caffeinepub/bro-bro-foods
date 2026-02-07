@@ -42,6 +42,8 @@ function formatStatus(status: string): string {
       return 'Accepted';
     case 'preparing':
       return 'Preparing';
+    case 'readyToDeliver':
+      return 'Ready to Deliver';
     case 'outForDelivery':
       return 'Out for Delivery';
     case 'delivered':
@@ -168,6 +170,7 @@ export default function OrderDetailView({ order, open, onClose }: OrderDetailVie
                     <SelectItem value="pending">Pending</SelectItem>
                     <SelectItem value="accepted">Accepted</SelectItem>
                     <SelectItem value="preparing">Preparing</SelectItem>
+                    <SelectItem value="readyToDeliver">Ready to Deliver</SelectItem>
                     <SelectItem value="outForDelivery">Out for Delivery</SelectItem>
                     <SelectItem value="delivered">Delivered</SelectItem>
                     <SelectItem value="cancelled">Cancelled</SelectItem>

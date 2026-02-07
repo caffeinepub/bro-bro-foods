@@ -3,6 +3,8 @@ import { useState } from 'react';
 interface OwnerPhotoProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  imageSrc?: string;
+  alt?: string;
 }
 
 const sizeClasses = {
@@ -11,7 +13,12 @@ const sizeClasses = {
   lg: 'w-24 h-24 md:w-32 md:h-32',
 };
 
-export default function OwnerPhoto({ className = '', size = 'md' }: OwnerPhotoProps) {
+export default function OwnerPhoto({ 
+  className = '', 
+  size = 'md',
+  imageSrc = '/assets/IMG-20260207-WA0000.jpg',
+  alt = 'Owner photo'
+}: OwnerPhotoProps) {
   const [imageError, setImageError] = useState(false);
 
   const handleImageError = () => {
@@ -20,8 +27,8 @@ export default function OwnerPhoto({ className = '', size = 'md' }: OwnerPhotoPr
 
   return (
     <img
-      src={imageError ? '/assets/generated/profile-placeholder.dim_512x512.png' : '/assets/IMG-20260207-WA0000.jpg'}
-      alt="Owner photo"
+      src={imageError ? '/assets/generated/profile-placeholder.dim_512x512.png' : imageSrc}
+      alt={alt}
       className={`${sizeClasses[size]} rounded-full object-cover border-2 border-primary shadow-md ${className}`}
       onError={handleImageError}
       loading="lazy"
