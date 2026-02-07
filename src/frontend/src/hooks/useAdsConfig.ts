@@ -61,14 +61,22 @@ export function useAdsConfig(options: UseAdsConfigOptions = {}): {
       return defaultAdsConfig;
     }
 
+    // Normalize client ID (trim whitespace)
+    const normalizedClientId = settings.adsenseClientId.trim();
+    
+    // Validate client ID format
+    if (!normalizedClientId.startsWith('ca-pub-')) {
+      return defaultAdsConfig;
+    }
+
     // Generate runtime configuration
     return {
       enabled: true,
-      providerHeadSnippet: generateAdSenseHeadScript(settings.adsenseClientId),
+      providerHeadSnippet: generateAdSenseHeadScript(normalizedClientId),
       slots: {
-        topBanner: generateAdSenseSlot(settings.adsenseClientId, settings.topBannerSlotId),
+        topBanner: generateAdSenseSlot(normalizedClientId, settings.topBannerSlotId),
         bottomBanner: settings.bottomBannerSlotId
-          ? generateAdSenseSlot(settings.adsenseClientId, settings.bottomBannerSlotId)
+          ? generateAdSenseSlot(normalizedClientId, settings.bottomBannerSlotId)
           : '',
       },
     };

@@ -13,6 +13,7 @@ import AdsSettingsPanel from './components/ads/AdsSettingsPanel';
 import { openWhatsApp, buildWhatsAppLink } from './lib/whatsapp';
 import { checkApkAvailability, downloadApk, getUnavailableMessage } from './lib/apkAvailability';
 import { useAdminAuthorization } from './hooks/useAdminAuthorization';
+import { FOUNDER_DILKHUSH_512, FOUNDER_DILKHUSH_128 } from './config/ownerPhotos';
 import type { Order } from './backend';
 
 function App() {
@@ -149,7 +150,7 @@ function App() {
               >
                 Order Now
               </button>
-              <OwnerPhoto size="sm" />
+              <OwnerPhoto size="sm" imageSrc={FOUNDER_DILKHUSH_128} alt="Founder Dilkhush" />
             </div>
 
             {/* Mobile Menu Button */}
@@ -253,7 +254,7 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <div className="flex justify-center mb-8">
-              <OwnerPhoto size="lg" />
+              <OwnerPhoto size="lg" imageSrc={FOUNDER_DILKHUSH_512} alt="Founder Dilkhush" />
             </div>
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
               About Bro Bro Foods
@@ -418,7 +419,7 @@ function App() {
         className="container mx-auto px-4 py-6 max-w-6xl"
       />
 
-      {/* Owner Section */}
+      {/* Meet the Owners Section */}
       <section id="owner" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
@@ -428,7 +429,7 @@ function App() {
             {/* Dilkhush */}
             <div className="text-center">
               <div className="flex justify-center mb-6">
-                <OwnerPhoto size="lg" />
+                <OwnerPhoto size="lg" imageSrc={FOUNDER_DILKHUSH_512} alt="Founder Dilkhush" />
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-2">Dilkhush</h3>
               <p className="text-primary font-semibold mb-4">Co-Founder</p>
@@ -440,11 +441,7 @@ function App() {
             {/* Rohit */}
             <div className="text-center">
               <div className="flex justify-center mb-6">
-                <OwnerPhoto 
-                  size="lg"
-                  imageSrc="/assets/IMG-20260207-WA0000.jpg"
-                  alt="Rohit"
-                />
+                <OwnerPhoto size="lg" alt="Co-Founder Rohit" />
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-2">Rohit</h3>
               <p className="text-primary font-semibold mb-4">Co-Founder</p>
@@ -459,26 +456,24 @@ function App() {
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
               Get in Touch
             </h2>
-            <p className="text-lg text-foreground/80 mb-8">
+            <p className="text-lg text-foreground/70 mb-12">
               Have questions or special requests? We'd love to hear from you!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="https://wa.me/919876543210" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-primary text-primary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2"
+              <button 
+                onClick={() => window.open('https://wa.me/919876543210', '_blank')}
+                className="bg-[#25D366] text-white px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
               >
                 <span>💬</span>
                 WhatsApp Us
-              </a>
+              </button>
               <button 
                 onClick={handleOrderClick}
-                className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity border-2 border-primary"
+                className="bg-primary text-primary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity border-2 border-primary"
               >
                 Place an Order
               </button>
@@ -491,42 +486,52 @@ function App() {
       <footer className="bg-muted/50 border-t border-border py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <img 
-                src="/assets/generated/brobro-logo.dim_512x512.png" 
-                alt="Bro Bro Foods" 
-                className="h-8 w-8 rounded-full"
-              />
-              <span className="font-bold text-foreground">Bro Bro Foods</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <AdsSettingsPanel />
-            </div>
-            <p className="text-sm text-foreground/60">
-              © 2026. Built with ❤️ using{' '}
+            <div className="flex items-center gap-2 text-foreground/70">
+              <span>© 2026. Built with</span>
+              <span className="text-primary">❤️</span>
+              <span>using</span>
               <a 
                 href="https://caffeine.ai" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-primary hover:underline"
+                className="text-primary hover:underline font-semibold"
               >
                 caffeine.ai
               </a>
-            </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => scrollToSection('about')}
+                className="text-foreground/70 hover:text-primary transition-colors"
+              >
+                About
+              </button>
+              <button 
+                onClick={() => scrollToSection('menu')}
+                className="text-foreground/70 hover:text-primary transition-colors"
+              >
+                Menu
+              </button>
+              <button 
+                onClick={() => scrollToSection('contact')}
+                className="text-foreground/70 hover:text-primary transition-colors"
+              >
+                Contact
+              </button>
+              <AdsSettingsPanel />
+            </div>
           </div>
         </div>
       </footer>
 
       {/* Modals */}
       <PromoPopup onOrderClick={handleOrderClick} />
-      
       {modalContent && (
         <SimpleModal 
           content={modalContent}
           onClose={handleModalClose}
         />
       )}
-
       {orderConfirmation && (
         <PostOrderConfirmationModal
           order={orderConfirmation.order}
@@ -534,7 +539,6 @@ function App() {
           onClose={handleOrderConfirmationClose}
         />
       )}
-
       <AdminLoginModal
         open={adminLoginOpen}
         onOpenChange={setAdminLoginOpen}

@@ -1,12 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Enable safe Google AdSense monetization on customer-facing pages with runtime configuration from within the app, without backend changes.
+**Goal:** Show the Founder Dilkhush photo across the site wherever the default owner photo is currently used.
 
 **Planned changes:**
-- Wire `frontend/src/config/ads.ts` to support real AdSense provider head script injection and at least one ad slot snippet, gated by an `enabled` flag and non-empty configuration.
-- Render at least one `AdSlot` on the customer landing page only (not on admin dashboard routes), ensuring the provider script is injected only once per page load.
-- Add an owner-accessible in-app settings panel (English UI) to input AdSense client ID (`ca-pub-...`) and ad slot IDs (Top Banner required; Bottom Banner optional), persist to browser storage, and apply at runtime without redeploy.
-- Default ads to off when running in a Capacitor environment, and ensure ads are not mounted/injected in admin experiences unless explicitly overridden by configuration.
+- Add a square, web-optimized Founder Dilkhush photo asset under `frontend/public/assets/` using the provided generated filenames.
+- Update all places that currently render the generic/default `OwnerPhoto` (including header, About, and the Owner/Meet-the-Owners section in `frontend/src/App.tsx`) to use the new founder image with alt text `"Founder Dilkhush"`.
+- Update `frontend/src/components/OwnerPhoto.tsx` so its default `imageSrc` points to the new founder image asset (and remove `/assets/IMG-20260207-WA0000.jpg` as the default).
+- Keep the existing on-error fallback behavior to `/assets/generated/profile-placeholder.dim_512x512.png`, and ensure the image is served as a static public asset (no backend routing).
 
-**User-visible outcome:** The site owner can enter their AdSense client and slot IDs in an in-app settings screen; once saved, ads appear on the public landing page on web (not in admin, and disabled by default in the mobile wrapper) without needing a redeploy.
+**User-visible outcome:** The site displays Founder Dilkhush’s photo consistently in the header, About, and Meet-the-Owners sections, with a placeholder shown if the image fails to load.

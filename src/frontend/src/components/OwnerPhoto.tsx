@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DEFAULT_FOUNDER_IMAGE } from '@/config/ownerPhotos';
 
 interface OwnerPhotoProps {
   className?: string;
@@ -16,8 +17,8 @@ const sizeClasses = {
 export default function OwnerPhoto({ 
   className = '', 
   size = 'md',
-  imageSrc = '/assets/IMG-20260207-WA0000.jpg',
-  alt = 'Owner photo'
+  imageSrc = DEFAULT_FOUNDER_IMAGE,
+  alt = 'Founder Dilkhush'
 }: OwnerPhotoProps) {
   const [imageError, setImageError] = useState(false);
 

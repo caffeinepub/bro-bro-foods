@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T06:50:28.717Z",
+  "generatedAt": "2026-02-07T08:01:21.637Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,55 +12,47 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add a simple, safe Google AdSense integration using the existing ad system by wiring `frontend/src/config/ads.ts` with real AdSense snippets (provider head script + at least one ad slot), so ads can be displayed on the customer-facing landing page and the site can be monetized.",
+        "summary": "Add the uploaded Founder Dilkhush photo as a static asset and use it anywhere the app currently shows the default owner photo, ensuring it renders correctly across header, About, and the Owner/Meet-the-Owners section.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/config/ads.ts",
-          "frontend/src/hooks/useAdsConfig.ts",
-          "frontend/src/components/ads/AdsHeadInjector.tsx",
-          "frontend/src/components/ads/AdSlot.tsx",
-          "frontend/src/App.tsx"
+          "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
+          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
+          "frontend/src/App.tsx",
+          "frontend/src/config/ownerPhotos.ts"
         ],
         "matchedFiles": [
-          "frontend/src/config/ads.ts",
-          "frontend/src/hooks/useAdsConfig.ts",
-          "frontend/src/components/ads/AdsHeadInjector.tsx",
-          "frontend/src/components/ads/AdSlot.tsx",
-          "frontend/src/App.tsx"
+          "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
+          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
+          "frontend/src/App.tsx",
+          "frontend/src/config/ownerPhotos.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Add a small in-app configuration UI (English text) to let the site owner paste their Google AdSense `ca-pub-...` client ID and ad slot IDs, and persist these settings in the browser (e.g., localStorage) without requiring backend changes; when configured, the UI should populate `providerHeadSnippet` and the configured `adsConfig.slots` at runtime.",
+        "summary": "Update the OwnerPhoto component default imageSrc so that if no imageSrc prop is passed, it uses the new Founder Dilkhush static asset instead of /assets/IMG-20260207-WA0000.jpg.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/adsOwnerSettings.ts",
-          "frontend/src/components/ads/AdsSettingsPanel.tsx",
-          "frontend/src/hooks/useAdsConfig.ts",
-          "frontend/src/App.tsx"
+          "frontend/src/components/OwnerPhoto.tsx",
+          "frontend/src/config/ownerPhotos.ts"
         ],
         "matchedFiles": [
-          "frontend/src/lib/adsOwnerSettings.ts",
-          "frontend/src/components/ads/AdsSettingsPanel.tsx",
-          "frontend/src/hooks/useAdsConfig.ts",
-          "frontend/src/App.tsx"
+          "frontend/src/components/OwnerPhoto.tsx",
+          "frontend/src/config/ownerPhotos.ts"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Ensure AdSense is not mounted in admin experiences and is disabled by default when running inside the Capacitor mobile wrapper (to avoid policy/UX issues), while remaining enabled on the standard web deployment when configured.",
+        "summary": "Render the generated founder photo asset from frontend/public/assets/ in the app (do not route image serving through the backend canister).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/runtimeEnvironment.ts",
-          "frontend/src/hooks/useAdsConfig.ts",
+          "frontend/src/config/ownerPhotos.ts",
           "frontend/src/App.tsx",
-          "frontend/src/components/ads/AdsSettingsPanel.tsx"
+          "frontend/src/components/OwnerPhoto.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/runtimeEnvironment.ts",
-          "frontend/src/hooks/useAdsConfig.ts",
+          "frontend/src/config/ownerPhotos.ts",
           "frontend/src/App.tsx",
-          "frontend/src/components/ads/AdsSettingsPanel.tsx"
+          "frontend/src/components/OwnerPhoto.tsx"
         ]
       }
     ]
@@ -70,14 +62,11 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
+    "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
     "frontend/src/App.tsx",
-    "frontend/src/components/ads/AdSlot.tsx",
-    "frontend/src/components/ads/AdsHeadInjector.tsx",
-    "frontend/src/components/ads/AdsSettingsPanel.tsx",
-    "frontend/src/config/ads.ts",
-    "frontend/src/hooks/useAdsConfig.ts",
-    "frontend/src/lib/adsOwnerSettings.ts",
-    "frontend/src/lib/runtimeEnvironment.ts",
+    "frontend/src/components/OwnerPhoto.tsx",
+    "frontend/src/config/ownerPhotos.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

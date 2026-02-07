@@ -1,104 +1,80 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Google AdSense runtime configuration and safe customer-only ad rendering",
+  "title": "Add Founder Dilkhush photo static assets and wire into existing OwnerPhoto usage",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Wire the existing ad system to render real Google AdSense head script and at least one ad slot on the customer landing page.",
+      "summary": "Add the generated Founder Dilkhush photo assets and use them everywhere the app currently renders the default owner photo (header, About, and Meet-the-Owners).",
       "acceptanceCriteria": [
-        "`AdsHeadInjector` injects the AdSense provider script when `adsConfig.enabled === true` and `adsConfig.providerHeadSnippet` is non-empty.",
-        "At least one `AdSlot` renders a non-empty ad snippet from `adsConfig.slots` on the customer landing page (not on the admin dashboard path).",
-        "The AdSense provider script is injected only once per page load (no duplicate script tags)."
+        "A square, web-optimized founder photo file exists under frontend/public/assets/ (use the generated filename from this build request).",
+        "All places that render the generic/default OwnerPhoto (e.g., header OwnerPhoto and About section OwnerPhoto in frontend/src/App.tsx) use the Founder Dilkhush imageSrc and an alt text of \"Founder Dilkhush\".",
+        "On image load failure, the UI still falls back to /assets/generated/profile-placeholder.dim_512x512.png as implemented in frontend/src/components/OwnerPhoto.tsx."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/config/ads.ts",
-          "operation": "modify",
-          "description": "Update the default ad configuration to be safe-by-default (disabled with empty snippets), and add typed helpers/constants for Google AdSense snippet templates (provider head script + slot snippet builders) so runtime configuration can generate real AdSense snippets."
-        },
-        {
-          "path": "frontend/src/hooks/useAdsConfig.ts",
+          "path": "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
           "operation": "create",
-          "description": "Add a hook that produces the effective runtime `adsConfig` (including AdSense snippet generation from saved settings), exposes whether ads should be enabled, and supports reactive updates after settings are saved (e.g., via a custom window event and/or storage event)."
+          "description": "Add the generated square 512x512 Founder Dilkhush headshot image at this exact path so it is served as a static public asset."
         },
         {
-          "path": "frontend/src/components/ads/AdsHeadInjector.tsx",
-          "operation": "modify",
-          "description": "Refactor to use the runtime ads config (via `useAdsConfig`) instead of the static import, and inject the provider script only when enabled and the head snippet is non-empty; keep relying on `injectProviderScript` one-time marker behavior to prevent duplicates."
-        },
-        {
-          "path": "frontend/src/components/ads/AdSlot.tsx",
-          "operation": "modify",
-          "description": "Refactor to use the runtime ads config (via `useAdsConfig`) so slot snippets can change at runtime; mount/unmount snippets only when enabled and the selected slot has non-empty HTML."
+          "path": "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
+          "operation": "create",
+          "description": "Add the generated square 128x128 Founder Dilkhush headshot image at this exact path so it is served as a static public asset."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure at least one customer-facing placement renders an `AdSlot` (top banner already exists) and that ad components remain unmounted when the app is in the admin dashboard branch (keep early-return behavior intact)."
+          "description": "Update all existing <OwnerPhoto /> usages that currently rely on the generic/default owner photo (header, About, and the Dilkhush card in Meet the Owners) to explicitly pass imageSrc pointing to the new Founder Dilkhush public asset and alt=\"Founder Dilkhush\". Prefer the 128x128 asset for the small header avatar and the 512x512 asset for larger displays."
+        },
+        {
+          "path": "frontend/src/config/ownerPhotos.ts",
+          "operation": "create",
+          "description": "Centralize public-path constants for owner/founder images (e.g., founderDilkhush512, founderDilkhush128) to avoid scattered string paths and ensure consistent reuse across the app."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add an in-app owner settings UI to enter AdSense client and slot IDs, persist locally, and apply ads configuration at runtime without redeploy.",
+      "summary": "Change OwnerPhoto default imageSrc to the new Founder Dilkhush static asset and remove the old default reference.",
       "acceptanceCriteria": [
-        "There is a visible, owner-accessible settings panel/page in the app (English labels) that collects: AdSense client ID and at minimum a Top Banner ad slot ID (Bottom Banner optional).",
-        "Saving settings persists them locally and they are restored after refresh.",
-        "After saving valid settings, ads begin rendering without a redeploy (runtime config takes effect).",
-        "If no settings are provided, ads do not render and no provider script is injected."
+        "frontend/src/components/OwnerPhoto.tsx default imageSrc points to the new founder image asset path.",
+        "No references to /assets/IMG-20260207-WA0000.jpg remain as the default fallback in OwnerPhoto."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/adsOwnerSettings.ts",
-          "operation": "create",
-          "description": "Create a small local-only persistence utility for ad owner settings (load/save/clear from localStorage), including validation for required AdSense fields (client ID, top banner slot ID) and a notification mechanism (e.g., dispatch a custom event) so the app can react immediately after saving."
-        },
-        {
-          "path": "frontend/src/components/ads/AdsSettingsPanel.tsx",
-          "operation": "create",
-          "description": "Implement an owner-accessible AdSense settings panel with English labels for AdSense client ID and ad slot IDs; persist to localStorage via `adsOwnerSettings` and trigger runtime refresh. Use shadcn-ui components (e.g., Dialog, Button, Input, Label) to present a small, consistent UI; Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useAdsConfig.ts",
+          "path": "frontend/src/components/OwnerPhoto.tsx",
           "operation": "modify",
-          "description": "Integrate `adsOwnerSettings` into the runtime config hook: on load, restore saved settings; when valid, generate `providerHeadSnippet` and `slots` at runtime; when missing/invalid, return ads disabled with empty snippets."
+          "description": "Update the default value for the imageSrc prop to point to the new Founder Dilkhush static asset (public-path URL). Keep the existing onError fallback behavior that switches to /assets/generated/profile-placeholder.dim_512x512.png."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/config/ownerPhotos.ts",
           "operation": "modify",
-          "description": "Wire the settings UI into the customer experience (e.g., a small 'Ad Settings' link/button in an existing section such as the footer or header) and ensure it opens/closes cleanly without adding new top-level routes."
+          "description": "Ensure the exported Founder Dilkhush asset paths match the generated filenames and are used as the OwnerPhoto default imageSrc source of truth."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Prevent ads in admin experiences and default-disable ads in Capacitor unless explicitly overridden by configuration.",
+      "summary": "Ensure the founder photo is rendered from frontend/public assets via a public-path URL, with no backend involvement.",
       "acceptanceCriteria": [
-        "No ad provider script is injected and no ad slots are mounted when the admin dashboard is shown.",
-        "When running in a Capacitor environment, ads are not injected/mounted unless explicitly overridden by configuration.",
-        "On normal web runs, ads can render when configuration is present."
+        "The founder image is referenced via a public-path URL (e.g., /assets/...) and loads in production builds without any backend changes."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/runtimeEnvironment.ts",
-          "operation": "create",
-          "description": "Add a small environment detection helper to determine whether the app is running inside a Capacitor native wrapper (using safe feature detection) for gating ads."
-        },
-        {
-          "path": "frontend/src/hooks/useAdsConfig.ts",
+          "path": "frontend/src/config/ownerPhotos.ts",
           "operation": "modify",
-          "description": "Apply environment gating logic: if Capacitor is detected, default-disable ads unless the saved owner settings explicitly opt in (override flag); also ensure the hook can return ads disabled when the app is operating in an admin context."
+          "description": "Define/confirm that the Founder Dilkhush image paths are public-path URLs (e.g., starting with /assets/...) suitable for production static serving."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Preserve/strengthen the existing admin guard (early return of `AdminDashboard`) so ad components never mount in admin mode; additionally ensure the owner settings entry point is not shown within the admin dashboard branch."
+          "description": "Ensure founder image references use the public-path URLs from frontend/src/config/ownerPhotos.ts (not imports, not backend-routed URLs), so the images load from frontend/public in production builds."
         },
         {
-          "path": "frontend/src/components/ads/AdsSettingsPanel.tsx",
+          "path": "frontend/src/components/OwnerPhoto.tsx",
           "operation": "modify",
-          "description": "Add an explicit 'Enable ads on Capacitor' override control (default off) and persist it in localStorage so the Capacitor opt-in behavior is user-controlled. Use shadcn-ui form controls where available; Verify the component's usage instructions before implementing."
+          "description": "Ensure the OwnerPhoto default imageSrc and runtime src selection use public-path URLs only, preserving the existing placeholder fallback on load error."
         }
       ]
     }

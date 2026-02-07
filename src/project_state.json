@@ -5,26 +5,27 @@
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Cropped square headshot photo centered on the face with neutral/softened background (founder-dilkhush.dim_512x512.jpg)\n- Small square headshot crop centered on the face (founder-dilkhush.dim_128x128.jpg)",
   "existing_features": [
     {
-      "id": "feature-add-a-simple-safe-google-adsense-integration-using-the-existing-ad-system-by-wiring-frontend-src-config-ads-ts-with-real-adsense-snippets-provider-head-script-at-least-one-ad-slot-so-ads-can-be-displayed-on-the-customer-facing-landing-page-and-the-site-can-be-monetized",
-      "title": "Add a simple, safe Google AdSense integration using the existing ad system by wiring `frontend/src/config/ads.ts` with real AdSense snippets (provider head script + at least one ad slot), so ads can be displayed on the customer-facing landing page and the site can be monetized.",
+      "id": "feature-add-the-uploaded-founder-dilkhush-photo-as-a-static-asset-and-use-it-anywhere-the-app-currently-shows-the-default-owner-photo-ensuring-it-renders-correctly-across-header-about-and-the-owner-meet-the-owners-section",
+      "title": "Add the uploaded Founder Dilkhush photo as a static asset and use it anywhere the app currently shows the default owner photo, ensuring it renders correctly across header, About, and the Owner/Meet-the-Owners section.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-small-in-app-configuration-ui-english-text-to-let-the-site-owner-paste-their-google-adsense-ca-pub-client-id-and-ad-slot-ids-and-persist-these-settings-in-the-browser-e-g-localstorage-without-requiring-backend-changes-when-configured-the-ui-should-populate-providerheadsnippet-and-the-configured-adsconfig-slots-at-runtime",
-      "title": "Add a small in-app configuration UI (English text) to let the site owner paste their Google AdSense `ca-pub-...` client ID and ad slot IDs, and persist these settings in the browser (e.g., localStorage) without requiring backend changes; when configured, the UI should populate `providerHeadSnippet` and the configured `adsConfig.slots` at runtime.",
+      "id": "feature-update-the-ownerphoto-component-default-imagesrc-so-that-if-no-imagesrc-prop-is-passed-it-uses-the-new-founder-dilkhush-static-asset-instead-of-assets-img-20260207-wa0000-jpg",
+      "title": "Update the OwnerPhoto component default imageSrc so that if no imageSrc prop is passed, it uses the new Founder Dilkhush static asset instead of /assets/IMG-20260207-WA0000.jpg.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-adsense-is-not-mounted-in-admin-experiences-and-is-disabled-by-default-when-running-inside-the-capacitor-mobile-wrapper-to-avoid-policy-ux-issues-while-remaining-enabled-on-the-standard-web-deployment-when-configured",
-      "title": "Ensure AdSense is not mounted in admin experiences and is disabled by default when running inside the Capacitor mobile wrapper (to avoid policy/UX issues), while remaining enabled on the standard web deployment when configured.",
+      "id": "feature-render-the-generated-founder-photo-asset-from-frontend-public-assets-in-the-app-do-not-route-image-serving-through-the-backend-canister",
+      "title": "Render the generated founder photo asset from frontend/public/assets/ in the app (do not route image serving through the backend canister).",
       "reqIds": [
         "REQ-3"
       ],
@@ -34,12 +35,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Integrate Google AdSense ads so the user can monetize/earn money from the site/app",
+      "summary": "Add/display a photo of Founder Dilkhush on the site/app",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Integrate Google AdSense monetization on customer-facing pages",
+  "projectName": "Add Founder Dilkhush photo to the site",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

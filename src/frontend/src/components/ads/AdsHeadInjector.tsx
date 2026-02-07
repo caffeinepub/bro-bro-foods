@@ -5,11 +5,11 @@ import { injectProviderScript } from '@/lib/ads';
 /**
  * AdsHeadInjector Component
  * 
- * Responsible for injecting the ad provider's head script into the document.
+ * Responsible for injecting the ad provider's head script into the document at runtime.
  * This component renders nothing visible but performs the injection as a side effect.
  * 
  * The injection happens only once per page load and only when ads are enabled.
- * Uses runtime configuration from useAdsConfig hook.
+ * Uses runtime configuration from useAdsConfig hook with extracted AdSense client ID.
  */
 export default function AdsHeadInjector() {
   const { adsConfig } = useAdsConfig();
