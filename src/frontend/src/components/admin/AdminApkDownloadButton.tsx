@@ -2,44 +2,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Download, Loader2, AlertCircle } from 'lucide-react';
-
-const ADMIN_APK_URL = 'https://meaningful-coffee-oyw-draft.caffeine.xyz/downloads/bro-bro-foods-admin.apk';
-const ADMIN_APK_UNAVAILABLE_MESSAGE = 'Admin app is being prepared. Please check back later.';
-
-/**
- * Check if admin APK is available
- */
-async function checkAdminApkAvailability(): Promise<boolean> {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-    const response = await fetch(ADMIN_APK_URL, {
-      method: 'HEAD',
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-    return response.ok;
-  } catch (error) {
-    return false;
-  }
-}
+import { 
+  checkAdminApkAvailability, 
+  downloadAdminApk, 
+  getAdminApkUnavailableMessage 
+} from '@/lib/apkAvailability';
 
 /**
- * Initiate admin APK download
- */
-function downloadAdminApk(): void {
-  const link = document.createElement('a');
-  link.href = ADMIN_APK_URL;
-  link.download = 'bro-bro-foods-admin.apk';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-/**
- * Admin-only APK download button with availability check
+ * Admin-only APK download button with availability check and clear unavailable messaging
  */
 export default function AdminApkDownloadButton() {
   const [isChecking, setIsChecking] = useState(false);
@@ -88,7 +58,7 @@ export default function AdminApkDownloadButton() {
       {showUnavailable && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{ADMIN_APK_UNAVAILABLE_MESSAGE}</AlertDescription>
+          <AlertDescription>{getAdminApkUnavailableMessage()}</AlertDescription>
         </Alert>
       )}
     </div>

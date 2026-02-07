@@ -6,8 +6,7 @@ import Iter "mo:core/Iter";
 import Array "mo:core/Array";
 
 
-
-actor {
+ actor {
   type PlateType = {
     id : Nat;
     name : Text;

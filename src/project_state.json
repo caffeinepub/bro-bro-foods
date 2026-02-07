@@ -1,17 +1,36 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Project involves updating a draft/design by placing specific photos under named people (e.g., placing photo #1 under 'Dilkhush'; Rohit suit photo already set).",
-  "architectural_notes": [],
-  "known_issues": [],
+  "summary": "New project",
+  "architectural_notes": [
+    "Add access control for Owner/Ad Settings: remove public entry point and gate page behind a password prompt (password currently provided as 7973)."
+  ],
+  "known_issues": [
+    "Build/deployment attempts are failing intermittently with internal AI/build errors; retry requested."
+  ],
   "isFixRequest": false,
-  "imageRequirements": "## Edit Images\n- Replace the Dilkhush square headshot with Photo #1 (founder-dilkhush.dim_512x512.jpg > founder-dilkhush.dim_512x512.jpg)\n- Replace the small Dilkhush square headshot with Photo #1 (founder-dilkhush.dim_128x128.jpg > founder-dilkhush.dim_128x128.jpg)",
   "existing_features": [
     {
-      "id": "feature-update-the-dilkhush-founder-photo-so-that-the-image-shown-under-the-dilkhush-card-in-the-meet-the-owners-section-uses-photo-1-the-photo-where-he-is-sitting-in-a-car-wearing-a-black-shirt-this-update-must-also-reflect-anywhere-else-the-app-uses-the-dilkhush-founder-image-constants-e-g-header-avatar-and-about-section",
-      "title": "Update the Dilkhush founder photo so that the image shown under the \"Dilkhush\" card in the \"Meet the Owners\" section uses Photo #1 (the photo where he is sitting in a car wearing a black shirt). This update must also reflect anywhere else the app uses the Dilkhush founder image constants (e.g., header avatar and About section).",
+      "id": "feature-remove-the-customer-facing-ad-settings-owner-settings-entry-from-the-public-site-footer-including-removing-the-arrow-chevron-indicator-shown-in-the-uploaded-screenshots-so-it-is-not-visible-anywhere-on-the-non-admin-landing-page",
+      "title": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
       "reqIds": [
         "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-owner-settings-section-inside-the-admin-dashboard-ui-and-place-the-existing-ads-settings-ui-there-reuse-the-existing-adssettingspanel-component-but-only-render-it-inside-the-admin-experience",
+      "title": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-password-protect-access-to-ad-settings-owner-settings-using-pin-7973-with-a-user-flow-comparable-to-the-existing-admin-login-modal-if-a-user-is-not-currently-admin-authorized-they-must-enter-pin-7973-before-they-can-access-the-owner-settings-ad-settings-ui",
+      "title": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+      "reqIds": [
+        "REQ-3"
       ],
       "version": 1
     }
@@ -19,12 +38,24 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Place photo #1 (car seated, black shirt) under 'Dilkhush' in the draft/version being edited",
+      "summary": "Remove the Ad Settings/Owner Settings arrow/button from the site footer (customer-facing UI).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Move Ad Settings/Owner Settings into the Admin Panel only (organize under an Owner Settings section).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Password-protect the Ad Settings/Owner Settings page with a prompt using password '7973', similar to Admin Panel login gating.",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Set Dilkhush section to use Photo #1",
+  "projectName": "Move Ad/Owner Settings into Admin Panel and lock behind PIN 7973",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

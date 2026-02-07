@@ -1,15 +1,19 @@
-# Android APK Build Instructions
+# Building Android APK from React Web App
 
-This document describes how to build an Android APK for the Bro Bro Foods application.
+This guide explains how to build an Android APK from the Bro Bro Foods React web application using Capacitor.
 
 ## Prerequisites
 
-1. Node.js and npm/pnpm installed
-2. Capacitor CLI installed globally: `npm install -g @capacitor/cli`
-3. Android Studio installed with Android SDK
-4. Java Development Kit (JDK) 11 or higher
+Before building the APK, ensure you have:
 
-## Build Process
+1. **Node.js and pnpm** installed
+2. **Java Development Kit (JDK) 17** or higher
+3. **Android Studio** with Android SDK installed
+4. **Capacitor CLI** installed globally: `npm install -g @capacitor/cli`
 
-### 1. Build the Web Application
+## Local Build Verification
+
+Before deploying or building the APK, verify that your frontend builds successfully:
+
+### Quick Verification
 

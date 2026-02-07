@@ -2,9 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-dilkhush-founder-photo-so-that-the-image-shown-under-the-dilkhush-card-in-the-meet-the-owners-section-uses-photo-1-the-photo-where-he-is-sitting-in-a-car-wearing-a-black-shirt-this-update-must-also-reflect-anywhere-else-the-app-uses-the-dilkhush-founder-image-constants-e-g-header-avatar-and-about-section",
-      "featureTitle": "Update the Dilkhush founder photo so that the image shown under the \"Dilkhush\" card in the \"Meet the Owners\" section uses Photo #1 (the photo where he is sitting in a car wearing a black shirt). This update must also reflect anywhere else the app uses the Dilkhush founder image constants (e.g., header avatar and About section).",
-      "files": [],
+      "featureId": "feature-remove-the-customer-facing-ad-settings-owner-settings-entry-from-the-public-site-footer-including-removing-the-arrow-chevron-indicator-shown-in-the-uploaded-screenshots-so-it-is-not-visible-anywhere-on-the-non-admin-landing-page",
+      "featureTitle": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
+      "files": [
+        "frontend/src/App.tsx"
+      ],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
@@ -14,6 +16,44 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-owner-settings-section-inside-the-admin-dashboard-ui-and-place-the-existing-ads-settings-ui-there-reuse-the-existing-adssettingspanel-component-but-only-render-it-inside-the-admin-experience",
+      "featureTitle": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+      "files": [
+        "frontend/src/components/admin/AdminDashboard.tsx",
+        "frontend/src/components/admin/OwnerSettingsSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-password-protect-access-to-ad-settings-owner-settings-using-pin-7973-with-a-user-flow-comparable-to-the-existing-admin-login-modal-if-a-user-is-not-currently-admin-authorized-they-must-enter-pin-7973-before-they-can-access-the-owner-settings-ad-settings-ui",
+      "featureTitle": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/admin/AdminDashboard.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

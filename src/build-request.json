@@ -1,49 +1,88 @@
 {
   "kind": "build_request",
-  "title": "Set Dilkhush section to use Photo #1",
+  "title": "Move Ad/Owner Settings into Admin Panel and lock behind PIN 7973",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the Dilkhush founder photo so that the image shown under the \"Dilkhush\" card in the \"Meet the Owners\" section uses Photo #1 (the photo where he is sitting in a car wearing a black shirt). This update must also reflect anywhere else the app uses the Dilkhush founder image constants (e.g., header avatar and About section).",
+      "text": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "recent-messages-2",
+          "recent-messages-6",
+          "recent-messages-10",
+          "recent-messages-11"
         ],
         "quotes": [
-          "Haan, Dilkhush ke niche photo number 1 laga do"
+          "Isko hta ke admin panel me add kar do is setting ko",
+          "Are bhai mene arrow lgaya hai usko htao owner setting ko",
+          "Password to lago",
+          "Password 7973"
         ]
       },
       "acceptanceCriteria": [
-        "In the \"Meet the Owners\" section, the Dilkhush card displays Photo #1 (car seated, black shirt).",
-        "The header avatar and About section Dilkhush photo also show the same updated Photo #1 (since they use the same Dilkhush image constants).",
-        "No backend changes are required to load the image; it is served as a static asset from frontend/public/assets/generated/."
+        "On the public/customer page, the footer no longer shows “Ad Settings” (and no arrow/chevron icon related to it).",
+        "There is no clickable navigation path to Ad Settings from the customer-facing UI (header, footer, mobile menu)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-2",
+          "recent-messages-6"
+        ],
+        "quotes": [
+          "Isko hta ke admin panel me add kar do is setting ko",
+          "Are bhai mene arrow lgaya hai usko htao owner setting ko isko lock kar do password ke sath jese admin panel ko login karne ke liye password chaiye hota hai"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When logged into admin, the Admin Dashboard displays an “Owner Settings” area.",
+        "“Ad Settings” is accessible from within that “Owner Settings” area and opens the existing AdSense settings dialog/panel.",
+        "AdsSettingsPanel is not rendered on the public/customer page."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-6",
+          "recent-messages-10",
+          "recent-messages-11",
+          "recent-messages-12"
+        ],
+        "quotes": [
+          "Are bhai mene arrow lgaya hai usko htao owner setting ko isko lock kar do password ke sath jese admin panel ko login karne ke liye password chaiye hota hai",
+          "Password to lago",
+          "Password 7973",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "If a user is not admin-authorized, they cannot access Owner Settings / Ad Settings without a PIN prompt.",
+        "Entering PIN 7973 unlocks access; incorrect PIN shows an English error message and keeps Owner Settings locked.",
+        "If a user is already admin-authorized, Owner Settings / Ad Settings opens without requiring the PIN again in the same session/state."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui (compose instead).",
-    "Do not route image serving through the backend canister; use static assets under frontend/public/assets/generated/."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
+    "Keep the Internet Computer backend as a single Motoko actor; do not introduce additional backend services.",
+    "Do not introduce third-party authentication providers; only the existing admin PIN mechanism may be used for this request."
   ],
   "nonGoals": [
-    "Do not change Rohit's photo or any other owner/founder photo configuration beyond what is necessary to set Dilkhush to Photo #1."
+    "Do not add or change backend persistence for ads settings (keep localStorage-based ads owner settings).",
+    "Do not change ad rendering logic beyond removing the public entry point and relocating settings access to the admin UI.",
+    "Do not redesign the entire admin dashboard; only add the minimal “Owner Settings” section needed."
   ],
   "imageRequirements": {
     "required": [],
-    "edits": [
-      "Replace the Dilkhush square headshot with Photo #1 (founder-dilkhush.dim_512x512.jpg > founder-dilkhush.dim_512x512.jpg)",
-      "Replace the small Dilkhush square headshot with Photo #1 (founder-dilkhush.dim_128x128.jpg > founder-dilkhush.dim_128x128.jpg)"
-    ]
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
+    "edits": []
   }
 }

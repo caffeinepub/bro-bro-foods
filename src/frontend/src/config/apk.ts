@@ -6,22 +6,25 @@ export interface ApkConfig {
   url: string;
   version: string;
   label: string;
+  filename: string;
   unavailableMessage: string;
 }
 
 // Customer APK configuration
 export const CUSTOMER_APK: ApkConfig = {
-  url: 'https://meaningful-coffee-oyw-draft.caffeine.xyz/downloads/bro-bro-foods.apk',
+  url: '/downloads/bro-bro-foods.apk',
   version: '1.0.0',
   label: 'Bro Bro Foods',
+  filename: 'bro-bro-foods.apk',
   unavailableMessage: 'The app is being prepared. Please check back in a few minutes.',
 };
 
 // Admin APK configuration
 export const ADMIN_APK: ApkConfig = {
-  url: 'https://meaningful-coffee-oyw-draft.caffeine.xyz/downloads/bro-bro-foods-admin.apk',
+  url: '/downloads/bro-bro-foods-admin.apk',
   version: '1.0.0',
   label: 'Bro Bro Foods Admin',
+  filename: 'bro-bro-foods-admin.apk',
   unavailableMessage: 'Admin app is being prepared. Please check back later.',
 };
 
