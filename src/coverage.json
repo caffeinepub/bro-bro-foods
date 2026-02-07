@@ -1,58 +1,26 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T08:01:21.637Z",
+  "generatedAt": "2026-02-07T08:06:14.512Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add the uploaded Founder Dilkhush photo as a static asset and use it anywhere the app currently shows the default owner photo, ensuring it renders correctly across header, About, and the Owner/Meet-the-Owners section.",
+        "summary": "Update the Dilkhush founder photo so that the image shown under the \"Dilkhush\" card in the \"Meet the Owners\" section uses Photo #1 (the photo where he is sitting in a car wearing a black shirt). This update must also reflect anywhere else the app uses the Dilkhush founder image constants (e.g., header avatar and About section).",
         "status": "implemented",
         "plannedFiles": [
           "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
-          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
-          "frontend/src/App.tsx",
-          "frontend/src/config/ownerPhotos.ts"
+          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg"
         ],
         "matchedFiles": [
           "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
-          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
-          "frontend/src/App.tsx",
-          "frontend/src/config/ownerPhotos.ts"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Update the OwnerPhoto component default imageSrc so that if no imageSrc prop is passed, it uses the new Founder Dilkhush static asset instead of /assets/IMG-20260207-WA0000.jpg.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/OwnerPhoto.tsx",
-          "frontend/src/config/ownerPhotos.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/OwnerPhoto.tsx",
-          "frontend/src/config/ownerPhotos.ts"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Render the generated founder photo asset from frontend/public/assets/ in the app (do not route image serving through the backend canister).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/config/ownerPhotos.ts",
-          "frontend/src/App.tsx",
-          "frontend/src/components/OwnerPhoto.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/config/ownerPhotos.ts",
-          "frontend/src/App.tsx",
-          "frontend/src/components/OwnerPhoto.tsx"
+          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg"
         ]
       }
     ]
@@ -64,9 +32,6 @@
     "frontend-implementation-plan.json",
     "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
     "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
-    "frontend/src/App.tsx",
-    "frontend/src/components/OwnerPhoto.tsx",
-    "frontend/src/config/ownerPhotos.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

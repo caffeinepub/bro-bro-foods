@@ -1,80 +1,26 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add Founder Dilkhush photo static assets and wire into existing OwnerPhoto usage",
+  "title": "Set Dilkhush founder photo assets to Photo #1",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add the generated Founder Dilkhush photo assets and use them everywhere the app currently renders the default owner photo (header, About, and Meet-the-Owners).",
+      "summary": "Replace the Dilkhush founder photo assets so all UI locations using the Dilkhush image constants display Photo #1.",
       "acceptanceCriteria": [
-        "A square, web-optimized founder photo file exists under frontend/public/assets/ (use the generated filename from this build request).",
-        "All places that render the generic/default OwnerPhoto (e.g., header OwnerPhoto and About section OwnerPhoto in frontend/src/App.tsx) use the Founder Dilkhush imageSrc and an alt text of \"Founder Dilkhush\".",
-        "On image load failure, the UI still falls back to /assets/generated/profile-placeholder.dim_512x512.png as implemented in frontend/src/components/OwnerPhoto.tsx."
+        "In the \"Meet the Owners\" section, the Dilkhush card displays Photo #1 (car seated, black shirt).",
+        "The header avatar and About section Dilkhush photo also show the same updated Photo #1 (since they use the same Dilkhush image constants).",
+        "No backend changes are required to load the image; it is served as a static asset from frontend/public/assets/generated/."
       ],
       "file_operations": [
         {
           "path": "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
-          "operation": "create",
-          "description": "Add the generated square 512x512 Founder Dilkhush headshot image at this exact path so it is served as a static public asset."
+          "operation": "modify",
+          "description": "Replace this static asset with Photo #1 (car seated, black shirt) so all usages of the 512px Dilkhush founder image update automatically."
         },
         {
           "path": "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
-          "operation": "create",
-          "description": "Add the generated square 128x128 Founder Dilkhush headshot image at this exact path so it is served as a static public asset."
-        },
-        {
-          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update all existing <OwnerPhoto /> usages that currently rely on the generic/default owner photo (header, About, and the Dilkhush card in Meet the Owners) to explicitly pass imageSrc pointing to the new Founder Dilkhush public asset and alt=\"Founder Dilkhush\". Prefer the 128x128 asset for the small header avatar and the 512x512 asset for larger displays."
-        },
-        {
-          "path": "frontend/src/config/ownerPhotos.ts",
-          "operation": "create",
-          "description": "Centralize public-path constants for owner/founder images (e.g., founderDilkhush512, founderDilkhush128) to avoid scattered string paths and ensure consistent reuse across the app."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Change OwnerPhoto default imageSrc to the new Founder Dilkhush static asset and remove the old default reference.",
-      "acceptanceCriteria": [
-        "frontend/src/components/OwnerPhoto.tsx default imageSrc points to the new founder image asset path.",
-        "No references to /assets/IMG-20260207-WA0000.jpg remain as the default fallback in OwnerPhoto."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/OwnerPhoto.tsx",
-          "operation": "modify",
-          "description": "Update the default value for the imageSrc prop to point to the new Founder Dilkhush static asset (public-path URL). Keep the existing onError fallback behavior that switches to /assets/generated/profile-placeholder.dim_512x512.png."
-        },
-        {
-          "path": "frontend/src/config/ownerPhotos.ts",
-          "operation": "modify",
-          "description": "Ensure the exported Founder Dilkhush asset paths match the generated filenames and are used as the OwnerPhoto default imageSrc source of truth."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Ensure the founder photo is rendered from frontend/public assets via a public-path URL, with no backend involvement.",
-      "acceptanceCriteria": [
-        "The founder image is referenced via a public-path URL (e.g., /assets/...) and loads in production builds without any backend changes."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/config/ownerPhotos.ts",
-          "operation": "modify",
-          "description": "Define/confirm that the Founder Dilkhush image paths are public-path URLs (e.g., starting with /assets/...) suitable for production static serving."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Ensure founder image references use the public-path URLs from frontend/src/config/ownerPhotos.ts (not imports, not backend-routed URLs), so the images load from frontend/public in production builds."
-        },
-        {
-          "path": "frontend/src/components/OwnerPhoto.tsx",
-          "operation": "modify",
-          "description": "Ensure the OwnerPhoto default imageSrc and runtime src selection use public-path URLs only, preserving the existing placeholder fallback on load error."
+          "description": "Replace this static asset with Photo #1 (car seated, black shirt) so all usages of the 128px Dilkhush founder image update automatically (e.g., header avatar)."
         }
       ]
     }

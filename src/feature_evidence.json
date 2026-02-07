@@ -2,12 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-the-uploaded-founder-dilkhush-photo-as-a-static-asset-and-use-it-anywhere-the-app-currently-shows-the-default-owner-photo-ensuring-it-renders-correctly-across-header-about-and-the-owner-meet-the-owners-section",
-      "featureTitle": "Add the uploaded Founder Dilkhush photo as a static asset and use it anywhere the app currently shows the default owner photo, ensuring it renders correctly across header, About, and the Owner/Meet-the-Owners section.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/config/ownerPhotos.ts"
-      ],
+      "featureId": "feature-update-the-dilkhush-founder-photo-so-that-the-image-shown-under-the-dilkhush-card-in-the-meet-the-owners-section-uses-photo-1-the-photo-where-he-is-sitting-in-a-car-wearing-a-black-shirt-this-update-must-also-reflect-anywhere-else-the-app-uses-the-dilkhush-founder-image-constants-e-g-header-avatar-and-about-section",
+      "featureTitle": "Update the Dilkhush founder photo so that the image shown under the \"Dilkhush\" card in the \"Meet the Owners\" section uses Photo #1 (the photo where he is sitting in a car wearing a black shirt). This update must also reflect anywhere else the app uses the Dilkhush founder image constants (e.g., header avatar and About section).",
+      "files": [],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
@@ -17,45 +14,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-ownerphoto-component-default-imagesrc-so-that-if-no-imagesrc-prop-is-passed-it-uses-the-new-founder-dilkhush-static-asset-instead-of-assets-img-20260207-wa0000-jpg",
-      "featureTitle": "Update the OwnerPhoto component default imageSrc so that if no imageSrc prop is passed, it uses the new Founder Dilkhush static asset instead of /assets/IMG-20260207-WA0000.jpg.",
-      "files": [
-        "frontend/src/components/OwnerPhoto.tsx",
-        "frontend/src/config/ownerPhotos.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-render-the-generated-founder-photo-asset-from-frontend-public-assets-in-the-app-do-not-route-image-serving-through-the-backend-canister",
-      "featureTitle": "Render the generated founder photo asset from frontend/public/assets/ in the app (do not route image serving through the backend canister).",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/OwnerPhoto.tsx",
-        "frontend/src/config/ownerPhotos.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

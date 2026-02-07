@@ -41,5 +41,7 @@
   "frontend/src/components/ads/AdsSettingsPanel.tsx": "Owner-accessible dialog component for configuring Google AdSense with script snippet paste functionality that auto-extracts client ID, includes validation, localStorage persistence, and runtime refresh notification.",
   "frontend/src/lib/adsenseSnippet.ts": "Utility module that extracts AdSense client IDs from pasted script snippets, supporting full script tags, raw URLs, and direct client IDs with validation and error messaging.",
   "frontend/public/ads.txt": "Static ads.txt file for Google AdSense verification containing the publisher ID and relationship declaration, served from the site root at /ads.txt.",
-  "frontend/src/config/ownerPhotos.ts": "Centralized configuration module exporting public-path URL constants for founder/owner images (512x512 and 128x128 variants) to ensure consistent reuse across the application."
+  "frontend/src/config/ownerPhotos.ts": "Centralized configuration module exporting public-path URL constants for founder/owner images (512x512 and 128x128 variants) to ensure consistent reuse across the application.",
+  "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg": "Dilkhush founder photo (512x512) showing him in car with black shirt (Photo #1), used in About section and Meet the Owners cards.",
+  "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg": "Dilkhush founder photo (128x128) showing him in car with black shirt (Photo #1), used in header avatar and other small displays."
 }

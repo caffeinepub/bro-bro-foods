@@ -1,85 +1,45 @@
 {
   "kind": "build_request",
-  "title": "Add Founder Dilkhush photo to the site",
+  "title": "Set Dilkhush section to use Photo #1",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add the uploaded Founder Dilkhush photo as a static asset and use it anywhere the app currently shows the default owner photo, ensuring it renders correctly across header, About, and the Owner/Meet-the-Owners section.",
+      "text": "Update the Dilkhush founder photo so that the image shown under the \"Dilkhush\" card in the \"Meet the Owners\" section uses Photo #1 (the photo where he is sitting in a car wearing a black shirt). This update must also reflect anywhere else the app uses the Dilkhush founder image constants (e.g., header avatar and About section).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "Founder Dilkhush ka photo lgao"
+          "Haan, Dilkhush ke niche photo number 1 laga do"
         ]
       },
       "acceptanceCriteria": [
-        "A square, web-optimized founder photo file exists under frontend/public/assets/ (use the generated filename from this build request).",
-        "All places that render the generic/default OwnerPhoto (e.g., header OwnerPhoto and About section OwnerPhoto in frontend/src/App.tsx) use the Founder Dilkhush imageSrc and an alt text of \"Founder Dilkhush\".",
-        "On image load failure, the UI still falls back to /assets/generated/profile-placeholder.dim_512x512.png as implemented in frontend/src/components/OwnerPhoto.tsx."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Update the OwnerPhoto component default imageSrc so that if no imageSrc prop is passed, it uses the new Founder Dilkhush static asset instead of /assets/IMG-20260207-WA0000.jpg.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Founder Dilkhush ka photo lgao"
-        ]
-      },
-      "acceptanceCriteria": [
-        "frontend/src/components/OwnerPhoto.tsx default imageSrc points to the new founder image asset path.",
-        "No references to /assets/IMG-20260207-WA0000.jpg remain as the default fallback in OwnerPhoto."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Render the generated founder photo asset from frontend/public/assets/ in the app (do not route image serving through the backend canister).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Founder Dilkhush ka photo lgao"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The founder image is referenced via a public-path URL (e.g., /assets/...) and loads in production builds without any backend changes."
+        "In the \"Meet the Owners\" section, the Dilkhush card displays Photo #1 (car seated, black shirt).",
+        "The header avatar and About section Dilkhush photo also show the same updated Photo #1 (since they use the same Dilkhush image constants).",
+        "No backend changes are required to load the image; it is served as a static asset from frontend/public/assets/generated/."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (compose existing UI components instead).",
-    "Do not modify immutable frontend hook files (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
-    "Keep backend as single-actor Motoko; no backend changes are required for this request."
+    "Do not edit any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui (compose instead).",
+    "Do not route image serving through the backend canister; use static assets under frontend/public/assets/generated/."
   ],
   "nonGoals": [
-    "Adding or changing Internet Identity authentication behavior.",
-    "Changing AdSense/ads.txt configuration.",
-    "Adding new admin features or order/payment logic changes."
+    "Do not change Rohit's photo or any other owner/founder photo configuration beyond what is necessary to set Dilkhush to Photo #1."
   ],
   "imageRequirements": {
-    "required": [
-      "Cropped square headshot photo centered on the face with neutral/softened background (founder-dilkhush.dim_512x512.jpg)",
-      "Small square headshot crop centered on the face (founder-dilkhush.dim_128x128.jpg)"
-    ],
-    "edits": []
+    "required": [],
+    "edits": [
+      "Replace the Dilkhush square headshot with Photo #1 (founder-dilkhush.dim_512x512.jpg > founder-dilkhush.dim_512x512.jpg)",
+      "Replace the small Dilkhush square headshot with Photo #1 (founder-dilkhush.dim_128x128.jpg > founder-dilkhush.dim_128x128.jpg)"
+    ]
   },
   "userProfileUpdate": {
-    "goalsToAdd": [
-      "Show the Founder Dilkhush photo on the website/app."
-    ],
+    "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [
-      "Use English for user-facing text."
-    ],
+    "preferencesToAdd": [],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],
