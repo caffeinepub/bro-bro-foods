@@ -8,14 +8,37 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const OrderStatus = IDL.Variant({
+  'preparing' : IDL.Null,
+  'cancelled' : IDL.Null,
+  'pending' : IDL.Null,
+  'outForDelivery' : IDL.Null,
+  'delivered' : IDL.Null,
+  'accepted' : IDL.Null,
+});
 export const Time = IDL.Int;
+export const PaymentConfirmation = IDL.Record({
+  'utr' : IDL.Text,
+  'paymentMethodId' : IDL.Nat,
+  'paidVia' : IDL.Text,
+  'paidAt' : Time,
+});
+export const StatusChangeEvent = IDL.Record({
+  'status' : OrderStatus,
+  'changedAt' : Time,
+  'changedBy' : IDL.Text,
+});
 export const Order = IDL.Record({
   'id' : IDL.Nat,
+  'status' : OrderStatus,
+  'paymentMethodId' : IDL.Opt(IDL.Nat),
   'createdAt' : Time,
   'plateTypeId' : IDL.Nat,
+  'paymentConfirmation' : IDL.Opt(PaymentConfirmation),
   'totalAmount' : IDL.Nat,
   'quantity' : IDL.Nat,
   'price' : IDL.Nat,
+  'statusEvents' : IDL.Vec(StatusChangeEvent),
   'plateTypeName' : IDL.Text,
 });
 
@@ -23,19 +46,62 @@ export const idlService = IDL.Service({
   'createOrder' : IDL.Func([IDL.Nat, IDL.Text, IDL.Nat, IDL.Nat], [Order], []),
   'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
   'getOrder' : IDL.Func([IDL.Nat], [IDL.Opt(Order)], ['query']),
+  'getOrderStatusTimeline' : IDL.Func(
+      [IDL.Nat],
+      [IDL.Opt(IDL.Vec(StatusChangeEvent))],
+      ['query'],
+    ),
+  'getPaymentConfirmation' : IDL.Func(
+      [IDL.Nat],
+      [IDL.Opt(PaymentConfirmation)],
+      ['query'],
+    ),
+  'updateOrderStatus' : IDL.Func(
+      [IDL.Nat, OrderStatus, IDL.Text],
+      [IDL.Opt(Order)],
+      [],
+    ),
+  'updatePaymentConfirmation' : IDL.Func(
+      [IDL.Nat, PaymentConfirmation],
+      [IDL.Opt(Order)],
+      [],
+    ),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const OrderStatus = IDL.Variant({
+    'preparing' : IDL.Null,
+    'cancelled' : IDL.Null,
+    'pending' : IDL.Null,
+    'outForDelivery' : IDL.Null,
+    'delivered' : IDL.Null,
+    'accepted' : IDL.Null,
+  });
   const Time = IDL.Int;
+  const PaymentConfirmation = IDL.Record({
+    'utr' : IDL.Text,
+    'paymentMethodId' : IDL.Nat,
+    'paidVia' : IDL.Text,
+    'paidAt' : Time,
+  });
+  const StatusChangeEvent = IDL.Record({
+    'status' : OrderStatus,
+    'changedAt' : Time,
+    'changedBy' : IDL.Text,
+  });
   const Order = IDL.Record({
     'id' : IDL.Nat,
+    'status' : OrderStatus,
+    'paymentMethodId' : IDL.Opt(IDL.Nat),
     'createdAt' : Time,
     'plateTypeId' : IDL.Nat,
+    'paymentConfirmation' : IDL.Opt(PaymentConfirmation),
     'totalAmount' : IDL.Nat,
     'quantity' : IDL.Nat,
     'price' : IDL.Nat,
+    'statusEvents' : IDL.Vec(StatusChangeEvent),
     'plateTypeName' : IDL.Text,
   });
   
@@ -47,6 +113,26 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
     'getOrder' : IDL.Func([IDL.Nat], [IDL.Opt(Order)], ['query']),
+    'getOrderStatusTimeline' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Opt(IDL.Vec(StatusChangeEvent))],
+        ['query'],
+      ),
+    'getPaymentConfirmation' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Opt(PaymentConfirmation)],
+        ['query'],
+      ),
+    'updateOrderStatus' : IDL.Func(
+        [IDL.Nat, OrderStatus, IDL.Text],
+        [IDL.Opt(Order)],
+        [],
+      ),
+    'updatePaymentConfirmation' : IDL.Func(
+        [IDL.Nat, PaymentConfirmation],
+        [IDL.Opt(Order)],
+        [],
+      ),
   });
 };
 

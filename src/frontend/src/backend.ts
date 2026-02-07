@@ -89,69 +89,275 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface StatusChangeEvent {
+    status: OrderStatus;
+    changedAt: Time;
+    changedBy: string;
+}
+export type Time = bigint;
 export interface Order {
     id: bigint;
+    status: OrderStatus;
+    paymentMethodId?: bigint;
     createdAt: Time;
     plateTypeId: bigint;
+    paymentConfirmation?: PaymentConfirmation;
     totalAmount: bigint;
     quantity: bigint;
     price: bigint;
+    statusEvents: Array<StatusChangeEvent>;
     plateTypeName: string;
 }
-export type Time = bigint;
+export interface PaymentConfirmation {
+    utr: string;
+    paymentMethodId: bigint;
+    paidVia: string;
+    paidAt: Time;
+}
+export enum OrderStatus {
+    preparing = "preparing",
+    cancelled = "cancelled",
+    pending = "pending",
+    outForDelivery = "outForDelivery",
+    delivered = "delivered",
+    accepted = "accepted"
+}
 export interface backendInterface {
     createOrder(plateTypeId: bigint, plateTypeName: string, price: bigint, quantity: bigint): Promise<Order>;
     getAllOrders(): Promise<Array<Order>>;
     getOrder(orderId: bigint): Promise<Order | null>;
+    getOrderStatusTimeline(orderId: bigint): Promise<Array<StatusChangeEvent> | null>;
+    getPaymentConfirmation(orderId: bigint): Promise<PaymentConfirmation | null>;
+    updateOrderStatus(orderId: bigint, newStatus: OrderStatus, changedBy: string): Promise<Order | null>;
+    updatePaymentConfirmation(orderId: bigint, paymentConfirmation: PaymentConfirmation): Promise<Order | null>;
 }
-import type { Order as _Order } from "./declarations/backend.did.d.ts";
+import type { Order as _Order, OrderStatus as _OrderStatus, PaymentConfirmation as _PaymentConfirmation, StatusChangeEvent as _StatusChangeEvent, Time as _Time } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async createOrder(arg0: bigint, arg1: string, arg2: bigint, arg3: bigint): Promise<Order> {
         if (this.processError) {
             try {
                 const result = await this.actor.createOrder(arg0, arg1, arg2, arg3);
-                return result;
+                return from_candid_Order_n1(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.createOrder(arg0, arg1, arg2, arg3);
-            return result;
+            return from_candid_Order_n1(this._uploadFile, this._downloadFile, result);
         }
     }
     async getAllOrders(): Promise<Array<Order>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getAllOrders();
-                return result;
+                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getAllOrders();
-            return result;
+            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
         }
     }
     async getOrder(arg0: bigint): Promise<Order | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getOrder(arg0);
-                return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getOrder(arg0);
-            return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getOrderStatusTimeline(arg0: bigint): Promise<Array<StatusChangeEvent> | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getOrderStatusTimeline(arg0);
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getOrderStatusTimeline(arg0);
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getPaymentConfirmation(arg0: bigint): Promise<PaymentConfirmation | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPaymentConfirmation(arg0);
+                return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPaymentConfirmation(arg0);
+            return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async updateOrderStatus(arg0: bigint, arg1: OrderStatus, arg2: string): Promise<Order | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateOrderStatus(arg0, to_candid_OrderStatus_n13(this._uploadFile, this._downloadFile, arg1), arg2);
+                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateOrderStatus(arg0, to_candid_OrderStatus_n13(this._uploadFile, this._downloadFile, arg1), arg2);
+            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async updatePaymentConfirmation(arg0: bigint, arg1: PaymentConfirmation): Promise<Order | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updatePaymentConfirmation(arg0, arg1);
+                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updatePaymentConfirmation(arg0, arg1);
+            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
         }
     }
 }
-function from_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Order]): Order | null {
+function from_candid_OrderStatus_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _OrderStatus): OrderStatus {
+    return from_candid_variant_n4(_uploadFile, _downloadFile, value);
+}
+function from_candid_Order_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Order): Order {
+    return from_candid_record_n2(_uploadFile, _downloadFile, value);
+}
+function from_candid_StatusChangeEvent_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _StatusChangeEvent): StatusChangeEvent {
+    return from_candid_record_n9(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Order]): Order | null {
+    return value.length === 0 ? null : from_candid_Order_n1(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<_StatusChangeEvent>]): Array<StatusChangeEvent> | null {
+    return value.length === 0 ? null : from_candid_vec_n7(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_PaymentConfirmation]): PaymentConfirmation | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: bigint;
+    status: _OrderStatus;
+    paymentMethodId: [] | [bigint];
+    createdAt: _Time;
+    plateTypeId: bigint;
+    paymentConfirmation: [] | [_PaymentConfirmation];
+    totalAmount: bigint;
+    quantity: bigint;
+    price: bigint;
+    statusEvents: Array<_StatusChangeEvent>;
+    plateTypeName: string;
+}): {
+    id: bigint;
+    status: OrderStatus;
+    paymentMethodId?: bigint;
+    createdAt: Time;
+    plateTypeId: bigint;
+    paymentConfirmation?: PaymentConfirmation;
+    totalAmount: bigint;
+    quantity: bigint;
+    price: bigint;
+    statusEvents: Array<StatusChangeEvent>;
+    plateTypeName: string;
+} {
+    return {
+        id: value.id,
+        status: from_candid_OrderStatus_n3(_uploadFile, _downloadFile, value.status),
+        paymentMethodId: record_opt_to_undefined(from_candid_opt_n5(_uploadFile, _downloadFile, value.paymentMethodId)),
+        createdAt: value.createdAt,
+        plateTypeId: value.plateTypeId,
+        paymentConfirmation: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.paymentConfirmation)),
+        totalAmount: value.totalAmount,
+        quantity: value.quantity,
+        price: value.price,
+        statusEvents: from_candid_vec_n7(_uploadFile, _downloadFile, value.statusEvents),
+        plateTypeName: value.plateTypeName
+    };
+}
+function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    status: _OrderStatus;
+    changedAt: _Time;
+    changedBy: string;
+}): {
+    status: OrderStatus;
+    changedAt: Time;
+    changedBy: string;
+} {
+    return {
+        status: from_candid_OrderStatus_n3(_uploadFile, _downloadFile, value.status),
+        changedAt: value.changedAt,
+        changedBy: value.changedBy
+    };
+}
+function from_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    preparing: null;
+} | {
+    cancelled: null;
+} | {
+    pending: null;
+} | {
+    outForDelivery: null;
+} | {
+    delivered: null;
+} | {
+    accepted: null;
+}): OrderStatus {
+    return "preparing" in value ? OrderStatus.preparing : "cancelled" in value ? OrderStatus.cancelled : "pending" in value ? OrderStatus.pending : "outForDelivery" in value ? OrderStatus.outForDelivery : "delivered" in value ? OrderStatus.delivered : "accepted" in value ? OrderStatus.accepted : value;
+}
+function from_candid_vec_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Order>): Array<Order> {
+    return value.map((x)=>from_candid_Order_n1(_uploadFile, _downloadFile, x));
+}
+function from_candid_vec_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_StatusChangeEvent>): Array<StatusChangeEvent> {
+    return value.map((x)=>from_candid_StatusChangeEvent_n8(_uploadFile, _downloadFile, x));
+}
+function to_candid_OrderStatus_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: OrderStatus): _OrderStatus {
+    return to_candid_variant_n14(_uploadFile, _downloadFile, value);
+}
+function to_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: OrderStatus): {
+    preparing: null;
+} | {
+    cancelled: null;
+} | {
+    pending: null;
+} | {
+    outForDelivery: null;
+} | {
+    delivered: null;
+} | {
+    accepted: null;
+} {
+    return value == OrderStatus.preparing ? {
+        preparing: null
+    } : value == OrderStatus.cancelled ? {
+        cancelled: null
+    } : value == OrderStatus.pending ? {
+        pending: null
+    } : value == OrderStatus.outForDelivery ? {
+        outForDelivery: null
+    } : value == OrderStatus.delivered ? {
+        delivered: null
+    } : value == OrderStatus.accepted ? {
+        accepted: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -1,67 +1,105 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T20:08:57.751Z",
+  "generatedAt": "2026-02-07T05:12:48.106Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
+    "total": 4,
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-25",
-        "summary": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
+        "id": "REQ-1",
+        "summary": "Add an admin-only dashboard UI that can be opened from the web app using the URL hash token format and shows all orders with time/date and payment tracking.\n\nThe admin view must:\n- Be accessible only when the URL contains a valid admin token in the hash (continue supporting the existing pattern `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`).\n- Display a table/list of orders fetched from the backend, including at minimum: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (if available), and paid date/time (if available).\n- Provide order detail view (modal or separate section) to inspect all stored fields for a selected order.\n- Use English-only user-facing text in the admin panel.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
-          "frontend/src/components/PostOrderConfirmationModal.tsx",
+          "frontend/src/lib/adminAccess.ts",
+          "frontend/src/hooks/useAdminOrders.ts",
+          "frontend/src/components/admin/AdminDashboard.tsx",
+          "frontend/src/components/admin/OrdersTable.tsx",
+          "frontend/src/components/admin/OrderDetailView.tsx",
           "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
-          "frontend/src/components/PostOrderConfirmationModal.tsx",
+          "frontend/src/lib/adminAccess.ts",
+          "frontend/src/hooks/useAdminOrders.ts",
+          "frontend/src/components/admin/AdminDashboard.tsx",
+          "frontend/src/components/admin/OrdersTable.tsx",
+          "frontend/src/components/admin/OrderDetailView.tsx",
           "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-26",
-        "summary": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
+        "id": "REQ-2",
+        "summary": "Extend the backend order model to support an order timeline beyond creation and payment confirmation (the user requested tracking of “other time”).\n\nBackend must store, for each order:\n- Current order status (e.g., Pending, Accepted, Preparing, Out for Delivery, Delivered, Cancelled).\n- Timestamps for status changes (a timeline/history), including who/what changed it (admin action).\n\nExpose backend APIs to:\n- Update an order’s status and append a status-change event with the current server time.\n- Query timeline/status information together with orders (either via `getAllOrders` returning the enriched Order type, or via an additional query endpoint).\n\nAll user-facing/admin-facing text on the frontend that reflects these statuses must be in English.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add admin panel actions to manage order tracking:\n- Allow the admin to change an order’s status using a dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled).\n- Show a chronological timeline in the order detail view that includes: created time, each status change time, and payment confirmation time (when available).\n- Provide quick filters/sorting in the admin list: newest first (default), filter by payment status (Paid/Unpaid), and filter by order status.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/PostOrderConfirmationModal.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/hooks/useUpdateOrderStatus.ts",
+          "frontend/src/components/admin/OrdersFilters.tsx",
+          "frontend/src/components/admin/OrdersTable.tsx",
+          "frontend/src/components/admin/OrderDetailView.tsx",
+          "frontend/src/components/admin/AdminDashboard.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/PostOrderConfirmationModal.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/hooks/useUpdateOrderStatus.ts",
+          "frontend/src/components/admin/OrdersFilters.tsx",
+          "frontend/src/components/admin/OrdersTable.tsx",
+          "frontend/src/components/admin/OrderDetailView.tsx",
+          "frontend/src/components/admin/AdminDashboard.tsx"
         ]
       },
       {
-        "id": "REQ-27",
-        "summary": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
+        "id": "REQ-4",
+        "summary": "Support a separate Admin Panel APK build and a working download link/config for it.\n\nUpdate the frontend APK configuration so that:\n- There is a distinct configuration entry for the customer APK and the admin APK (separate URLs and labels).\n- The download/availability-check logic can check and download the admin APK artifact independently from the customer APK.\n\nAdd an admin-only download button in the admin dashboard that:\n- Checks admin APK availability and initiates download when available.\n- Shows a clear English-only message when the admin APK is not available yet.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/PostOrderConfirmationModal.tsx",
-          "frontend/src/components/SimpleModal.tsx"
+          "frontend/src/config/apk.ts",
+          "frontend/src/lib/apkAvailability.ts",
+          "frontend/src/components/admin/AdminApkDownloadButton.tsx",
+          "frontend/src/components/admin/AdminDashboard.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/PostOrderConfirmationModal.tsx"
+          "frontend/src/config/apk.ts",
+          "frontend/src/lib/apkAvailability.ts",
+          "frontend/src/components/admin/AdminApkDownloadButton.tsx",
+          "frontend/src/components/admin/AdminDashboard.tsx",
+          "frontend/src/App.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
     "frontend/src/App.tsx",
-    "frontend/src/components/PostOrderConfirmationModal.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/admin/AdminApkDownloadButton.tsx",
+    "frontend/src/components/admin/AdminDashboard.tsx",
+    "frontend/src/components/admin/OrderDetailView.tsx",
+    "frontend/src/components/admin/OrdersFilters.tsx",
+    "frontend/src/components/admin/OrdersTable.tsx",
+    "frontend/src/config/apk.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useAdminOrders.ts",
+    "frontend/src/hooks/useUpdateOrderStatus.ts",
+    "frontend/src/lib/adminAccess.ts",
+    "frontend/src/lib/apkAvailability.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

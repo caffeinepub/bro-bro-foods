@@ -1,0 +1,28 @@
+{
+  "name": "Bro Bro Foods",
+  "short_name": "Bro Bro",
+  "description": "Fresh Veg Momos, Fast Delivery - Order delicious momos online",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff5722",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/assets/generated/android-app-icon.dim_1024x1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/generated/android-app-icon.dim_1024x1024.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/generated/android-app-icon.dim_1024x1024.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

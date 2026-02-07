@@ -12,18 +12,52 @@ import type { Principal } from '@icp-sdk/core/principal';
 
 export interface Order {
   'id' : bigint,
+  'status' : OrderStatus,
+  'paymentMethodId' : [] | [bigint],
   'createdAt' : Time,
   'plateTypeId' : bigint,
+  'paymentConfirmation' : [] | [PaymentConfirmation],
   'totalAmount' : bigint,
   'quantity' : bigint,
   'price' : bigint,
+  'statusEvents' : Array<StatusChangeEvent>,
   'plateTypeName' : string,
+}
+export type OrderStatus = { 'preparing' : null } |
+  { 'cancelled' : null } |
+  { 'pending' : null } |
+  { 'outForDelivery' : null } |
+  { 'delivered' : null } |
+  { 'accepted' : null };
+export interface PaymentConfirmation {
+  'utr' : string,
+  'paymentMethodId' : bigint,
+  'paidVia' : string,
+  'paidAt' : Time,
+}
+export interface StatusChangeEvent {
+  'status' : OrderStatus,
+  'changedAt' : Time,
+  'changedBy' : string,
 }
 export type Time = bigint;
 export interface _SERVICE {
   'createOrder' : ActorMethod<[bigint, string, bigint, bigint], Order>,
   'getAllOrders' : ActorMethod<[], Array<Order>>,
   'getOrder' : ActorMethod<[bigint], [] | [Order]>,
+  'getOrderStatusTimeline' : ActorMethod<
+    [bigint],
+    [] | [Array<StatusChangeEvent>]
+  >,
+  'getPaymentConfirmation' : ActorMethod<[bigint], [] | [PaymentConfirmation]>,
+  'updateOrderStatus' : ActorMethod<
+    [bigint, OrderStatus, string],
+    [] | [Order]
+  >,
+  'updatePaymentConfirmation' : ActorMethod<
+    [bigint, PaymentConfirmation],
+    [] | [Order]
+  >,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

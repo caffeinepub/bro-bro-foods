@@ -3,10 +3,26 @@ import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 
 module {
-  type PlateType = {
-    id : Nat;
-    name : Text;
-    price : Nat;
+  type PaymentConfirmation = {
+    utr : Text;
+    paidVia : Text;
+    paymentMethodId : Nat;
+    paidAt : Time.Time;
+  };
+
+  type OrderStatus = {
+    #pending;
+    #accepted;
+    #preparing;
+    #outForDelivery;
+    #delivered;
+    #cancelled;
+  };
+
+  type StatusChangeEvent = {
+    status : OrderStatus;
+    changedAt : Time.Time;
+    changedBy : Text;
   };
 
   type OldOrder = {
@@ -14,12 +30,11 @@ module {
     plateTypeId : Nat;
     plateTypeName : Text;
     price : Nat;
+    quantity : Nat;
+    totalAmount : Nat;
     createdAt : Time.Time;
-  };
-
-  type OldActor = {
-    nextOrderId : Nat;
-    orders : Map.Map<Nat, OldOrder>;
+    paymentMethodId : ?Nat;
+    paymentConfirmation : ?PaymentConfirmation;
   };
 
   type NewOrder = {
@@ -30,6 +45,15 @@ module {
     quantity : Nat;
     totalAmount : Nat;
     createdAt : Time.Time;
+    paymentMethodId : ?Nat;
+    paymentConfirmation : ?PaymentConfirmation;
+    status : OrderStatus;
+    statusEvents : [StatusChangeEvent];
+  };
+
+  type OldActor = {
+    nextOrderId : Nat;
+    orders : Map.Map<Nat, OldOrder>;
   };
 
   type NewActor = {
@@ -38,19 +62,23 @@ module {
   };
 
   public func run(old : OldActor) : NewActor {
-    let newOrdersMap = old.orders.map<Nat, OldOrder, NewOrder>(
-      func(_orderId, oldOrder) {
+    let newOrders = old.orders.map<Nat, OldOrder, NewOrder>(
+      func(_id, oldOrder) {
+        let initialStatusEvent = {
+          status = #pending;
+          changedAt = oldOrder.createdAt;
+          changedBy = "system";
+        };
         {
           oldOrder with
-          quantity = 1;
-          totalAmount = oldOrder.price;
+          status = #pending;
+          statusEvents = [initialStatusEvent];
         };
       }
     );
-
     {
       old with
-      orders = newOrdersMap;
+      orders = newOrders;
     };
   };
 };

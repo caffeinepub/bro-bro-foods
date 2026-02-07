@@ -1,216 +1,34 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
-  "summary": "Create a marketing/landing homepage for Bro Bro Foods with defined sections and cohesive theme, plus a working Order Now flow that collects plate selection and customer delivery details and initiates ordering via WhatsApp to the business number with an auto-filled message.",
+  "projectStateVersion": 3,
+  "summary": "Build and deploy a mobile app (Bro Bro Foods) with working APK download, and add an admin-panel APK for tracking orders (time/date/payment and related details).",
   "architectural_notes": [
-    "Ordering will be initiated via WhatsApp deep link to +91 97973 82618 with a prefilled message containing order selections and captured customer details.",
-    "WhatsApp ordering deep link should target the business number provided by user: 7973782618 (normalize to E.164 +91 79737 82618 if required by the WhatsApp URL scheme).",
-    "Payment UX decision: show Paytm QR code after order is placed (on confirmation screen), not before or always-visible."
+    "Admin functionality should be delivered as a separate Admin Panel Android APK focused on order tracking (time/date/payment and other timeline fields)."
   ],
-  "known_issues": [
-    "Ordering is not working: user cannot select Half/Full plate and cannot place orders.",
-    "Deployment unsuccessful (deployment error encountered; details not provided in chat)."
-  ],
-  "isFixRequest": true,
-  "imageRequirements": "## Required Images\n- Paytm QR code image (paytm-qr.dim_900x900.png)",
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-create-a-single-page-marketing-homepage-for-the-brand-bro-bro-foods-with-the-following-sections-in-this-order-hero-about-menu-how-to-order-why-choose-us-pricing-highlight-order-now-cta-contact-us-footer-each-section-must-be-navigable-via-in-page-anchors-e-g-header-nav-links-that-scroll-to-sections",
-      "title": "Create a single-page marketing homepage for the brand “Bro Bro Foods” with the following sections in this order: Hero, About, Menu, How to Order, Why Choose Us, Pricing Highlight, Order Now (CTA), Contact Us, Footer. Each section must be navigable via in-page anchors (e.g., header nav links that scroll to sections).",
+      "id": "feature-add-an-admin-only-dashboard-ui-that-can-be-opened-from-the-web-app-using-the-url-hash-token-format-and-shows-all-orders-with-time-date-and-payment-tracking-the-admin-view-must-be-accessible-only-when-the-url-contains-a-valid-admin-token-in-the-hash-continue-supporting-the-existing-pattern-caffeineadmintoken-91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15-display-a-table-list-of-orders-fetched-from-the-backend-including-at-minimum-order-id-item-name-quantity-total-amount-created-date-time-payment-status-utr-if-available-and-paid-date-time-if-available-provide-order-detail-view-modal-or-separate-section-to-inspect-all-stored-fields-for-a-selected-order-use-english-only-user-facing-text-in-the-admin-panel",
+      "title": "Add an admin-only dashboard UI that can be opened from the web app using the URL hash token format and shows all orders with time/date and payment tracking.\n\nThe admin view must:\n- Be accessible only when the URL contains a valid admin token in the hash (continue supporting the existing pattern `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`).\n- Display a table/list of orders fetched from the backend, including at minimum: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (if available), and paid date/time (if available).\n- Provide order detail view (modal or separate section) to inspect all stored fields for a selected order.\n- Use English-only user-facing text in the admin panel.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-the-hero-section-content-with-english-only-user-facing-text-heading-bro-bro-foods-subheading-fresh-veg-momos-fast-delivery-tagline-half-plate-50-full-plate-80-primary-button-order-now-secondary-button-download-app-the-order-now-button-must-scroll-to-the-order-now-cta-section-the-download-app-button-must-open-a-small-modal-or-inline-message-stating-app-coming-soon-no-external-links-unless-configured-later",
-      "title": "Implement the Hero section content with English-only user-facing text: Heading “Bro Bro Foods”; subheading “Fresh Veg Momos, Fast Delivery”; tagline “Half Plate ₹50 | Full Plate ₹80”; primary button “Order Now”; secondary button “Download App”. The “Order Now” button must scroll to the Order Now (CTA) section. The “Download App” button must open a small modal or inline message stating “App coming soon” (no external links unless configured later).",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-about-us-section-with-heading-about-bro-bro-foods-and-the-provided-paragraph-content-using-english-only-text-and-removing-emoji-from-display-text",
-      "title": "Implement the About Us section with heading “About Bro Bro Foods” and the provided paragraph content, using English-only text and removing emoji from display text.",
+      "id": "feature-add-admin-panel-actions-to-manage-order-tracking-allow-the-admin-to-change-an-order-s-status-using-a-dropdown-pending-accepted-preparing-out-for-delivery-delivered-cancelled-show-a-chronological-timeline-in-the-order-detail-view-that-includes-created-time-each-status-change-time-and-payment-confirmation-time-when-available-provide-quick-filters-sorting-in-the-admin-list-newest-first-default-filter-by-payment-status-paid-unpaid-and-filter-by-order-status",
+      "title": "Add admin panel actions to manage order tracking:\n- Allow the admin to change an order’s status using a dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled).\n- Show a chronological timeline in the order detail view that includes: created time, each status change time, and payment confirmation time (when available).\n- Provide quick filters/sorting in the admin list: newest first (default), filter by payment status (Paid/Unpaid), and filter by order status.",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-the-menu-section-with-heading-our-menu-and-two-menu-cards-1-veg-momos-half-plate-quantity-12-pieces-price-50-description-12-fresh-veg-momos-served-hot-with-spicy-red-chutney-2-veg-momos-full-plate-quantity-24-pieces-price-80-description-24-fresh-veg-momos-with-special-spicy-chutney-best-seller",
-      "title": "Implement the Menu section with heading “Our Menu” and two menu cards: (1) “Veg Momos – Half Plate”, quantity “12 Pieces”, price “₹50”, description “12 fresh veg momos served hot with spicy red chutney.” (2) “Veg Momos – Full Plate”, quantity “24 Pieces”, price “₹80”, description “24 fresh veg momos with special spicy chutney. Best Seller”.",
+      "id": "feature-support-a-separate-admin-panel-apk-build-and-a-working-download-link-config-for-it-update-the-frontend-apk-configuration-so-that-there-is-a-distinct-configuration-entry-for-the-customer-apk-and-the-admin-apk-separate-urls-and-labels-the-download-availability-check-logic-can-check-and-download-the-admin-apk-artifact-independently-from-the-customer-apk-add-an-admin-only-download-button-in-the-admin-dashboard-that-checks-admin-apk-availability-and-initiates-download-when-available-shows-a-clear-english-only-message-when-the-admin-apk-is-not-available-yet",
+      "title": "Support a separate Admin Panel APK build and a working download link/config for it.\n\nUpdate the frontend APK configuration so that:\n- There is a distinct configuration entry for the customer APK and the admin APK (separate URLs and labels).\n- The download/availability-check logic can check and download the admin APK artifact independently from the customer APK.\n\nAdd an admin-only download button in the admin dashboard that:\n- Checks admin APK availability and initiates download when available.\n- Shows a clear English-only message when the admin APK is not available yet.",
       "reqIds": [
         "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-how-it-works-section-with-heading-how-to-order-and-a-numbered-step-list-using-english-only-text-open-bro-bro-foods-app-or-website-select-veg-momos-choose-half-or-full-plate-place-order-relax-fresh-momos-delivered-hot-and-fast",
-      "title": "Implement the How It Works section with heading “How to Order” and a numbered step list using English-only text: “Open Bro Bro Foods App or Website”, “Select Veg Momos”, “Choose Half or Full Plate”, “Place Order & Relax”, “Fresh momos delivered hot and fast”.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-why-choose-us-section-with-heading-why-bro-bro-foods-and-five-bullet-points-in-english-only-text-freshly-prepared-veg-momos-affordable-prices-fast-local-delivery-hygienic-cooking-trusted-local-brand",
-      "title": "Implement the Why Choose Us section with heading “Why Bro Bro Foods?” and five bullet points in English-only text: “Freshly prepared Veg Momos”, “Affordable prices”, “Fast local delivery”, “Hygienic cooking”, “Trusted local brand”.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-pricing-highlight-section-with-heading-simple-honest-pricing-and-english-only-text-no-hidden-charges-pay-only-for-what-you-eat-followed-by-a-price-list-half-plate-50-full-plate-80-delivery-charge-20-free-delivery-above-199",
-      "title": "Implement the Pricing Highlight section with heading “Simple & Honest Pricing” and English-only text: “No hidden charges.” “Pay only for what you eat.” followed by a price list: “Half Plate – ₹50”, “Full Plate – ₹80”, “Delivery Charge – ₹20”, “Free Delivery above ₹199”.",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-order-now-cta-section-with-heading-hungry-order-now-supporting-text-fresh-veg-momos-are-just-one-click-away-and-two-buttons-order-on-app-and-order-on-website-both-buttons-should-open-a-modal-or-inline-message-stating-ordering-links-coming-soon-until-urls-are-provided",
-      "title": "Implement the Order Now (CTA) section with heading “Hungry? Order Now!”, supporting text “Fresh Veg Momos are just one click away.” and two buttons: “Order on App” and “Order on Website”. Both buttons should open a modal or inline message stating “Ordering links coming soon” (until URLs are provided).",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-contact-us-section-with-heading-contact-bro-bro-foods-and-english-only-details-displayed-as-plain-text-location-your-local-area-phone-xxxxxxxxxx-timing-5-00-pm-11-00-pm",
-      "title": "Implement the Contact Us section with heading “Contact Bro Bro Foods” and English-only details displayed as plain text: “Location: Your Local Area”, “Phone: XXXXXXXXXX”, “Timing: 5:00 PM – 11:00 PM”.",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-footer-with-english-only-text-bro-bro-foods-and-local-taste-honest-price-plus-an-extra-line-more-tasty-items-coming-soon",
-      "title": "Implement the Footer with English-only text: “© Bro Bro Foods” and “Local Taste • Honest Price” plus an extra line “More tasty items coming soon…”.",
-      "reqIds": [
-        "REQ-10"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-an-optional-promotional-popup-that-can-be-dismissed-and-does-not-reappear-during-the-same-browser-session-popup-english-only-text-must-be-title-fresh-veg-momos-line-starting-at-50-and-a-button-order-now-that-scrolls-to-the-order-now-cta-section-the-popup-should-appear-once-after-a-short-delay-e-g-2-seconds-on-first-visit",
-      "title": "Add an optional promotional popup that can be dismissed and does not reappear during the same browser session. Popup English-only text must be: Title “Fresh Veg Momos”, line “Starting at ₹50”, and a button “Order Now” that scrolls to the Order Now (CTA) section. The popup should appear once after a short delay (e.g., ~2 seconds) on first visit.",
-      "reqIds": [
-        "REQ-11"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-apply-a-cohesive-visual-theme-suitable-for-a-street-food-brand-warm-appetizing-palette-avoid-blue-purple-bold-headline-typography-high-contrast-cta-buttons-and-consistent-spacing-section-dividers-the-theme-must-be-used-consistently-across-all-sections",
-      "title": "Apply a cohesive visual theme suitable for a street-food brand: warm appetizing palette (avoid blue/purple), bold headline typography, high-contrast CTA buttons, and consistent spacing/section dividers. The theme must be used consistently across all sections.",
-      "reqIds": [
-        "REQ-12"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-the-generated-static-images-listed-in-image-requirements-under-frontend-public-assets-generated-and-render-them-on-the-homepage-a-small-brand-mark-in-the-header-hero-area-and-a-hero-background-illustration-in-the-hero-section-images-must-be-loaded-as-static-assets-no-backend-image-serving",
-      "title": "Add the generated static images (listed in Image Requirements) under frontend/public/assets/generated and render them on the homepage: a small brand mark in the header/hero area and a hero background/illustration in the Hero section. Images must be loaded as static assets (no backend image serving).",
-      "reqIds": [
-        "REQ-13"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-replace-the-non-functional-ordering-experience-in-the-order-now-section-with-a-working-in-page-order-form-that-lets-users-a-select-exactly-one-plate-type-half-plate-or-full-plate-and-b-submit-place-an-order-successfully",
-      "title": "Replace the non-functional ordering experience in the \"Order Now\" section with a working in-page order form that lets users (a) select exactly one plate type (Half Plate or Full Plate) and (b) submit/place an order successfully.",
-      "reqIds": [
-        "REQ-14"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-wire-the-frontend-order-form-to-the-backend-order-creation-method-using-the-existing-actor-infrastructure-so-that-submitting-the-form-actually-calls-the-canister-and-uses-the-response-to-confirm-the-order",
-      "title": "Wire the frontend order form to the backend order-creation method using the existing actor infrastructure so that submitting the form actually calls the canister and uses the response to confirm the order.",
-      "reqIds": [
-        "REQ-16"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-in-page-order-now-form-ui-to-collect-customer-delivery-details-in-addition-to-plate-selection-add-input-fields-for-mobile-number-and-delivery-address-with-english-only-labels-placeholders-and-validation-feedback",
-      "title": "Update the in-page Order Now form UI to collect customer delivery details in addition to plate selection: add input fields for \"Mobile Number\" and \"Delivery Address\" with English-only labels, placeholders, and validation feedback.",
-      "reqIds": [
-        "REQ-17"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-persist-the-captured-customer-delivery-details-with-the-order-by-extending-the-backend-order-model-and-the-order-creation-call-update-the-motoko-canister-createorder-method-to-accept-mobile-number-and-delivery-address-store-them-in-the-returned-order-and-update-the-frontend-usecreateorder-hook-orderform-submission-payload-accordingly",
-      "title": "Persist the captured customer delivery details with the order by extending the backend order model and the order creation call: update the Motoko canister `createOrder` method to accept mobile number and delivery address, store them in the returned `Order`, and update the frontend `useCreateOrder` hook + OrderForm submission payload accordingly.",
-      "reqIds": [
-        "REQ-18"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-order-now-flow-so-that-after-an-order-is-successfully-created-the-app-opens-whatsapp-chat-to-the-business-number-7973782618-with-an-auto-filled-url-encoded-message-that-includes-the-order-id-selected-plate-type-name-and-price",
-      "title": "Update the Order Now flow so that after an order is successfully created, the app opens WhatsApp chat to the business number 7973782618 with an auto-filled, URL-encoded message that includes the order ID, selected plate type name, and price.",
-      "reqIds": [
-        "REQ-19"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-contact-section-to-display-the-business-contact-phone-whatsapp-number-as-7973782618-english-only-text",
-      "title": "Update the Contact section to display the business contact phone/WhatsApp number as 7973782618 (English-only text).",
-      "reqIds": [
-        "REQ-20"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-order-now-form-to-let-customers-choose-the-number-of-plates-quantity-in-addition-to-selecting-exactly-one-plate-type-half-plate-or-full-plate-and-compute-display-the-total-amount-as-unit-price-quantity-in-the-form-ui-using-english-only-labels",
-      "title": "Update the Order Now form to let customers choose the number of plates (quantity) in addition to selecting exactly one plate type (Half Plate or Full Plate), and compute/display the total amount as (unit price × quantity) in the form UI using English-only labels.",
-      "reqIds": [
-        "REQ-21"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-and-enforce-a-minimum-delivery-order-rule-in-the-order-now-form-with-clear-english-only-messaging-the-rule-must-be-implemented-as-a-single-easy-to-change-constant-e-g-min-plates-for-delivery-or-min-total-for-delivery-and-the-form-must-prevent-order-submission-when-the-rule-is-not-met",
-      "title": "Add and enforce a minimum delivery order rule in the Order Now form, with clear English-only messaging. The rule must be implemented as a single easy-to-change constant (e.g., MIN_PLATES_FOR_DELIVERY or MIN_TOTAL_FOR_DELIVERY) and the form must prevent order submission when the rule is not met.",
-      "reqIds": [
-        "REQ-22"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-wire-the-updated-order-now-form-quantity-total-amount-flow-end-to-end-update-the-frontend-mutation-usecreateorder-types-and-submission-payload-to-pass-quantity-to-the-backend-and-update-the-whatsapp-message-to-include-quantity-and-total-amount-in-english",
-      "title": "Wire the updated Order Now form quantity + total amount flow end-to-end: update the frontend mutation (`useCreateOrder`), types, and submission payload to pass quantity to the backend, and update the WhatsApp message to include quantity and total amount in English.",
-      "reqIds": [
-        "REQ-24"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-after-an-order-is-successfully-placed-show-a-post-order-confirmation-ui-modal-confirmation-screen-that-includes-a-paytm-qr-code-for-payment-option-a-show-qr-code-after-order-is-placed",
-      "title": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
-      "reqIds": [
-        "REQ-25"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-in-the-post-order-confirmation-ui-display-a-clear-bill-breakdown-that-includes-1-items-total-from-the-created-order-total-amount-2-delivery-charge-20-and-3-grand-total-items-total-delivery-charge",
-      "title": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
-      "reqIds": [
-        "REQ-26"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-paytm-qr-bill-breakdown-appears-in-the-same-post-order-confirmation-modal-screen-regardless-of-whether-whatsapp-auto-open-succeeds-or-a-whatsapp-fallback-link-is-shown-due-to-popup-blocking",
-      "title": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
-      "reqIds": [
-        "REQ-27"
       ],
       "version": 1
     }
@@ -218,76 +36,19 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Build Bro Bro Foods homepage/landing page with provided content sections and CTAs (Order Now, Download App, Order on App/Website).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Add optional website promotional popup/offer script with provided text (Fresh Veg Momos starting @ ₹50, Order Now).",
+      "summary": "Create an Admin Panel APK to track orders including time/date, payment status/details, and other order timeline fields",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-3",
-      "summary": "Fix ordering UX so users can select Half/Full plate and successfully place an order (current order flow not working).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Implement backend order creation in the single Motoko actor so the frontend can persist a placed order (at minimum: plate type, price, created timestamp, and a unique order id).",
+      "summary": "Extend the backend order model to support an order timeline beyond creation and payment confirmation (the user requested tracking of “other time”).\n\nBackend must store, for each order:\n- Current order status (e.g., Pending, Accepted, Preparing, Out for Delivery, Delivered, Cancelled).\n- Timestamps for status changes (a timeline/history), including who/what changed it (admin action).\n\nExpose backend APIs to:\n- Update an order’s status and append a status-change event with the current server time.\n- Query timeline/status information together with orders (either via `getAllOrders` returning the enriched Order type, or via an additional query endpoint).\n\nAll user-facing/admin-facing text on the frontend that reflects these statuses must be in English.",
       "reqIds": [
-        "REQ-15"
+        "REQ-2"
       ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Add customer details form to the Order Now flow to collect delivery address and customer mobile number (in addition to plate selection) for submitting the order.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Update Order Now action to open WhatsApp to the provided number with an auto-filled message including the selected plate type (and customer details once captured).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Auto-generate and display an order number/Order ID automatically for each placed order.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Show order quantity (number of plates) and compute/display total amount in the order flow/WhatsApp order details.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Add and enforce a minimum order requirement for delivery (e.g., minimum number of plates or minimum total amount), with clear user-facing messaging.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-13",
-      "summary": "Extend the backend order model and order creation API to persist order quantity and total amount. Update `createOrder` in `backend/main.mo` to accept a `quantity` parameter, compute `totalAmount` (unit price × quantity), store both on the `Order`, and return them to the frontend.",
-      "reqIds": [
-        "REQ-23"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-14",
-      "summary": "Add Paytm QR code payment step: display the provided Paytm QR code on the post-order confirmation screen (after the order is placed) and include total bill (items + delivery charge).",
-      "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
   "projectName": "Bro Bro Foods",
   "clarification_mode": "instant",
   "clarification_rounds": 0

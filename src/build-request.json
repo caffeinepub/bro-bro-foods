@@ -1,88 +1,93 @@
 {
   "kind": "build_request",
-  "title": "Show Paytm QR code on post-order confirmation (Option A)",
+  "title": "Add an Admin Panel (and Admin APK) to track orders, time/date, and payments",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-25",
-      "text": "After an order is successfully placed, show a post-order confirmation UI (modal/confirmation screen) that includes a Paytm QR code for payment (Option A: show QR code after order is placed).",
+      "id": "REQ-1",
+      "text": "Add an admin-only dashboard UI that can be opened from the web app using the URL hash token format and shows all orders with time/date and payment tracking.\n\nThe admin view must:\n- Be accessible only when the URL contains a valid admin token in the hash (continue supporting the existing pattern `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`).\n- Display a table/list of orders fetched from the backend, including at minimum: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (if available), and paid date/time (if available).\n- Provide order detail view (modal or separate section) to inspect all stored fields for a selected order.\n- Use English-only user-facing text in the admin panel.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages:user"
+          "msg-1"
         ],
         "quotes": [
-          "Option A"
+          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
         ]
       },
       "acceptanceCriteria": [
-        "When the backend order creation returns success, the app displays a confirmation modal/screen that contains a visible QR code image for Paytm payment.",
-        "The QR code is not displayed before the user places an order.",
-        "All user-facing text in the confirmation UI is in English."
+        "When opening the app with `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`, an Admin Dashboard entry point is available and the order list renders.",
+        "When opening the app without an admin token, admin screens/actions are not accessible and do not leak order data.",
+        "Orders are shown with created date/time and payment fields (status + UTR/paid time when present) using English labels."
       ]
     },
     {
-      "id": "REQ-26",
-      "text": "In the post-order confirmation UI, display a clear bill breakdown that includes (1) items total (from the created order total amount), (2) delivery charge (₹20), and (3) grand total (items total + delivery charge).",
-      "target": "frontend",
+      "id": "REQ-2",
+      "text": "Extend the backend order model to support an order timeline beyond creation and payment confirmation (the user requested tracking of “other time”).\n\nBackend must store, for each order:\n- Current order status (e.g., Pending, Accepted, Preparing, Out for Delivery, Delivered, Cancelled).\n- Timestamps for status changes (a timeline/history), including who/what changed it (admin action).\n\nExpose backend APIs to:\n- Update an order’s status and append a status-change event with the current server time.\n- Query timeline/status information together with orders (either via `getAllOrders` returning the enriched Order type, or via an additional query endpoint).\n\nAll user-facing/admin-facing text on the frontend that reflects these statuses must be in English.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages:user"
+          "msg-1"
         ],
         "quotes": [
-          "Option A"
+          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
         ]
       },
       "acceptanceCriteria": [
-        "The confirmation UI shows: Items Total, Delivery Charge (₹20), and Grand Total.",
-        "Grand Total equals Items Total + 20 for the displayed values.",
-        "The displayed totals use the successfully created order’s returned total amount (not a separate recomputation that could drift)."
+        "A new backend method exists to update order status and records a server-side timestamp for each status change.",
+        "Fetching orders returns the current status and timeline information required for the admin dashboard.",
+        "Status updates persist in canister state across calls and are reflected when re-fetching the same order."
       ]
     },
     {
-      "id": "REQ-27",
-      "text": "Ensure the Paytm QR + bill breakdown appears in the same post-order confirmation modal/screen regardless of whether WhatsApp auto-open succeeds or a WhatsApp fallback link is shown due to popup blocking.",
-      "target": "frontend",
+      "id": "REQ-3",
+      "text": "Add admin panel actions to manage order tracking:\n- Allow the admin to change an order’s status using a dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled).\n- Show a chronological timeline in the order detail view that includes: created time, each status change time, and payment confirmation time (when available).\n- Provide quick filters/sorting in the admin list: newest first (default), filter by payment status (Paid/Unpaid), and filter by order status.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "recent-messages:user"
+          "msg-1"
         ],
         "quotes": [
-          "Option A"
+          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
         ]
       },
       "acceptanceCriteria": [
-        "If WhatsApp opens successfully, the confirmation UI still shows the Paytm QR and bill breakdown.",
-        "If WhatsApp is blocked and a fallback link is shown, the confirmation UI shows the Paytm QR and bill breakdown together with the fallback link.",
-        "No duplicate modals are shown; the user sees a single coherent confirmation experience."
+        "Changing an order status in the admin UI updates the backend and the UI reflects the new status after refresh/reload.",
+        "Order detail view shows a readable English timeline including created time, status-change events, and paid time when applicable.",
+        "Admin can filter the list by payment status and order status, and default sorting is newest-first."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Support a separate Admin Panel APK build and a working download link/config for it.\n\nUpdate the frontend APK configuration so that:\n- There is a distinct configuration entry for the customer APK and the admin APK (separate URLs and labels).\n- The download/availability-check logic can check and download the admin APK artifact independently from the customer APK.\n\nAdd an admin-only download button in the admin dashboard that:\n- Checks admin APK availability and initiates download when available.\n- Shows a clear English-only message when the admin APK is not available yet.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Ek admin  panel apk bhi bnao jha order ko track kiya jaye time date and payment and other time"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin dashboard includes an “Download Admin App” button that performs an availability check and downloads the admin APK when available.",
+        "Customer-facing “Download App” continues to work independently of the admin APK setting.",
+        "If the admin APK is missing/unavailable, the admin UI shows a clear English message rather than failing silently."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/components/ui (read-only).",
-    "Do not modify frontend immutable hook paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
-    "Keep the backend as a single Motoko actor; no additional backend services.",
-    "Use English for all user-facing text."
+    "Use English for any user-facing text.",
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything under frontend/src/components/ui; compose these instead."
   ],
   "nonGoals": [
-    "Do not implement payment verification, payment status tracking, or order state transitions based on payment.",
-    "Do not integrate any external payment APIs or gateways.",
-    "Do not change the existing WhatsApp deep-link ordering mechanism beyond ensuring the confirmation UI includes the QR/bill breakdown."
+    "Implementing third-party authentication providers (only Internet Identity is allowed).",
+    "Adding real-time updates (e.g., WebSockets) for live order tracking.",
+    "Integrating external databases or external admin analytics services."
   ],
   "imageRequirements": {
-    "required": [
-      "Paytm QR code image (paytm-qr.dim_900x900.png)"
-    ],
+    "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

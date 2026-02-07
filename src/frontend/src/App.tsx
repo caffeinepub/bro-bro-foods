@@ -1,16 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import PromoPopup from './components/PromoPopup';
 import SimpleModal from './components/SimpleModal';
 import PostOrderConfirmationModal from './components/PostOrderConfirmationModal';
 import OrderForm from './components/OrderForm';
+import OwnerPhoto from './components/OwnerPhoto';
+import AdminDashboard from './components/admin/AdminDashboard';
 import { openWhatsApp, buildWhatsAppLink } from './lib/whatsapp';
+import { checkApkAvailability, downloadApk, getUnavailableMessage } from './lib/apkAvailability';
+import { isAdminAuthorized, hasAdminToken } from './lib/adminAccess';
 import type { Order } from './backend';
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalContent, setModalContent] = useState<string | null>(null);
   const [orderConfirmation, setOrderConfirmation] = useState<{ order: Order; whatsappLink?: string } | null>(null);
+  const [isCheckingApk, setIsCheckingApk] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+
+  // Check for admin access on mount and hash change
+  useEffect(() => {
+    const checkAdminAccess = () => {
+      if (hasAdminToken()) {
+        setShowAdminDashboard(isAdminAuthorized());
+      }
+    };
+
+    checkAdminAccess();
+    window.addEventListener('hashchange', checkAdminAccess);
+
+    return () => {
+      window.removeEventListener('hashchange', checkAdminAccess);
+    };
+  }, []);
+
+  // If admin dashboard should be shown, render it instead of the main app
+  if (showAdminDashboard) {
+    return <AdminDashboard />;
+  }
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -24,8 +51,25 @@ function App() {
     scrollToSection('order-now');
   };
 
-  const handleDownloadAppClick = () => {
-    setModalContent('App coming soon');
+  const handleDownloadAppClick = async () => {
+    setIsCheckingApk(true);
+    
+    try {
+      const isAvailable = await checkApkAvailability();
+      
+      if (isAvailable) {
+        // APK is available, initiate download
+        downloadApk();
+      } else {
+        // APK not available, show status message
+        setModalContent(getUnavailableMessage());
+      }
+    } catch (error) {
+      // Error checking availability, show fallback message
+      setModalContent(getUnavailableMessage());
+    } finally {
+      setIsCheckingApk(false);
+    }
   };
 
   const handleOrderSuccess = (order: Order) => {
@@ -86,6 +130,9 @@ function App() {
               <button onClick={() => scrollToSection('why-choose-us')} className="text-foreground hover:text-primary transition-colors font-medium">
                 Why Us
               </button>
+              <button onClick={() => scrollToSection('owner')} className="text-foreground hover:text-primary transition-colors font-medium">
+                Owner
+              </button>
               <button onClick={() => scrollToSection('contact')} className="text-foreground hover:text-primary transition-colors font-medium">
                 Contact
               </button>
@@ -95,6 +142,7 @@ function App() {
               >
                 Order Now
               </button>
+              <OwnerPhoto size="sm" />
             </div>
 
             {/* Mobile Menu Button */}
@@ -120,6 +168,9 @@ function App() {
               </button>
               <button onClick={() => scrollToSection('why-choose-us')} className="text-left text-foreground hover:text-primary transition-colors font-medium py-2">
                 Why Us
+              </button>
+              <button onClick={() => scrollToSection('owner')} className="text-left text-foreground hover:text-primary transition-colors font-medium py-2">
+                Owner
               </button>
               <button onClick={() => scrollToSection('contact')} className="text-left text-foreground hover:text-primary transition-colors font-medium py-2">
                 Contact
@@ -164,9 +215,10 @@ function App() {
               </button>
               <button 
                 onClick={handleDownloadAppClick}
-                className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity border-2 border-primary"
+                disabled={isCheckingApk}
+                className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity border-2 border-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Download App
+                {isCheckingApk ? 'Checking...' : 'Download App'}
               </button>
             </div>
           </div>
@@ -180,6 +232,9 @@ function App() {
       <section id="about" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
+            <div className="flex justify-center mb-8">
+              <OwnerPhoto size="lg" />
+            </div>
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
               About Bro Bro Foods
             </h2>
@@ -317,8 +372,31 @@ function App() {
         </div>
       </section>
 
+      {/* Owner Section */}
+      <section id="owner" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
+              Meet the Owner
+            </h2>
+            <div className="flex justify-center mb-6">
+              <OwnerPhoto size="lg" />
+            </div>
+            <h3 className="text-3xl font-bold text-foreground mb-2">
+              Dilkhush
+            </h3>
+            <p className="text-xl text-primary font-semibold mb-6">
+              Founder
+            </p>
+            <p className="text-lg text-foreground/80 leading-relaxed">
+              Passionate about bringing delicious, fresh momos to your doorstep with quality and care.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Order Now Section */}
-      <section id="order-now" className="py-20 bg-background">
+      <section id="order-now" className="py-20 bg-accent/30">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-12">
             Order Now
@@ -328,7 +406,7 @@ function App() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-accent/30">
+      <section id="contact" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
@@ -353,7 +431,7 @@ function App() {
                 </a>
               </p>
               <p className="text-lg text-foreground/80 mt-6">
-                Available for orders and queries
+                <span className="font-bold">Business Hours:</span> 11:30 AM – 9:00 PM
               </p>
             </div>
           </div>
@@ -377,18 +455,11 @@ function App() {
         </div>
       </footer>
 
-      {/* Promo Popup */}
+      {/* Modals */}
       <PromoPopup onOrderClick={handleOrderClick} />
-
-      {/* Simple Modal (for non-order messages) */}
       {modalContent && (
-        <SimpleModal 
-          content={modalContent} 
-          onClose={handleModalClose} 
-        />
+        <SimpleModal content={modalContent} onClose={handleModalClose} />
       )}
-
-      {/* Post-Order Confirmation Modal */}
       {orderConfirmation && (
         <PostOrderConfirmationModal
           order={orderConfirmation.order}

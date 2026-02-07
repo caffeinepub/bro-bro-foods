@@ -1,78 +1,118 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Post-order confirmation modal with Paytm QR and bill breakdown",
+  "title": "Admin Dashboard UI + Admin APK download support (hash-token gated)",
   "requirements": [
     {
-      "id": "REQ-25",
-      "summary": "Show a post-order confirmation modal/screen with a Paytm QR code image only after successful order placement.",
+      "id": "REQ-1",
+      "summary": "Add a hash-token gated admin dashboard that lists all orders with payment + time/date fields and provides an order detail view (English-only).",
       "acceptanceCriteria": [
-        "When the backend order creation returns success, the app displays a confirmation modal/screen that contains a visible QR code image for Paytm payment.",
-        "The QR code is not displayed before the user places an order.",
-        "All user-facing text in the confirmation UI is in English."
+        "When opening the app with `#caffeineAdminToken=91bfa54128abedefcfe01e097af6ca29c994dd64108e32a63467963e477fde15`, an Admin Dashboard entry point is available and the order list renders.",
+        "When opening the app without an admin token, admin screens/actions are not accessible and do not leak order data.",
+        "Orders are shown with created date/time and payment fields (status + UTR/paid time when present) using English labels."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/paytm-qr.dim_900x900.png",
+          "path": "frontend/src/lib/adminAccess.ts",
           "operation": "create",
-          "description": "Add the required Paytm QR static image asset at this exact path and filename so it can be rendered in the post-order confirmation UI."
+          "description": "Implement admin access helpers to parse/validate the admin hash token (supporting the existing `#caffeineAdminToken=...` pattern) and provide a single boolean gate used by the UI to prevent any order fetching when not authorized."
         },
         {
-          "path": "frontend/src/components/PostOrderConfirmationModal.tsx",
+          "path": "frontend/src/hooks/useAdminOrders.ts",
           "operation": "create",
-          "description": "Create a dedicated post-order confirmation modal component that renders the Paytm QR image from frontend/public/assets/generated/paytm-qr.dim_900x900.png and displays order success messaging in English. Use the shadcn-ui Dialog (or equivalent existing modal primitives) to ensure consistent modal behavior; verify the component's usage instructions before implementing."
+          "description": "Create a React Query hook that, when admin access is valid, fetches all orders from the backend actor and returns loading/error states; ensure it never fetches when admin access is invalid."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminDashboard.tsx",
+          "operation": "create",
+          "description": "Build the Admin Dashboard shell (English-only text) including an orders list area and an order detail area; use shadcn-ui components (e.g., Button, Input, Select, Dialog/Sheet, Table) for consistent UI. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/OrdersTable.tsx",
+          "operation": "create",
+          "description": "Render an orders table/list showing: Order ID, item name, quantity, total amount, created date/time, payment status, UTR (when present), paid date/time (when present); include a row action to open details. Use shadcn-ui Table (and related primitives) for layout. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/OrderDetailView.tsx",
+          "operation": "create",
+          "description": "Add an order detail view (modal/drawer or dedicated section) that displays all stored fields for the selected order with readable English labels; use shadcn-ui Dialog/Sheet components to present the detail UI. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire the new PostOrderConfirmationModal into the existing order-success flow so it opens after createOrder success and includes the Paytm QR. Ensure the QR/modal is not shown at any other time, and avoid changing the WhatsApp deep-link mechanism beyond passing necessary state into the confirmation UI."
+          "description": "Wire the admin experience into the app: detect valid admin hash token, expose an Admin Dashboard entry point only when authorized, and conditionally render the AdminDashboard without affecting the customer experience; ensure no admin data fetch occurs unless authorized."
         }
       ]
     },
     {
-      "id": "REQ-26",
-      "summary": "Display a bill breakdown in the post-order confirmation UI using the created order's returned total amount plus a fixed ₹20 delivery charge.",
+      "id": "REQ-3",
+      "summary": "Add admin actions for order tracking: status updates, a chronological timeline in order details, and filtering/sorting controls.",
       "acceptanceCriteria": [
-        "The confirmation UI shows: Items Total, Delivery Charge (₹20), and Grand Total.",
-        "Grand Total equals Items Total + 20 for the displayed values.",
-        "The displayed totals use the successfully created order’s returned total amount (not a separate recomputation that could drift)."
+        "Changing an order status in the admin UI updates the backend and the UI reflects the new status after refresh/reload.",
+        "Order detail view shows a readable English timeline including created time, status-change events, and paid time when applicable.",
+        "Admin can filter the list by payment status and order status, and default sorting is newest-first."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/PostOrderConfirmationModal.tsx",
-          "operation": "modify",
-          "description": "Add a bill breakdown section to the confirmation modal: Items Total (from order.totalAmount as returned), Delivery Charge (₹20), and Grand Total (Items Total + 20), all displayed in English. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/hooks/useUpdateOrderStatus.ts",
+          "operation": "create",
+          "description": "Create a mutation hook that calls the backend actor to update an order’s status (including a `changedBy` string from the admin UI) and refreshes cached admin order queries on success."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/admin/OrdersFilters.tsx",
+          "operation": "create",
+          "description": "Implement admin list controls for newest-first (default) sorting, filter by payment status (Paid/Unpaid), and filter by order status; use shadcn-ui Select/Input/Button components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/OrdersTable.tsx",
           "operation": "modify",
-          "description": "Pass the created Order (including totalAmount) into PostOrderConfirmationModal so the breakdown uses the backend-returned total amount and does not rely on any separate frontend recomputation."
+          "description": "Integrate filtering/sorting output (newest-first by default) into the displayed list and add an Order Status column that shows the current status with English labels."
+        },
+        {
+          "path": "frontend/src/components/admin/OrderDetailView.tsx",
+          "operation": "modify",
+          "description": "Add an Order Status dropdown (Pending/Accepted/Preparing/Out for Delivery/Delivered/Cancelled) that triggers the update-status mutation; render a chronological English timeline including created time, each status-change event time/by, and paid time when available; use shadcn-ui Select and timeline-style layout with existing primitives. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminDashboard.tsx",
+          "operation": "modify",
+          "description": "Wire together filters, the orders list, selection state, and the order detail view; ensure status changes refresh the selected order and the list."
         }
       ]
     },
     {
-      "id": "REQ-27",
-      "summary": "Ensure the same confirmation modal contains Paytm QR + bill breakdown regardless of WhatsApp auto-open success or fallback link due to popup blocking.",
+      "id": "REQ-4",
+      "summary": "Support separate Admin APK configuration and add an admin-only download button with independent availability checks and clear English messaging.",
       "acceptanceCriteria": [
-        "If WhatsApp opens successfully, the confirmation UI still shows the Paytm QR and bill breakdown.",
-        "If WhatsApp is blocked and a fallback link is shown, the confirmation UI shows the Paytm QR and bill breakdown together with the fallback link.",
-        "No duplicate modals are shown; the user sees a single coherent confirmation experience."
+        "Admin dashboard includes an “Download Admin App” button that performs an availability check and downloads the admin APK when available.",
+        "Customer-facing “Download App” continues to work independently of the admin APK setting.",
+        "If the admin APK is missing/unavailable, the admin UI shows a clear English message rather than failing silently."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/config/apk.ts",
+          "operation": "modify",
+          "description": "Extend APK configuration to include distinct entries for the customer APK and the admin APK (separate URLs and labels), while preserving the existing customer APK defaults."
+        },
+        {
+          "path": "frontend/src/lib/apkAvailability.ts",
+          "operation": "modify",
+          "description": "Update APK availability-check and download utilities to support checking/downloading a specific APK config (customer vs admin) independently, including returning the correct English unavailable message for each."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminApkDownloadButton.tsx",
+          "operation": "create",
+          "description": "Create an admin-only “Download Admin App” button component that uses the shared APK availability utilities to check and download the admin APK and shows a clear English message when unavailable; use shadcn-ui Button and Dialog/Alert styling as needed. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminDashboard.tsx",
+          "operation": "modify",
+          "description": "Place the admin-only download button within the Admin Dashboard and ensure it is only rendered when admin access is valid."
+        },
+        {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Refactor modal state so order-success uses a single PostOrderConfirmationModal that is always shown after success, while still attempting WhatsApp auto-open. If auto-open fails, provide the fallback WhatsApp link within the same confirmation modal (not via a second modal)."
-        },
-        {
-          "path": "frontend/src/components/PostOrderConfirmationModal.tsx",
-          "operation": "modify",
-          "description": "Add optional rendering for a WhatsApp fallback link section (including copy/open actions) within the same confirmation modal when a fallback link is present, and ensure the Paytm QR + bill breakdown are always visible in the modal. Use shadcn-ui Button (or existing button styling) for actions if applicable; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/SimpleModal.tsx",
-          "operation": "modify",
-          "description": "Adjust existing SimpleModal usage expectations (if necessary) so it is no longer used for order-success confirmations, preventing duplicate modal experiences. Keep SimpleModal available for other non-order messages (e.g., 'App coming soon')."
+          "description": "Ensure the existing customer “Download App” behavior continues to use the customer APK config and remains independent from the admin APK settings."
         }
       ]
     }
