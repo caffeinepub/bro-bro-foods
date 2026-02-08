@@ -2,12 +2,12 @@ import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Iter "mo:core/Iter";
-import Migration "migration";
+
 
 import Array "mo:core/Array";
 
 // Specify the data migration function in with-clause
-(with migration = Migration.run)
+
 actor {
   type PlateType = {
     id : Nat;

@@ -1,72 +1,64 @@
 {
   "kind": "build_request",
-  "title": "Retry build/deploy and fix the deployment failure",
+  "title": "Add provided hashtags to website (visible + SEO metadata)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
-      "target": "both",
+      "text": "Add a visible “Hashtags” block on the customer-facing website that displays the following hashtags exactly as provided: #budhladafastfood, #veg momos, #budhladabestmomos, #budhladabestrestaurant, #dilkhush, #devishhyadav. Use English for any surrounding label text (e.g., section title), and render each hashtag as readable text (optionally as pill/chip styling) without altering the hashtag content.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "Retry"
+          "Website me hashtag add kro \n#budhladafastfood #veg momos #budhladabestmomos #budhladabestrestaurant #dilkhush #devishhyadav"
         ]
       },
       "acceptanceCriteria": [
-        "A fresh build+deploy attempt is executed end-to-end (frontend build + backend build + canister deploy/install).",
-        "The deployment failure is reproducible (if still present) with the exact failing step clearly identified and documented in logs.",
-        "If the error is resolved, the deployment completes successfully and the app is reachable with both frontend and backend functioning."
+        "A “Hashtags” section/block is present on the live customer website UI.",
+        "All hashtags are shown exactly as the user provided (including spacing in “#veg momos”).",
+        "All non-hashtag UI text added for this change is in English."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
+      "text": "Update the site HTML metadata to include the provided hashtags for SEO/discoverability by adding appropriate meta tags in frontend/index.html (e.g., meta name=\"keywords\" and/or appending to the existing meta description) while keeping existing branding text intact.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "Retry"
+          "Website me hashtag add kro \n#budhladafastfood #veg momos #budhladabestmomos #budhladabestrestaurant #dilkhush #devishhyadav"
         ]
       },
       "acceptanceCriteria": [
-        "The frontend build completes without missing-file errors for any referenced static assets.",
-        "All referenced /assets/generated/* files used by the UI exist in frontend/public/assets/generated at deploy time."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Retry"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A pre-deploy step runs frontend/scripts/verify-build.sh (or equivalent) before deployment.",
-        "If typecheck/lint/build fails, deployment is aborted and the failing command output is visible and actionable."
+        "frontend/index.html includes metadata that contains all provided hashtags exactly as provided.",
+        "Existing title/description content remains present (may be extended but not removed)."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
-    "Do not edit files in frontend/src/components/ui or other immutable paths listed in SYSTEM_CONTEXT.",
-    "Use English for any user-facing text."
+    "Do not edit files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
+    "Keep all user-facing non-hashtag text in English."
   ],
   "nonGoals": [
-    "Adding new product features unrelated to resolving the build/deployment failure.",
-    "Introducing external databases, third-party authentication providers, or non-supported backend technologies."
+    "Adding new backend storage or admin settings for hashtags.",
+    "Changing order/payment/admin flows."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

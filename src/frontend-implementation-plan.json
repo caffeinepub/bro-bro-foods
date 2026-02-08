@@ -1,111 +1,46 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix frontend deploy failures by verifying static assets and adding pre-deploy verification",
+  "title": "Add visible hashtags section and SEO metadata",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a repeatable, frontend-owned build/deploy runner that captures failing command output and make build/deploy logs visible from the UI (admin-only).",
+      "summary": "Add a customer-facing “Hashtags” block that renders the provided hashtags exactly as given.",
       "acceptanceCriteria": [
-        "A fresh build+deploy attempt is executed end-to-end (frontend build + backend build + canister deploy/install).",
-        "The deployment failure is reproducible (if still present) with the exact failing step clearly identified and documented in logs.",
-        "If the error is resolved, the deployment completes successfully and the app is reachable with both frontend and backend functioning."
+        "A “Hashtags” section/block is present on the live customer website UI.",
+        "All hashtags are shown exactly as the user provided (including spacing in “#veg momos”).",
+        "All non-hashtag UI text added for this change is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/scripts/retry-build-deploy.sh",
+          "path": "frontend/src/config/hashtags.ts",
           "operation": "create",
-          "description": "Create a single runner script that executes the full sequence (frontend verification/build first, then project deploy commands) while teeing all command output to a timestamped log file and clearly printing which step failed (command + exit code). Ensure the script can be invoked from the repo root and produces actionable, readable logs."
+          "description": "Create a single source of truth for the provided hashtags as an ordered string list, preserving exact text (including the space in “#veg momos”)."
         },
         {
-          "path": "frontend/src/hooks/useLastBuildStatus.ts",
+          "path": "frontend/src/components/HashtagsBlock.tsx",
           "operation": "create",
-          "description": "Add a React Query hook that calls the existing backend actor capability to fetch the last recorded build/deploy status and exposes it to the admin UI for troubleshooting."
+          "description": "Add a reusable HashtagsBlock component that displays an English section title (\"Hashtags\") and renders each hashtag as readable text (optionally styled as pills/chips) without modifying the hashtag strings."
         },
         {
-          "path": "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
-          "operation": "create",
-          "description": "Create an admin-only panel that renders the last build/deploy status fields (build/deploy/install success flags and text outputs) in a readable way suitable for diagnosing failures."
-        },
-        {
-          "path": "frontend/src/components/admin/AdminDashboard.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire the new BuildDeployStatusPanel into the existing admin dashboard layout so build/deploy logs are surfaced in-app for troubleshooting (ensure it remains admin-only)."
+          "description": "Wire the new HashtagsBlock into the customer-facing UI (e.g., near the bottom of the page before the footer) so it is visible on the live website and not shown only in admin-only views."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Ensure all frontend-referenced /assets/generated static files exist at build/deploy time and add any missing required files under frontend/public/assets/generated.",
+      "summary": "Include the provided hashtags in HTML metadata for SEO/discoverability while keeping existing branding text intact.",
       "acceptanceCriteria": [
-        "The frontend build completes without missing-file errors for any referenced static assets.",
-        "All referenced /assets/generated/* files used by the UI exist in frontend/public/assets/generated at deploy time."
+        "frontend/index.html includes metadata that contains all provided hashtags exactly as provided.",
+        "Existing title/description content remains present (may be extended but not removed)."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/brobro-logo.dim_512x512.png",
-          "operation": "create",
-          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/public/assets/generated/hero-momos-bg.dim_1920x1080.png",
-          "operation": "create",
-          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
-          "operation": "create",
-          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
-          "operation": "create",
-          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/public/assets/generated/founder-rohit.dim_512x512.jpg",
-          "operation": "create",
-          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/public/assets/generated/founder-rohit.dim_128x128.jpg",
-          "operation": "create",
-          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/public/assets/generated/profile-placeholder.dim_512x512.png",
-          "operation": "create",
-          "description": "Add the required generated static asset used as the fallback image for OwnerPhoto so builds do not fail due to missing files."
-        },
-        {
-          "path": "frontend/public/assets/generated/android-app-icon.dim_1024x1024.png",
-          "operation": "create",
-          "description": "Add the required generated static asset referenced by frontend/public/manifest.webmanifest so PWA assets resolve at build/deploy time."
-        },
-        {
-          "path": "frontend/scripts/verify-static-assets.sh",
-          "operation": "create",
-          "description": "Create a lightweight verification script that checks for existence of all known required frontend/public/assets/generated files used by the UI and manifest (including those referenced from App.tsx, OwnerPhoto, ownerPhotos config, and manifest.webmanifest) and exits non-zero with a clear list of missing files."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Add a pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output.",
-      "acceptanceCriteria": [
-        "A pre-deploy step runs frontend/scripts/verify-build.sh (or equivalent) before deployment.",
-        "If typecheck/lint/build fails, deployment is aborted and the failing command output is visible and actionable."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/scripts/verify-build.sh",
+          "path": "frontend/index.html",
           "operation": "modify",
-          "description": "Harden the verification script to fail fast with clearer diagnostics: enable strict bash options (including pipefail), add a trap that prints the failed command/line, and run the new static-asset verification before the build so missing frontend/public/assets/generated files are caught early with actionable output."
-        },
-        {
-          "path": "frontend/scripts/predeploy-verify.sh",
-          "operation": "create",
-          "description": "Create a simple pre-deploy wrapper that runs frontend/scripts/verify-build.sh and aborts immediately on failure, ensuring the failing command output is visible before any deployment attempt proceeds."
+          "description": "Update HTML metadata to include all provided hashtags exactly as provided (including the space in “#veg momos”), by adding an appropriate meta tag (e.g., keywords) and/or appending to the existing meta description without removing existing title/description branding text."
         }
       ]
     }

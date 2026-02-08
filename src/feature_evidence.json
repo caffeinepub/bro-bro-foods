@@ -2,13 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-retry-the-full-build-and-deployment-and-identify-the-exact-root-cause-of-the-previous-deployment-error-by-capturing-and-surfacing-the-failing-command-output-build-logs-compile-errors-and-deploy-install-errors",
-      "featureTitle": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
+      "featureId": "feature-add-a-visible-hashtags-block-on-the-customer-facing-website-that-displays-the-following-hashtags-exactly-as-provided-budhladafastfood-veg-momos-budhladabestmomos-budhladabestrestaurant-dilkhush-devishhyadav-use-english-for-any-surrounding-label-text-e-g-section-title-and-render-each-hashtag-as-readable-text-optionally-as-pill-chip-styling-without-altering-the-hashtag-content",
+      "featureTitle": "Add a visible “Hashtags” block on the customer-facing website that displays the following hashtags exactly as provided: #budhladafastfood, #veg momos, #budhladabestmomos, #budhladabestrestaurant, #dilkhush, #devishhyadav. Use English for any surrounding label text (e.g., section title), and render each hashtag as readable text (optionally as pill/chip styling) without altering the hashtag content.",
       "files": [
-        "frontend/scripts/retry-build-deploy.sh",
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
-        "frontend/src/hooks/useLastBuildStatus.ts"
+        "frontend/src/App.tsx",
+        "frontend/src/components/HashtagsBlock.tsx",
+        "frontend/src/config/hashtags.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -23,10 +22,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-deployment-is-not-failing-due-to-missing-static-assets-referenced-by-the-frontend-especially-files-under-assets-generated-and-add-any-missing-required-files-to-frontend-public-assets-generated-so-the-frontend-build-and-deploy-succeed",
-      "featureTitle": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
+      "featureId": "feature-update-the-site-html-metadata-to-include-the-provided-hashtags-for-seo-discoverability-by-adding-appropriate-meta-tags-in-frontend-index-html-e-g-meta-name-keywords-and-or-appending-to-the-existing-meta-description-while-keeping-existing-branding-text-intact",
+      "featureTitle": "Update the site HTML metadata to include the provided hashtags for SEO/discoverability by adding appropriate meta tags in frontend/index.html (e.g., meta name=\"keywords\" and/or appending to the existing meta description) while keeping existing branding text intact.",
       "files": [
-        "frontend/scripts/verify-static-assets.sh"
+        "frontend/index.html"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -37,25 +36,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-lightweight-pre-deploy-verification-step-that-runs-the-existing-frontend-verification-script-and-fails-fast-with-actionable-output-before-attempting-deployment",
-      "featureTitle": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
-      "files": [
-        "frontend/scripts/predeploy-verify.sh",
-        "frontend/scripts/verify-build.sh"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

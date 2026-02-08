@@ -9,6 +9,7 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLoginModal from './components/admin/AdminLoginModal';
 import AdsHeadInjector from './components/ads/AdsHeadInjector';
 import AdSlot from './components/ads/AdSlot';
+import HashtagsBlock from './components/HashtagsBlock';
 import { openWhatsApp, buildWhatsAppLink } from './lib/whatsapp';
 import { checkApkAvailability, downloadApk, getUnavailableMessage, getApkSize } from './lib/apkAvailability';
 import { useAdminAuthorization } from './hooks/useAdminAuthorization';
@@ -411,104 +412,109 @@ function App() {
 
             <div className="bg-card rounded-xl p-6 shadow-md">
               <div className="text-5xl mb-4">💰</div>
-              <h3 className="text-2xl font-bold text-foreground mb-3">Great Value</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-3">Great Prices</h3>
               <p className="text-foreground/70">
-                Affordable prices without compromising on quality. Best momos at the best price!
+                Affordable pricing without compromising on quality. Best value for money in town!
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Meet the Owners Section */}
-      <section id="owner" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
-            Meet the Owners
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Dilkhush */}
-            <div className="bg-card rounded-2xl p-8 shadow-lg border-2 border-primary/20 hover:border-primary/40 transition-colors">
-              <div className="text-center">
-                <div className="flex justify-center mb-6">
-                  <OwnerPhoto size="lg" imageSrc={FOUNDER_DILKHUSH_512} alt="Dilkhush" />
-                </div>
-                <h3 className="text-3xl font-bold text-foreground mb-2">Dilkhush</h3>
-                <p className="text-xl text-primary font-semibold mb-4">Founder & Owner</p>
-                <p className="text-foreground/70 leading-relaxed">
-                  The visionary behind Bro Bro Foods, bringing authentic flavors and quality to every plate.
-                </p>
-              </div>
-            </div>
-
-            {/* Rohit */}
-            <div className="bg-card rounded-2xl p-8 shadow-lg border-2 border-primary/20 hover:border-primary/40 transition-colors">
-              <div className="text-center">
-                <div className="flex justify-center mb-6">
-                  <OwnerPhoto size="lg" imageSrc={FOUNDER_ROHIT_512} alt="Rohit" />
-                </div>
-                <h3 className="text-3xl font-bold text-foreground mb-2">Rohit</h3>
-                <p className="text-xl text-primary font-semibold mb-4">Head Chef & Owner</p>
-                <p className="text-foreground/70 leading-relaxed">
-                  Master chef crafting every momo with passion and expertise, ensuring perfection in every bite.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Order Now Section */}
-      <section id="order-now" className="py-20 bg-muted/30">
+      <section id="order-now" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-8">
-              Place Your Order
+            <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-4">
+              Order Now
             </h2>
             <p className="text-center text-foreground/70 mb-12 text-lg">
-              Fill in your details below and we'll get your delicious momos to you fast!
+              Fill in your details below and we'll confirm your order via WhatsApp
             </p>
             <OrderForm onSuccess={handleOrderSuccess} />
           </div>
         </div>
       </section>
 
-      {/* Get in Touch Section */}
+      {/* Meet the Owners Section */}
+      <section id="owner" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
+            Meet the Owners
+          </h2>
+          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            {/* Dilkhush - Founder & Owner */}
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <OwnerPhoto size="lg" imageSrc={FOUNDER_DILKHUSH_512} alt="Founder Dilkhush" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Dilkhush</h3>
+              <p className="text-primary font-semibold mb-4">Founder & Owner</p>
+              <p className="text-foreground/70 leading-relaxed">
+                The visionary behind Bro Bro Foods, Dilkhush started this journey with a passion for bringing 
+                authentic, delicious momos to the community. His commitment to quality and customer satisfaction 
+                drives everything we do.
+              </p>
+            </div>
+
+            {/* Rohit - Head Chef & Owner */}
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <OwnerPhoto size="lg" imageSrc={FOUNDER_ROHIT_512} alt="Head Chef Rohit" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Rohit</h3>
+              <p className="text-primary font-semibold mb-4">Head Chef & Owner</p>
+              <p className="text-foreground/70 leading-relaxed">
+                As our Head Chef and co-owner, Rohit brings years of culinary expertise to every plate. 
+                His secret recipes and dedication to perfection ensure that every momo we serve is 
+                absolutely delicious.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hashtags Section */}
+      <HashtagsBlock />
+
+      {/* Contact Section */}
       <section id="contact" className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-black text-foreground mb-8">
-              Get in Touch
-            </h2>
-            <p className="text-lg text-foreground/70 mb-12">
-              Have questions or special requests? We'd love to hear from you!
-            </p>
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-              <div className="bg-card rounded-xl p-6 shadow-md">
-                <Phone className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-2">Phone</h3>
-                <p className="text-foreground/70">{CONTACT_PHONE}</p>
+          <h2 className="text-4xl md:text-5xl font-black text-center text-foreground mb-16">
+            Contact Us
+          </h2>
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-card rounded-2xl p-8 shadow-lg space-y-6">
+              <div className="flex items-start gap-4">
+                <Phone className="text-primary mt-1 flex-shrink-0" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Phone</h3>
+                  <a href={`tel:${CONTACT_PHONE}`} className="text-foreground/70 hover:text-primary transition-colors">
+                    {CONTACT_PHONE}
+                  </a>
+                </div>
               </div>
-              <div className="bg-card rounded-xl p-6 shadow-md">
-                <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-2">Location</h3>
-                <p className="text-foreground/70">{CONTACT_LOCATION}</p>
+
+              <div className="flex items-start gap-4">
+                <MessageCircle className="text-primary mt-1 flex-shrink-0" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">WhatsApp</h3>
+                  <button 
+                    onClick={handleWhatsAppClick}
+                    className="text-foreground/70 hover:text-primary transition-colors text-left"
+                  >
+                    Chat with us on WhatsApp
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={handleWhatsAppClick}
-                className="bg-primary text-primary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-              >
-                <MessageCircle size={24} />
-                WhatsApp Us
-              </button>
-              <button 
-                onClick={handleOrderClick}
-                className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity border-2 border-primary"
-              >
-                Place Your Order
-              </button>
+
+              <div className="flex items-start gap-4">
+                <MapPin className="text-primary mt-1 flex-shrink-0" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Location</h3>
+                  <p className="text-foreground/70">{CONTACT_LOCATION}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -517,70 +523,74 @@ function App() {
       {/* Footer */}
       <footer className="bg-muted/50 border-t border-border py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <img 
-                  src="/assets/generated/brobro-logo.dim_512x512.png" 
-                  alt="Bro Bro Foods" 
-                  className="h-10 w-10 rounded-full"
-                />
-                <span className="text-xl font-bold text-primary">Bro Bro Foods</span>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8 mb-8">
+              {/* Brand */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <img 
+                    src="/assets/generated/brobro-logo.dim_512x512.png" 
+                    alt="Bro Bro Foods" 
+                    className="h-12 w-12 rounded-full"
+                  />
+                  <span className="text-xl font-bold text-foreground">Bro Bro Foods</span>
+                </div>
+                <p className="text-foreground/70 text-sm leading-relaxed">
+                  {BRAND_TAGLINE}
+                </p>
               </div>
-              <p className="text-foreground/70 text-sm">
-                {BRAND_TAGLINE}
+
+              {/* Quick Links */}
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Quick Links</h3>
+                <ul className="space-y-2">
+                  {QUICK_LINKS.map((link) => (
+                    <li key={link.sectionId}>
+                      <button 
+                        onClick={() => scrollToSection(link.sectionId)}
+                        className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                      >
+                        {link.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Contact Info */}
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Contact</h3>
+                <ul className="space-y-2 text-sm text-foreground/70">
+                  <li>
+                    <a href={`tel:${CONTACT_PHONE}`} className="hover:text-primary transition-colors">
+                      {CONTACT_PHONE}
+                    </a>
+                  </li>
+                  <li>{CONTACT_LOCATION}</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Copyright */}
+            <div className="border-t border-border pt-8 text-center">
+              <p className="text-foreground/60 text-sm mb-2">
+                {COPYRIGHT_TEXT}
+              </p>
+              <p className="text-foreground/60 text-sm">
+                © 2026. Built with ❤️ using{' '}
+                <a 
+                  href="https://caffeine.ai" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  caffeine.ai
+                </a>
               </p>
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-foreground mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                {QUICK_LINKS.map((link) => (
-                  <li key={link.sectionId}>
-                    <button 
-                      onClick={() => scrollToSection(link.sectionId)}
-                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-foreground mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-foreground/70">
-                <li className="flex items-center gap-2">
-                  <Phone size={16} />
-                  {CONTACT_PHONE}
-                </li>
-                <li className="flex items-center gap-2">
-                  <MapPin size={16} />
-                  {CONTACT_LOCATION}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border pt-8 text-center">
-            <p className="text-foreground/60 text-sm mb-2">
-              {COPYRIGHT_TEXT}
-            </p>
-            <p className="text-foreground/60 text-sm">
-              © 2026. Built with ❤️ using{' '}
-              <a 
-                href="https://caffeine.ai" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                caffeine.ai
-              </a>
-            </p>
           </div>
         </div>
       </footer>
-
-      {/* Promo Popup */}
-      <PromoPopup onOrderClick={handleOrderClick} />
 
       {/* Modals */}
       {modalContent && (
@@ -599,9 +609,12 @@ function App() {
       )}
 
       <AdminLoginModal 
-        open={adminLoginOpen}
+        open={adminLoginOpen} 
         onOpenChange={setAdminLoginOpen}
       />
+
+      {/* Promo Popup */}
+      <PromoPopup onOrderClick={handleOrderClick} />
     </div>
   );
 }

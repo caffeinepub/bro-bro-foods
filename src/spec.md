@@ -1,11 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Retry the full build and deployment to reproduce and identify the exact deployment failure, fix missing static asset issues (especially under `/assets/generated`), and add a fast-fail pre-deploy verification step for the frontend.
+**Goal:** Add the provided hashtags to the website both as visible content and in HTML metadata for SEO.
 
 **Planned changes:**
-- Re-run an end-to-end build and deploy (frontend build, backend build, canister deploy/install) while capturing and surfacing the exact failing command output.
-- Verify all frontend-referenced static assets exist at deploy time, and add any missing `/assets/generated/*` files into `frontend/public/assets/generated` to prevent missing-file build/deploy errors.
-- Add a lightweight pre-deploy step that runs the existing frontend verification script (e.g., `frontend/scripts/verify-build.sh`) and aborts deployment early with actionable logs if it fails.
+- Add a customer-facing “Hashtags” block/section that displays these hashtags exactly as provided: #budhladafastfood, #veg momos, #budhladabestmomos, #budhladabestrestaurant, #dilkhush, #devishhyadav (with any added label text in English).
+- Update `frontend/index.html` metadata to include the same hashtags exactly as provided (e.g., in meta keywords and/or appended to the existing meta description) while keeping existing branding/title/description text intact.
 
-**User-visible outcome:** Deployment either completes successfully with a reachable, working app, or the exact failing step and error output is clearly surfaced so the issue can be fixed.
+**User-visible outcome:** Visitors can see a “Hashtags” section on the website showing the provided hashtags, and the site’s HTML metadata includes the same hashtags for discoverability.

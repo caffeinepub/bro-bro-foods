@@ -3,38 +3,35 @@
   "projectStateVersion": 3,
   "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [
-    "Deployment error encountered during build/deploy process; user requested retry."
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-retry-the-full-build-and-deployment-and-identify-the-exact-root-cause-of-the-previous-deployment-error-by-capturing-and-surfacing-the-failing-command-output-build-logs-compile-errors-and-deploy-install-errors",
-      "title": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
+      "id": "feature-add-a-visible-hashtags-block-on-the-customer-facing-website-that-displays-the-following-hashtags-exactly-as-provided-budhladafastfood-veg-momos-budhladabestmomos-budhladabestrestaurant-dilkhush-devishhyadav-use-english-for-any-surrounding-label-text-e-g-section-title-and-render-each-hashtag-as-readable-text-optionally-as-pill-chip-styling-without-altering-the-hashtag-content",
+      "title": "Add a visible “Hashtags” block on the customer-facing website that displays the following hashtags exactly as provided: #budhladafastfood, #veg momos, #budhladabestmomos, #budhladabestrestaurant, #dilkhush, #devishhyadav. Use English for any surrounding label text (e.g., section title), and render each hashtag as readable text (optionally as pill/chip styling) without altering the hashtag content.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-deployment-is-not-failing-due-to-missing-static-assets-referenced-by-the-frontend-especially-files-under-assets-generated-and-add-any-missing-required-files-to-frontend-public-assets-generated-so-the-frontend-build-and-deploy-succeed",
-      "title": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
+      "id": "feature-update-the-site-html-metadata-to-include-the-provided-hashtags-for-seo-discoverability-by-adding-appropriate-meta-tags-in-frontend-index-html-e-g-meta-name-keywords-and-or-appending-to-the-existing-meta-description-while-keeping-existing-branding-text-intact",
+      "title": "Update the site HTML metadata to include the provided hashtags for SEO/discoverability by adding appropriate meta tags in frontend/index.html (e.g., meta name=\"keywords\" and/or appending to the existing meta description) while keeping existing branding text intact.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-add-a-lightweight-pre-deploy-verification-step-that-runs-the-existing-frontend-verification-script-and-fails-fast-with-actionable-output-before-attempting-deployment",
-      "title": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [],
-  "projectName": "Retry build/deploy and fix the deployment failure",
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add provided hashtags to the website content/metadata: #budhladafastfood #veg momos #budhladabestmomos #budhladabestrestaurant #dilkhush #devishhyadav",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Add provided hashtags to website (visible + SEO metadata)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }
