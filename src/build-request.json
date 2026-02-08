@@ -1,85 +1,69 @@
 {
   "kind": "build_request",
-  "title": "Move Ad/Owner Settings into Admin Panel and lock behind PIN 7973",
+  "title": "Retry build/deploy and fix the deployment failure",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
-      "target": "frontend",
+      "text": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
+      "target": "both",
       "source": {
         "messageIds": [
-          "recent-messages-2",
-          "recent-messages-6",
-          "recent-messages-10",
-          "recent-messages-11"
+          "msg-2"
         ],
         "quotes": [
-          "Isko hta ke admin panel me add kar do is setting ko",
-          "Are bhai mene arrow lgaya hai usko htao owner setting ko",
-          "Password to lago",
-          "Password 7973"
+          "Retry"
         ]
       },
       "acceptanceCriteria": [
-        "On the public/customer page, the footer no longer shows “Ad Settings” (and no arrow/chevron icon related to it).",
-        "There is no clickable navigation path to Ad Settings from the customer-facing UI (header, footer, mobile menu)."
+        "A fresh build+deploy attempt is executed end-to-end (frontend build + backend build + canister deploy/install).",
+        "The deployment failure is reproducible (if still present) with the exact failing step clearly identified and documented in logs.",
+        "If the error is resolved, the deployment completes successfully and the app is reachable with both frontend and backend functioning."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+      "text": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-2",
-          "recent-messages-6"
+          "msg-2"
         ],
         "quotes": [
-          "Isko hta ke admin panel me add kar do is setting ko",
-          "Are bhai mene arrow lgaya hai usko htao owner setting ko isko lock kar do password ke sath jese admin panel ko login karne ke liye password chaiye hota hai"
+          "Retry"
         ]
       },
       "acceptanceCriteria": [
-        "When logged into admin, the Admin Dashboard displays an “Owner Settings” area.",
-        "“Ad Settings” is accessible from within that “Owner Settings” area and opens the existing AdSense settings dialog/panel.",
-        "AdsSettingsPanel is not rendered on the public/customer page."
+        "The frontend build completes without missing-file errors for any referenced static assets.",
+        "All referenced /assets/generated/* files used by the UI exist in frontend/public/assets/generated at deploy time."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+      "text": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-6",
-          "recent-messages-10",
-          "recent-messages-11",
-          "recent-messages-12"
+          "msg-2"
         ],
         "quotes": [
-          "Are bhai mene arrow lgaya hai usko htao owner setting ko isko lock kar do password ke sath jese admin panel ko login karne ke liye password chaiye hota hai",
-          "Password to lago",
-          "Password 7973",
-          "Yes"
+          "Retry"
         ]
       },
       "acceptanceCriteria": [
-        "If a user is not admin-authorized, they cannot access Owner Settings / Ad Settings without a PIN prompt.",
-        "Entering PIN 7973 unlocks access; incorrect PIN shows an English error message and keeps Owner Settings locked.",
-        "If a user is already admin-authorized, Owner Settings / Ad Settings opens without requiring the PIN again in the same session/state."
+        "A pre-deploy step runs frontend/scripts/verify-build.sh (or equivalent) before deployment.",
+        "If typecheck/lint/build fails, deployment is aborted and the failing command output is visible and actionable."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
-    "Keep the Internet Computer backend as a single Motoko actor; do not introduce additional backend services.",
-    "Do not introduce third-party authentication providers; only the existing admin PIN mechanism may be used for this request."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
+    "Do not edit files in frontend/src/components/ui or other immutable paths listed in SYSTEM_CONTEXT.",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Do not add or change backend persistence for ads settings (keep localStorage-based ads owner settings).",
-    "Do not change ad rendering logic beyond removing the public entry point and relocating settings access to the admin UI.",
-    "Do not redesign the entire admin dashboard; only add the minimal “Owner Settings” section needed."
+    "Adding new product features unrelated to resolving the build/deployment failure.",
+    "Introducing external databases, third-party authentication providers, or non-supported backend technologies."
   ],
   "imageRequirements": {
     "required": [],

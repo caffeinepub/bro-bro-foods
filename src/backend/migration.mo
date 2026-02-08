@@ -3,6 +3,29 @@ import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 
 module {
+  type PlateType = {
+    id : Nat;
+    name : Text;
+    price : Nat;
+  };
+
+  type KxlBankAccount = {
+    accountHolder : Text;
+    accountNumber : Text;
+    ifscCode : Text;
+    upiId : Text;
+    bankName : Text;
+  };
+
+  type PaymentMethod = {
+    id : Nat;
+    name : Text;
+    description : Text;
+    kxlBankAccount : ?KxlBankAccount;
+    upiId : ?Text;
+    qrcodeUrl : ?Text;
+  };
+
   type PaymentConfirmation = {
     utr : Text;
     paidVia : Text;
@@ -14,6 +37,7 @@ module {
     #pending;
     #accepted;
     #preparing;
+    #readyToDeliver;
     #outForDelivery;
     #delivered;
     #cancelled;
@@ -25,19 +49,7 @@ module {
     changedBy : Text;
   };
 
-  type OldOrder = {
-    id : Nat;
-    plateTypeId : Nat;
-    plateTypeName : Text;
-    price : Nat;
-    quantity : Nat;
-    totalAmount : Nat;
-    createdAt : Time.Time;
-    paymentMethodId : ?Nat;
-    paymentConfirmation : ?PaymentConfirmation;
-  };
-
-  type NewOrder = {
+  type Order = {
     id : Nat;
     plateTypeId : Nat;
     plateTypeName : Text;
@@ -51,34 +63,36 @@ module {
     statusEvents : [StatusChangeEvent];
   };
 
+  type BuildStatus = {
+    buildSucceeded : Bool;
+    buildOutput : Text;
+    appInstallationSucceeded : Bool;
+    appInstallationOutput : Text;
+    deploySucceeded : Bool;
+    deployOutput : Text;
+  };
+
+  type LastBuildStatus = {
+    timestamp : Time.Time;
+    status : BuildStatus;
+  };
+
   type OldActor = {
+    orders : Map.Map<Nat, Order>;
     nextOrderId : Nat;
-    orders : Map.Map<Nat, OldOrder>;
   };
 
   type NewActor = {
+    orders : Map.Map<Nat, Order>;
     nextOrderId : Nat;
-    orders : Map.Map<Nat, NewOrder>;
+    lastBuildStatus : ?LastBuildStatus;
   };
 
   public func run(old : OldActor) : NewActor {
-    let newOrders = old.orders.map<Nat, OldOrder, NewOrder>(
-      func(_id, oldOrder) {
-        let initialStatusEvent = {
-          status = #pending;
-          changedAt = oldOrder.createdAt;
-          changedBy = "system";
-        };
-        {
-          oldOrder with
-          status = #pending;
-          statusEvents = [initialStatusEvent];
-        };
-      }
-    );
     {
-      old with
-      orders = newOrders;
+      orders = old.orders;
+      nextOrderId = old.nextOrderId;
+      lastBuildStatus = null;
     };
   };
 };

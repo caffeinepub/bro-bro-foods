@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T08:59:22.494Z",
+  "generatedAt": "2026-02-08T16:40:57.248Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,52 +12,73 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
+        "summary": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/scripts/retry-build-deploy.sh",
+          "frontend/src/hooks/useLastBuildStatus.ts",
+          "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+          "frontend/src/components/admin/AdminDashboard.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/scripts/retry-build-deploy.sh",
+          "frontend/src/hooks/useLastBuildStatus.ts",
+          "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+          "frontend/src/components/admin/AdminDashboard.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+        "summary": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/admin/OwnerSettingsSection.tsx",
-          "frontend/src/components/admin/AdminDashboard.tsx"
+          "frontend/public/assets/generated/brobro-logo.dim_512x512.png",
+          "frontend/public/assets/generated/hero-momos-bg.dim_1920x1080.png",
+          "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
+          "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
+          "frontend/public/assets/generated/founder-rohit.dim_512x512.jpg",
+          "frontend/public/assets/generated/founder-rohit.dim_128x128.jpg",
+          "frontend/public/assets/generated/profile-placeholder.dim_512x512.png",
+          "frontend/public/assets/generated/android-app-icon.dim_1024x1024.png",
+          "frontend/scripts/verify-static-assets.sh"
         ],
         "matchedFiles": [
-          "frontend/src/components/admin/OwnerSettingsSection.tsx",
-          "frontend/src/components/admin/AdminDashboard.tsx"
+          "frontend/scripts/verify-static-assets.sh"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+        "summary": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/admin/AdminDashboard.tsx",
-          "frontend/src/components/admin/AdminLoginModal.tsx"
+          "frontend/scripts/verify-build.sh",
+          "frontend/scripts/predeploy-verify.sh"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/admin/AdminDashboard.tsx"
+          "frontend/scripts/verify-build.sh",
+          "frontend/scripts/predeploy-verify.sh"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
+    "frontend/scripts/predeploy-verify.sh",
+    "frontend/scripts/retry-build-deploy.sh",
+    "frontend/scripts/verify-build.sh",
+    "frontend/scripts/verify-static-assets.sh",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
     "frontend/src/components/admin/AdminDashboard.tsx",
-    "frontend/src/components/admin/OwnerSettingsSection.tsx",
+    "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useLastBuildStatus.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -89,12 +89,20 @@ export class ExternalBlob {
         return this;
     }
 }
+export type Time = bigint;
 export interface StatusChangeEvent {
     status: OrderStatus;
     changedAt: Time;
     changedBy: string;
 }
-export type Time = bigint;
+export interface BuildStatus {
+    deployOutput: string;
+    buildOutput: string;
+    buildSucceeded: boolean;
+    deploySucceeded: boolean;
+    appInstallationOutput: string;
+    appInstallationSucceeded: boolean;
+}
 export interface Order {
     id: bigint;
     status: OrderStatus;
@@ -107,6 +115,10 @@ export interface Order {
     price: bigint;
     statusEvents: Array<StatusChangeEvent>;
     plateTypeName: string;
+}
+export interface LastBuildStatus {
+    status: BuildStatus;
+    timestamp: Time;
 }
 export interface PaymentConfirmation {
     utr: string;
@@ -126,13 +138,15 @@ export enum OrderStatus {
 export interface backendInterface {
     createOrder(plateTypeId: bigint, plateTypeName: string, price: bigint, quantity: bigint): Promise<Order>;
     getAllOrders(): Promise<Array<Order>>;
+    getLastBuildStatus(): Promise<LastBuildStatus | null>;
     getOrder(orderId: bigint): Promise<Order | null>;
     getOrderStatusTimeline(orderId: bigint): Promise<Array<StatusChangeEvent> | null>;
     getPaymentConfirmation(orderId: bigint): Promise<PaymentConfirmation | null>;
+    updateLastBuildStatus(status: BuildStatus): Promise<void>;
     updateOrderStatus(orderId: bigint, newStatus: OrderStatus, changedBy: string): Promise<Order | null>;
     updatePaymentConfirmation(orderId: bigint, paymentConfirmation: PaymentConfirmation): Promise<Order | null>;
 }
-import type { Order as _Order, OrderStatus as _OrderStatus, PaymentConfirmation as _PaymentConfirmation, StatusChangeEvent as _StatusChangeEvent, Time as _Time } from "./declarations/backend.did.d.ts";
+import type { LastBuildStatus as _LastBuildStatus, Order as _Order, OrderStatus as _OrderStatus, PaymentConfirmation as _PaymentConfirmation, StatusChangeEvent as _StatusChangeEvent, Time as _Time } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async createOrder(arg0: bigint, arg1: string, arg2: bigint, arg3: bigint): Promise<Order> {
@@ -163,32 +177,46 @@ export class Backend implements backendInterface {
             return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getOrder(arg0: bigint): Promise<Order | null> {
+    async getLastBuildStatus(): Promise<LastBuildStatus | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getOrder(arg0);
+                const result = await this.actor.getLastBuildStatus();
                 return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getOrder(arg0);
+            const result = await this.actor.getLastBuildStatus();
             return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getOrderStatusTimeline(arg0: bigint): Promise<Array<StatusChangeEvent> | null> {
+    async getOrder(arg0: bigint): Promise<Order | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getOrderStatusTimeline(arg0);
+                const result = await this.actor.getOrder(arg0);
                 return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getOrderStatusTimeline(arg0);
+            const result = await this.actor.getOrder(arg0);
             return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getOrderStatusTimeline(arg0: bigint): Promise<Array<StatusChangeEvent> | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getOrderStatusTimeline(arg0);
+                return from_candid_opt_n13(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getOrderStatusTimeline(arg0);
+            return from_candid_opt_n13(this._uploadFile, this._downloadFile, result);
         }
     }
     async getPaymentConfirmation(arg0: bigint): Promise<PaymentConfirmation | null> {
@@ -205,32 +233,46 @@ export class Backend implements backendInterface {
             return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
         }
     }
-    async updateOrderStatus(arg0: bigint, arg1: OrderStatus, arg2: string): Promise<Order | null> {
+    async updateLastBuildStatus(arg0: BuildStatus): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateOrderStatus(arg0, to_candid_OrderStatus_n13(this._uploadFile, this._downloadFile, arg1), arg2);
-                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+                const result = await this.actor.updateLastBuildStatus(arg0);
+                return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateOrderStatus(arg0, to_candid_OrderStatus_n13(this._uploadFile, this._downloadFile, arg1), arg2);
-            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+            const result = await this.actor.updateLastBuildStatus(arg0);
+            return result;
+        }
+    }
+    async updateOrderStatus(arg0: bigint, arg1: OrderStatus, arg2: string): Promise<Order | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateOrderStatus(arg0, to_candid_OrderStatus_n14(this._uploadFile, this._downloadFile, arg1), arg2);
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateOrderStatus(arg0, to_candid_OrderStatus_n14(this._uploadFile, this._downloadFile, arg1), arg2);
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
         }
     }
     async updatePaymentConfirmation(arg0: bigint, arg1: PaymentConfirmation): Promise<Order | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.updatePaymentConfirmation(arg0, arg1);
-                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.updatePaymentConfirmation(arg0, arg1);
-            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
         }
     }
 }
@@ -243,10 +285,13 @@ function from_candid_Order_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8
 function from_candid_StatusChangeEvent_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _StatusChangeEvent): StatusChangeEvent {
     return from_candid_record_n9(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Order]): Order | null {
+function from_candid_opt_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_LastBuildStatus]): LastBuildStatus | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Order]): Order | null {
     return value.length === 0 ? null : from_candid_Order_n1(_uploadFile, _downloadFile, value[0]);
 }
-function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<_StatusChangeEvent>]): Array<StatusChangeEvent> | null {
+function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<_StatusChangeEvent>]): Array<StatusChangeEvent> | null {
     return value.length === 0 ? null : from_candid_vec_n7(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
@@ -332,10 +377,10 @@ function from_candid_vec_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 function from_candid_vec_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_StatusChangeEvent>): Array<StatusChangeEvent> {
     return value.map((x)=>from_candid_StatusChangeEvent_n8(_uploadFile, _downloadFile, x));
 }
-function to_candid_OrderStatus_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: OrderStatus): _OrderStatus {
-    return to_candid_variant_n14(_uploadFile, _downloadFile, value);
+function to_candid_OrderStatus_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: OrderStatus): _OrderStatus {
+    return to_candid_variant_n15(_uploadFile, _downloadFile, value);
 }
-function to_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: OrderStatus): {
+function to_candid_variant_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: OrderStatus): {
     preparing: null;
 } | {
     cancelled: null;

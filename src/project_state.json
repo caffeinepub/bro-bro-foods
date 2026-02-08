@@ -2,60 +2,39 @@
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
   "summary": "New project",
-  "architectural_notes": [
-    "Add access control for Owner/Ad Settings: remove public entry point and gate page behind a password prompt (password currently provided as 7973)."
-  ],
+  "architectural_notes": [],
   "known_issues": [
-    "Build/deployment attempts are failing intermittently with internal AI/build errors; retry requested."
+    "Deployment error encountered during build/deploy process; user requested retry."
   ],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-remove-the-customer-facing-ad-settings-owner-settings-entry-from-the-public-site-footer-including-removing-the-arrow-chevron-indicator-shown-in-the-uploaded-screenshots-so-it-is-not-visible-anywhere-on-the-non-admin-landing-page",
-      "title": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
+      "id": "feature-retry-the-full-build-and-deployment-and-identify-the-exact-root-cause-of-the-previous-deployment-error-by-capturing-and-surfacing-the-failing-command-output-build-logs-compile-errors-and-deploy-install-errors",
+      "title": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-an-owner-settings-section-inside-the-admin-dashboard-ui-and-place-the-existing-ads-settings-ui-there-reuse-the-existing-adssettingspanel-component-but-only-render-it-inside-the-admin-experience",
-      "title": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+      "id": "feature-ensure-deployment-is-not-failing-due-to-missing-static-assets-referenced-by-the-frontend-especially-files-under-assets-generated-and-add-any-missing-required-files-to-frontend-public-assets-generated-so-the-frontend-build-and-deploy-succeed",
+      "title": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-password-protect-access-to-ad-settings-owner-settings-using-pin-7973-with-a-user-flow-comparable-to-the-existing-admin-login-modal-if-a-user-is-not-currently-admin-authorized-they-must-enter-pin-7973-before-they-can-access-the-owner-settings-ad-settings-ui",
-      "title": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+      "id": "feature-add-a-lightweight-pre-deploy-verification-step-that-runs-the-existing-frontend-verification-script-and-fails-fast-with-actionable-output-before-attempting-deployment",
+      "title": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Remove the Ad Settings/Owner Settings arrow/button from the site footer (customer-facing UI).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Move Ad Settings/Owner Settings into the Admin Panel only (organize under an Owner Settings section).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Password-protect the Ad Settings/Owner Settings page with a prompt using password '7973', similar to Admin Panel login gating.",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "projectName": "Move Ad/Owner Settings into Admin Panel and lock behind PIN 7973",
+  "new_feature_requests": [],
+  "projectName": "Retry build/deploy and fix the deployment failure",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

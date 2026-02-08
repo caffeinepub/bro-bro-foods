@@ -10,6 +10,15 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface BuildStatus {
+  'deployOutput' : string,
+  'buildOutput' : string,
+  'buildSucceeded' : boolean,
+  'deploySucceeded' : boolean,
+  'appInstallationOutput' : string,
+  'appInstallationSucceeded' : boolean,
+}
+export interface LastBuildStatus { 'status' : BuildStatus, 'timestamp' : Time }
 export interface Order {
   'id' : bigint,
   'status' : OrderStatus,
@@ -45,12 +54,14 @@ export type Time = bigint;
 export interface _SERVICE {
   'createOrder' : ActorMethod<[bigint, string, bigint, bigint], Order>,
   'getAllOrders' : ActorMethod<[], Array<Order>>,
+  'getLastBuildStatus' : ActorMethod<[], [] | [LastBuildStatus]>,
   'getOrder' : ActorMethod<[bigint], [] | [Order]>,
   'getOrderStatusTimeline' : ActorMethod<
     [bigint],
     [] | [Array<StatusChangeEvent>]
   >,
   'getPaymentConfirmation' : ActorMethod<[bigint], [] | [PaymentConfirmation]>,
+  'updateLastBuildStatus' : ActorMethod<[BuildStatus], undefined>,
   'updateOrderStatus' : ActorMethod<
     [bigint, OrderStatus, string],
     [] | [Order]

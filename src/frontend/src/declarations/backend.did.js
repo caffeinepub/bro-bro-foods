@@ -42,10 +42,23 @@ export const Order = IDL.Record({
   'statusEvents' : IDL.Vec(StatusChangeEvent),
   'plateTypeName' : IDL.Text,
 });
+export const BuildStatus = IDL.Record({
+  'deployOutput' : IDL.Text,
+  'buildOutput' : IDL.Text,
+  'buildSucceeded' : IDL.Bool,
+  'deploySucceeded' : IDL.Bool,
+  'appInstallationOutput' : IDL.Text,
+  'appInstallationSucceeded' : IDL.Bool,
+});
+export const LastBuildStatus = IDL.Record({
+  'status' : BuildStatus,
+  'timestamp' : Time,
+});
 
 export const idlService = IDL.Service({
   'createOrder' : IDL.Func([IDL.Nat, IDL.Text, IDL.Nat, IDL.Nat], [Order], []),
   'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+  'getLastBuildStatus' : IDL.Func([], [IDL.Opt(LastBuildStatus)], ['query']),
   'getOrder' : IDL.Func([IDL.Nat], [IDL.Opt(Order)], ['query']),
   'getOrderStatusTimeline' : IDL.Func(
       [IDL.Nat],
@@ -57,6 +70,7 @@ export const idlService = IDL.Service({
       [IDL.Opt(PaymentConfirmation)],
       ['query'],
     ),
+  'updateLastBuildStatus' : IDL.Func([BuildStatus], [], []),
   'updateOrderStatus' : IDL.Func(
       [IDL.Nat, OrderStatus, IDL.Text],
       [IDL.Opt(Order)],
@@ -106,6 +120,18 @@ export const idlFactory = ({ IDL }) => {
     'statusEvents' : IDL.Vec(StatusChangeEvent),
     'plateTypeName' : IDL.Text,
   });
+  const BuildStatus = IDL.Record({
+    'deployOutput' : IDL.Text,
+    'buildOutput' : IDL.Text,
+    'buildSucceeded' : IDL.Bool,
+    'deploySucceeded' : IDL.Bool,
+    'appInstallationOutput' : IDL.Text,
+    'appInstallationSucceeded' : IDL.Bool,
+  });
+  const LastBuildStatus = IDL.Record({
+    'status' : BuildStatus,
+    'timestamp' : Time,
+  });
   
   return IDL.Service({
     'createOrder' : IDL.Func(
@@ -114,6 +140,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+    'getLastBuildStatus' : IDL.Func([], [IDL.Opt(LastBuildStatus)], ['query']),
     'getOrder' : IDL.Func([IDL.Nat], [IDL.Opt(Order)], ['query']),
     'getOrderStatusTimeline' : IDL.Func(
         [IDL.Nat],
@@ -125,6 +152,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(PaymentConfirmation)],
         ['query'],
       ),
+    'updateLastBuildStatus' : IDL.Func([BuildStatus], [], []),
     'updateOrderStatus' : IDL.Func(
         [IDL.Nat, OrderStatus, IDL.Text],
         [IDL.Opt(Order)],

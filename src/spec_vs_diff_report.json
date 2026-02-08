@@ -1,27 +1,74 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T08:59:22.491Z",
-  "summary": "REQ-2 appears implemented by adding an Owner Settings section to the admin dashboard and placing the existing AdsSettingsPanel within it. REQ-1 is likely implemented (public Ad Settings footer entry removed), but the provided App.tsx diff is truncated so evidence is indirect. REQ-3 is not evidenced: no implementation details show a PIN 7973 prompt/validation/error flow gating Owner/Ad Settings access for non-authorized users.",
+  "generatedAt": "2026-02-08T16:40:57.245Z",
+  "summary": "Diff adds new build/deploy helper scripts (including a pre-deploy verification wrapper), a static-asset verification script, and backend/frontend plumbing for an admin “Build & Deploy Status” panel. However, it does not show any added static asset files under frontend/public/assets/generated, and it does not include captured output/logs from an actual retried deployment attempt (only tooling to do so). Several unrelated product/UI/backend changes appear to be introduced beyond the build/deploy fix scope.",
   "missing_requirements": [
     {
-      "id": "REQ-3",
-      "requirement": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a flow comparable to the existing Admin Login modal (prompt when not authorized; accept 7973; incorrect PIN shows English error; don’t reprompt within same session).",
-      "reason": "The diff shows Owner Settings only being rendered inside AdminDashboard, but there is no evidence of a PIN 7973 prompt, validation logic, incorrect-PIN English error message, or session/state handling specific to unlocking Owner/Ad Settings. No changes to the admin login/PIN mechanism are shown in the provided modified/added files.",
+      "id": "REQ-1",
+      "requirement": "Retry the full build and deployment end-to-end and document the exact failing step with captured command output/logs.",
+      "reason": "The diff adds scripts to run and log a build+deploy attempt, but does not include any actual captured build/deploy logs or documentation identifying the reproduced failing command/output. From the diff alone, there is no evidence the retry was executed and the root cause surfaced.",
       "evidence": [
-        "frontend/src/components/admin/OwnerSettingsSection.tsx",
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/App.tsx"
+        "frontend/scripts/retry-build-deploy.sh"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Add any missing required /assets/generated/* files to frontend/public/assets/generated so the frontend build/deploy succeeds without missing-file errors.",
+      "reason": "A verification script enumerating required generated assets was added, but no actual asset files (e.g., .png/.jpg) were added under frontend/public/assets/generated in the provided diff summary. Therefore the requirement to add missing files is not evidenced as implemented.",
+      "evidence": [
+        "frontend/scripts/verify-static-assets.sh",
+        "frontend/scripts/verify-build.sh",
+        "frontend/src/components/admin/AdminDashboard.tsx"
       ]
     }
   ],
-  "hallucinated_features": [],
-  "confidence": 0.68,
+  "hallucinated_features": [
+    {
+      "description": "Admin UI panel to display \"Build & Deploy Status\" plus React Query hook to poll backend for last build status.",
+      "reason": "BuildRequest asked to capture/surface failing command output for deployment troubleshooting and add a pre-deploy verification step; it did not request a new admin dashboard feature/panel or polling hook.",
+      "evidence": [
+        "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+        "frontend/src/hooks/useLastBuildStatus.ts",
+        "frontend/src/components/admin/AdminDashboard.tsx"
+      ]
+    },
+    {
+      "description": "Backend state additions for lastBuildStatus and a new getLastBuildStatus canister method, plus introducing a migration module and using (with migration = ...).",
+      "reason": "BuildRequest did not ask for persistent backend build/deploy status tracking or a backend upgrade/migration; this is additional functionality beyond the requested build/deploy retry tooling.",
+      "evidence": [
+        "backend/main.mo",
+        "backend/migration.mo"
+      ]
+    },
+    {
+      "description": "Order/status domain change adding \"readyToDeliver\" to OrderStatus (and related references).",
+      "reason": "Not part of build/deploy failure resolution or static asset verification; appears to be unrelated product/domain change.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/components/admin/AdminDashboard.tsx"
+      ]
+    },
+    {
+      "description": "Multiple unrelated frontend feature/UI changes described in frontend-file-summaries.txt (e.g., \"Meet the Owners\" section, promo popup, WhatsApp/UPI utilities, theming, APK/capacitor config changes, etc.).",
+      "reason": "Non-goal explicitly disallows adding new product features unrelated to resolving build/deployment failure; these appear unrelated and are not requested by REQ-1/2/3.",
+      "evidence": [
+        "frontend-file-summaries.txt"
+      ]
+    }
+  ],
+  "confidence": 0.74,
   "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
+    "frontend/scripts/predeploy-verify.sh",
+    "frontend/scripts/retry-build-deploy.sh",
+    "frontend/scripts/verify-build.sh",
+    "frontend/scripts/verify-static-assets.sh",
     "frontend/src/components/admin/AdminDashboard.tsx",
-    "frontend/src/components/admin/OwnerSettingsSection.tsx",
+    "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+    "frontend/src/hooks/useLastBuildStatus.ts",
     "project_state.json"
   ]
 }

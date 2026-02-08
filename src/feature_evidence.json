@@ -2,10 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-customer-facing-ad-settings-owner-settings-entry-from-the-public-site-footer-including-removing-the-arrow-chevron-indicator-shown-in-the-uploaded-screenshots-so-it-is-not-visible-anywhere-on-the-non-admin-landing-page",
-      "featureTitle": "Remove the customer-facing “Ad Settings / Owner Settings” entry from the public site footer (including removing the arrow/chevron indicator shown in the uploaded screenshots), so it is not visible anywhere on the non-admin landing page.",
+      "featureId": "feature-retry-the-full-build-and-deployment-and-identify-the-exact-root-cause-of-the-previous-deployment-error-by-capturing-and-surfacing-the-failing-command-output-build-logs-compile-errors-and-deploy-install-errors",
+      "featureTitle": "Retry the full build and deployment, and identify the exact root cause of the previous deployment error by capturing and surfacing the failing command output (build logs, compile errors, and deploy/install errors).",
       "files": [
-        "frontend/src/App.tsx"
+        "frontend/scripts/retry-build-deploy.sh",
+        "frontend/src/components/admin/AdminDashboard.tsx",
+        "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+        "frontend/src/hooks/useLastBuildStatus.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -20,11 +23,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-an-owner-settings-section-inside-the-admin-dashboard-ui-and-place-the-existing-ads-settings-ui-there-reuse-the-existing-adssettingspanel-component-but-only-render-it-inside-the-admin-experience",
-      "featureTitle": "Add an “Owner Settings” section inside the Admin Dashboard UI and place the existing Ads settings UI there (reuse the existing AdsSettingsPanel component, but only render it inside the admin experience).",
+      "featureId": "feature-ensure-deployment-is-not-failing-due-to-missing-static-assets-referenced-by-the-frontend-especially-files-under-assets-generated-and-add-any-missing-required-files-to-frontend-public-assets-generated-so-the-frontend-build-and-deploy-succeed",
+      "featureTitle": "Ensure deployment is not failing due to missing static assets referenced by the frontend (especially files under /assets/generated), and add any missing required files to frontend/public/assets/generated so the frontend build and deploy succeed.",
       "files": [
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/components/admin/OwnerSettingsSection.tsx"
+        "frontend/scripts/verify-static-assets.sh"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -39,11 +41,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-password-protect-access-to-ad-settings-owner-settings-using-pin-7973-with-a-user-flow-comparable-to-the-existing-admin-login-modal-if-a-user-is-not-currently-admin-authorized-they-must-enter-pin-7973-before-they-can-access-the-owner-settings-ad-settings-ui",
-      "featureTitle": "Password-protect access to “Ad Settings / Owner Settings” using PIN 7973, with a user flow comparable to the existing Admin Login modal: if a user is not currently admin-authorized, they must enter PIN 7973 before they can access the Owner Settings / Ad Settings UI.",
+      "featureId": "feature-add-a-lightweight-pre-deploy-verification-step-that-runs-the-existing-frontend-verification-script-and-fails-fast-with-actionable-output-before-attempting-deployment",
+      "featureTitle": "Add a lightweight pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output before attempting deployment.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/admin/AdminDashboard.tsx"
+        "frontend/scripts/predeploy-verify.sh",
+        "frontend/scripts/verify-build.sh"
       ],
       "components": [
         "core-infrastructure@1.0.2",

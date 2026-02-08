@@ -8,6 +8,7 @@ import OrdersTable from './OrdersTable';
 import OrderDetailView from './OrderDetailView';
 import AdminApkDownloadButton from './AdminApkDownloadButton';
 import OwnerSettingsSection from './OwnerSettingsSection';
+import BuildDeployStatusPanel from './BuildDeployStatusPanel';
 import { clearAdminToken } from '@/lib/adminAccess';
 import type { Order } from '@/backend';
 
@@ -75,6 +76,11 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-4 py-8">
         {/* Owner Settings Section */}
         <OwnerSettingsSection />
+
+        {/* Build & Deploy Status Panel */}
+        <div className="mb-8">
+          <BuildDeployStatusPanel />
+        </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

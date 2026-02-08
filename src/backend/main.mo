@@ -2,11 +2,13 @@ import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Iter "mo:core/Iter";
+import Migration "migration";
 
 import Array "mo:core/Array";
 
-
- actor {
+// Specify the data migration function in with-clause
+(with migration = Migration.run)
+actor {
   type PlateType = {
     id : Nat;
     name : Text;
@@ -68,6 +70,21 @@ import Array "mo:core/Array";
     statusEvents : [StatusChangeEvent];
   };
 
+  type BuildStatus = {
+    buildSucceeded : Bool;
+    buildOutput : Text;
+    appInstallationSucceeded : Bool;
+    appInstallationOutput : Text;
+    deploySucceeded : Bool;
+    deployOutput : Text;
+  };
+
+  type LastBuildStatus = {
+    timestamp : Time.Time;
+    status : BuildStatus;
+  };
+
+  var lastBuildStatus : ?LastBuildStatus = null;
   var nextOrderId = 0;
   let orders = Map.empty<Nat, Order>();
 
@@ -75,6 +92,10 @@ import Array "mo:core/Array";
     let id = nextOrderId;
     nextOrderId += 1;
     (id, nextOrderId);
+  };
+
+  public query ({ caller }) func getLastBuildStatus() : async ?LastBuildStatus {
+    lastBuildStatus;
   };
 
   public shared ({ caller }) func createOrder(plateTypeId : Nat, plateTypeName : Text, price : Nat, quantity : Nat) : async Order {
@@ -156,6 +177,13 @@ import Array "mo:core/Array";
     switch (orders.get(orderId)) {
       case (null) { null };
       case (?order) { ?order.statusEvents };
+    };
+  };
+
+  public shared ({ caller }) func updateLastBuildStatus(status : BuildStatus) : async () {
+    lastBuildStatus := ?{
+      timestamp = Time.now();
+      status;
     };
   };
 };

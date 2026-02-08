@@ -1,67 +1,111 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Move Ad/Owner Settings into Admin Panel and lock behind PIN 7973",
+  "title": "Fix frontend deploy failures by verifying static assets and adding pre-deploy verification",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove any customer-facing footer/navigation entry points for Ad Settings / Owner Settings (including chevron/arrow indicator) so it is not visible on the public landing page.",
+      "summary": "Add a repeatable, frontend-owned build/deploy runner that captures failing command output and make build/deploy logs visible from the UI (admin-only).",
       "acceptanceCriteria": [
-        "On the public/customer page, the footer no longer shows “Ad Settings” (and no arrow/chevron icon related to it).",
-        "There is no clickable navigation path to Ad Settings from the customer-facing UI (header, footer, mobile menu)."
+        "A fresh build+deploy attempt is executed end-to-end (frontend build + backend build + canister deploy/install).",
+        "The deployment failure is reproducible (if still present) with the exact failing step clearly identified and documented in logs.",
+        "If the error is resolved, the deployment completes successfully and the app is reachable with both frontend and backend functioning."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/scripts/retry-build-deploy.sh",
+          "operation": "create",
+          "description": "Create a single runner script that executes the full sequence (frontend verification/build first, then project deploy commands) while teeing all command output to a timestamped log file and clearly printing which step failed (command + exit code). Ensure the script can be invoked from the repo root and produces actionable, readable logs."
+        },
+        {
+          "path": "frontend/src/hooks/useLastBuildStatus.ts",
+          "operation": "create",
+          "description": "Add a React Query hook that calls the existing backend actor capability to fetch the last recorded build/deploy status and exposes it to the admin UI for troubleshooting."
+        },
+        {
+          "path": "frontend/src/components/admin/BuildDeployStatusPanel.tsx",
+          "operation": "create",
+          "description": "Create an admin-only panel that renders the last build/deploy status fields (build/deploy/install success flags and text outputs) in a readable way suitable for diagnosing failures."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminDashboard.tsx",
           "operation": "modify",
-          "description": "Remove the public/footer “Ad Settings / Owner Settings” UI entry (including the arrow/chevron indicator) and ensure AdsSettingsPanel is not rendered anywhere in the customer-facing app tree."
+          "description": "Wire the new BuildDeployStatusPanel into the existing admin dashboard layout so build/deploy logs are surfaced in-app for troubleshooting (ensure it remains admin-only)."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add an Owner Settings section inside the Admin Dashboard and render the existing AdsSettingsPanel only within the admin experience.",
+      "summary": "Ensure all frontend-referenced /assets/generated static files exist at build/deploy time and add any missing required files under frontend/public/assets/generated.",
       "acceptanceCriteria": [
-        "When logged into admin, the Admin Dashboard displays an “Owner Settings” area.",
-        "“Ad Settings” is accessible from within that “Owner Settings” area and opens the existing AdSense settings dialog/panel.",
-        "AdsSettingsPanel is not rendered on the public/customer page."
+        "The frontend build completes without missing-file errors for any referenced static assets.",
+        "All referenced /assets/generated/* files used by the UI exist in frontend/public/assets/generated at deploy time."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/admin/OwnerSettingsSection.tsx",
+          "path": "frontend/public/assets/generated/brobro-logo.dim_512x512.png",
           "operation": "create",
-          "description": "Create an Admin Dashboard section component labeled “Owner Settings” that includes the existing AdsSettingsPanel as the way to open/manage “Ad Settings”. Use shadcn-ui primitives (e.g., Card/Button) to match the current admin UI styling. Verify the component's usage instructions before implementing."
+          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
         },
         {
-          "path": "frontend/src/components/admin/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Wire the new OwnerSettingsSection into the Admin Dashboard layout so it appears for authorized admin users and provides access to AdsSettingsPanel. Use existing shadcn-ui layout components to keep changes minimal. Verify the component's usage instructions before implementing."
+          "path": "frontend/public/assets/generated/hero-momos-bg.dim_1920x1080.png",
+          "operation": "create",
+          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
+        },
+        {
+          "path": "frontend/public/assets/generated/founder-dilkhush.dim_512x512.jpg",
+          "operation": "create",
+          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
+        },
+        {
+          "path": "frontend/public/assets/generated/founder-dilkhush.dim_128x128.jpg",
+          "operation": "create",
+          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
+        },
+        {
+          "path": "frontend/public/assets/generated/founder-rohit.dim_512x512.jpg",
+          "operation": "create",
+          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
+        },
+        {
+          "path": "frontend/public/assets/generated/founder-rohit.dim_128x128.jpg",
+          "operation": "create",
+          "description": "Add the required generated static asset so references in the UI resolve at build/deploy time."
+        },
+        {
+          "path": "frontend/public/assets/generated/profile-placeholder.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the required generated static asset used as the fallback image for OwnerPhoto so builds do not fail due to missing files."
+        },
+        {
+          "path": "frontend/public/assets/generated/android-app-icon.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add the required generated static asset referenced by frontend/public/manifest.webmanifest so PWA assets resolve at build/deploy time."
+        },
+        {
+          "path": "frontend/scripts/verify-static-assets.sh",
+          "operation": "create",
+          "description": "Create a lightweight verification script that checks for existence of all known required frontend/public/assets/generated files used by the UI and manifest (including those referenced from App.tsx, OwnerPhoto, ownerPhotos config, and manifest.webmanifest) and exits non-zero with a clear list of missing files."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Ensure Owner Settings / Ad Settings access is PIN-protected by the existing admin authorization (PIN 7973), prompting for a PIN when not authorized and not re-prompting within the same authorized session.",
+      "summary": "Add a pre-deploy verification step that runs the existing frontend verification script and fails fast with actionable output.",
       "acceptanceCriteria": [
-        "If a user is not admin-authorized, they cannot access Owner Settings / Ad Settings without a PIN prompt.",
-        "Entering PIN 7973 unlocks access; incorrect PIN shows an English error message and keeps Owner Settings locked.",
-        "If a user is already admin-authorized, Owner Settings / Ad Settings opens without requiring the PIN again in the same session/state."
+        "A pre-deploy step runs frontend/scripts/verify-build.sh (or equivalent) before deployment.",
+        "If typecheck/lint/build fails, deployment is aborted and the failing command output is visible and actionable."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/scripts/verify-build.sh",
           "operation": "modify",
-          "description": "Confirm the only navigation path to Owner Settings / Ad Settings is within the admin-authorized experience; ensure unauthenticated users must use the existing AdminLoginModal PIN flow (PIN 7973) before they can reach the admin UI where Owner Settings is rendered. Verify the component's usage instructions before implementing."
+          "description": "Harden the verification script to fail fast with clearer diagnostics: enable strict bash options (including pipefail), add a trap that prints the failed command/line, and run the new static-asset verification before the build so missing frontend/public/assets/generated files are caught early with actionable output."
         },
         {
-          "path": "frontend/src/components/admin/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Ensure the Owner Settings / AdsSettingsPanel UI is only reachable when the existing admin authorization state is active (no alternate rendering paths); keep the same-session behavior by relying on the existing admin token state. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/admin/AdminLoginModal.tsx",
-          "operation": "modify",
-          "description": "Reuse the existing PIN validation UX for consistency; ensure the incorrect PIN path shows an English error message and the modal remains open/locked as designed. Verify the component's usage instructions before implementing."
+          "path": "frontend/scripts/predeploy-verify.sh",
+          "operation": "create",
+          "description": "Create a simple pre-deploy wrapper that runs frontend/scripts/verify-build.sh and aborts immediately on failure, ensuring the failing command output is visible before any deployment attempt proceeds."
         }
       ]
     }
